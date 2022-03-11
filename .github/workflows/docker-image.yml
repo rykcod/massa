@@ -25,5 +25,5 @@ jobs:
     - name: Build and push
       uses: docker/build-push-action@v2
       with:
-      push: true
-      tags: rykcod/massa:latest
+        push: true
+        tags: rykcod/massa:latest
