@@ -55,7 +55,7 @@ do
 
                 # Re-Launch node to new massa-node Screen
                 screen -dmS massa-node bash -c 'RUST_BACKTRACE=full cargo run --release |& tee logs.txt'
-        elif [ $checkGetStatus -ge 1 ]
+        elif [ $checkDiscardStatus -ge 1 ]
         then
                 # Error log
                 echo "[$(date +%Y%m%d-%HH%M)][NODE][KO]DISCARD - RESTART NODE" >> $path_log/massa_guard-$(date +%F).txt
