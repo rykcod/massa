@@ -4,9 +4,10 @@
 Last build for Massa testnet Episode 8
 
 ### INFO ###
-Build a massa-node container This image include a script named "massa-guard.sh" to:
+Build a massa-node container This image include a script named "/massa-guard.sh" to:
   * Autobuy roll when your node failed and lost his active roll
-  * Restart node when hang
+  * Restart node when stuck
+  * Log his actions
 
 ### TO DO ###
 Mount a folder to the /massa_mount path on container Store in this folder your files:
