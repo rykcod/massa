@@ -19,6 +19,12 @@ nRolls=1
 cd $path_client
 addresses=$(cargo run -- --wallet wallet.dat wallet_info | grep "Address" | awk '{ print $2}')
 
+# Copy/refresh massa_mount wallet and config files
+cp $path_log/config.toml $path_node/config/config.toml
+cp $path_log/wallet.dat $path_client/wallet.dat
+cp $path_log/node_privkey.key $path_node/node_privkey.key
+cp $path_log/staking_keys.json $path_node/staking_keys.json
+
 while true
 do
 	# Attends un peu
