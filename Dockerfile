@@ -35,7 +35,9 @@ RUN source $HOME/.cargo/env \
 && cargo run --release
 
 COPY ./massa-guard.sh /
+COPY ./massa-guard_bootstrap_finder.py /
 RUN chmod +x /massa-guard.sh \
+&& chmod +x /massa-guard_bootstrap_finder.py \
 && mkdir /massa_mount
 
 #Ouuverture des ports
@@ -43,11 +45,7 @@ EXPOSE 31244
 EXPOSE 31245
 
 # Lancement du node
-CMD cp /massa_mount/config.toml /massa/massa-node/config/config.toml \
-&& cp /massa_mount/wallet.dat /massa/massa-client/wallet.dat \
-&& cp /massa_mount/node_privkey.key /massa/massa-node/node_privkey.key \
-&& cp /massa_mount/staking_keys.json /massa/massa-node/staking_keys.json \
-&& source $HOME/.cargo/env \
+CMD source $HOME/.cargo/env \
 && cd /massa/massa-client \
 && screen -dmS massa-client bash -c 'cargo run --release' \
 && sleep 1 \
