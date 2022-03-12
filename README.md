@@ -15,6 +15,7 @@ Mount a folder to the /massa_mount path on container Store in this folder your f
   * config.toml
   * node_privkey.key
   * staking_keys.json
+All of this files is need start run a container --> You must genrate it before using this image.
 This folder will store the massa-guard log file.
 
 __Example:__
