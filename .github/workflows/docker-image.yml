@@ -34,4 +34,4 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         repository: rykcod/massa
-        readme-filepath: ./README.md
+        readme-filepath: README.md
