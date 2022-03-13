@@ -60,12 +60,31 @@ do
                 $path_target/massa-client buy_rolls $addresses $nRolls 0
         fi
 
-        # Check node status
+        # Check node status and logs events
         checkGetStatus=$(timeout 2 $path_target/massa-client get_status | wc -l)
+        checkDiscardStatus=$(grep "DiscardReason" $path_node/logs.txt | wc -l)
+		
         if [ $checkGetStatus -lt 10 ]
         then
                 # Error log
                 echo "[$(date +%Y%m%d-%HH%M)][NODE][KO]TIMEOUT - RESTART NODE" >> $path_log/massa_guard-$(date +%F).txt
+
+                # Stop node
+                cd $path_client
+                nodePID=$(ps -ax | grep massa-node | grep SCREEN | awk '{print $1}')
+                kill $nodePID
+                sleep 10s
+
+                # Backup current log file to troobleshoot
+                cd $path_node
+                mv logs.txt $path_log/$(date +%F)-logs.txt
+
+                # Re-Launch node to new massa-node Screen
+                screen -dmS massa-node bash -c 'RUST_BACKTRACE=full cargo run --release |& tee logs.txt'
+        elif [ $checkDiscardStatus -ge 1 ]
+        then
+                # Error log
+                echo "[$(date +%Y%m%d-%HH%M)][NODE][KO]DISCARD - RESTART NODE" >> $path_log/massa_guard-$(date +%F).txt
 
                 # Stop node
                 cd $path_client
