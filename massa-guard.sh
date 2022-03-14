@@ -73,7 +73,6 @@ do
 		if [ -e $path_log/$(date +%F)-logs.txt ]
 		then
 			cat $path_node/logs.txt >> $path_log/$(date +%F)-logs.txt
-			rm $(date +%F)-logs.txt
 		else
 			mv $path_node/logs.txt $path_log/$(date +%F)-logs.txt
 		fi
