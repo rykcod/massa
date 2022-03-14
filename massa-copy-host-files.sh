@@ -20,6 +20,12 @@ then
 	cp $path_log/config.toml $path_node/config/config.toml
 	echo "[$(date +%Y%m%d-%HH%M)][INFO][LOAD]LOAD $path_log/config.toml as ref" >> $path_log/massa_guard-$(date +%F).txt
 fi
+# Bootstrap list if exist
+if [ -e $path_log/bootstrappers.toml ]
+then
+	cp $path_log/bootstrappers.toml $path_node/config/bootstrappers.toml
+	echo "[$(date +%Y%m%d-%HH%M)][INFO][LOAD]LOAD $path_log/bootstrappers.toml index" >> $path_log/massa_guard-$(date +%F).txt
+fi
 # Wallet to use
 if [ -e $path_log/wallet.dat ]
 then

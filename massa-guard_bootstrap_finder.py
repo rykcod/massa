@@ -1,7 +1,8 @@
 #!/usr/bin/python3
-
+##############################################################################################################################################
 # WARNING: This script will delete comment inside the config file it writes.
-
+# SOURCE --> https://gitlab.com/0x6578656376652829/massa_admin/-/blob/main/massa/services/bootstrap_finder/massa_bootstrap_finder.py
+##############################################################################################################################################
 import datetime
 import configparser
 import subprocess
@@ -14,7 +15,8 @@ INFO="[ \033[0;32m\033[1m INFO \033[0m ]"
 BASE_CONFIG_FILE_PATH = "/massa/massa-node/base_config/config.toml"
 CONFIG_FILE_PATH = "/massa/massa-node/config/config.toml"
 BOOTSTRAPPERS_FILE_PATH = "/massa/massa-node/config/bootstrappers.toml"
-CLIENT = "/massa/massa-client/massa-client"
+CLIENT = "/massa/target/release/massa-client"
+PATH_TO_LOG_FILE = "/massa/massa-node/logs.txt"
 
 TEMPLATE = """
 [official]
@@ -74,7 +76,7 @@ class BootstrapFinder():
         with open(self.__bootstrappers_file, "w") as bfile:
             parser.write(bfile)
 
-	def check_and_repair_bootstrappers_file(self):
+    def check_and_repair_bootstrappers_file(self):
         parser = configparser.ConfigParser()
         parser.read(self.__bootstrappers_file)
         if not "official" in parser:
@@ -101,7 +103,7 @@ class BootstrapFinder():
         cleared_bootstrappers = bootstrappers
         # edit the following line to change service name or if you don't use systemd
         # for example if you don't use systemd: journalctl = subprocess.Popen(["cat", "path_to_log_file"], stdout=subprocess.PIPE)
-        journalctl = subprocess.Popen(["journalctl", "-u", "massa", "--since", "1 hour ago", "-q"], stdout=subprocess.PIPE)
+        journalctl = subprocess.Popen(["cat", "/massa/massa-node/logs.txt"], stdout=subprocess.PIPE)
         grep = subprocess.Popen(["grep", "-B", "1", "error while bootstrapping"], stdin=journalctl.stdout, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         output, error = grep.communicate()
         if not error:
@@ -119,7 +121,7 @@ class BootstrapFinder():
             print (self.get_trace(ERROR, f"Failed to proceed logs: unable to remove faulty bootstrappers: {error}"))
         return cleared_bootstrappers
 
-	def update_bootstrappers_file(self):
+    def update_bootstrappers_file(self):
         print (self.get_trace(INFO, f"Updating bootstrappers file {self.__bootstrappers_file}"))
         parser = configparser.ConfigParser()
         parser.read(self.__bootstrappers_file)
@@ -184,4 +186,3 @@ class BootstrapFinder():
 if __name__ == "__main__":
     finder = BootstrapFinder(CLIENT, BASE_CONFIG_FILE_PATH, CONFIG_FILE_PATH, BOOTSTRAPPERS_FILE_PATH)
     finder.run()
-

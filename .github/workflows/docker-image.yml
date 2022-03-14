@@ -14,7 +14,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Massa image
-      run: docker build . --file Dockerfile --tag rykcod/massa:1.8.2
+      run: docker build . --file Dockerfile --tag rykcod/massa:latest
 
     - name: Login to DockerHub
       uses: docker/login-action@v1 
@@ -32,4 +32,4 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: ${{ steps.prepare.outputs.tag }}
+        tags: ${{ steps.prepare.outputs.tag }},rykcod/massa:latest

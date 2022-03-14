@@ -7,6 +7,7 @@ Last build for Massa testnet Episode 8
 Build a massa-node container This image include a script named "/massa-guard.sh" to:
   * Autobuy roll when your node failed and lost his active roll
   * Autobuy rolls when your MAS amount greater than 100 MAS
+  * Feed massa bootstrap list
   * Restart node when stuck
   * Log his actions
 
@@ -16,6 +17,7 @@ Mount a folder to the /massa_mount path on container Store in this folder your f
   * config.toml
   * node_privkey.key
   * staking_keys.json
+  * [OPTION] bootstrappers.toml
 
 All of this files is needing to start run a container --> You must generate it before using this image.
 

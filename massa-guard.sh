@@ -79,6 +79,8 @@ do
 
 		# Re-Launch node to new massa-node Screen
 		screen -dmS massa-node bash -c 'RUST_BACKTRACE=full cargo run --release |& tee logs.txt'
+	else
+		python3 /massa-guard_bootstrap_finder.py
 	fi
 done
 #######################################################################
