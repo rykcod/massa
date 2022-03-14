@@ -6,6 +6,7 @@ Last build for Massa testnet Episode 8
 ### INFO ###
 Build a massa-node container This image include a script named "/massa-guard.sh" to:
   * Autobuy roll when your node failed and lost his active roll
+  * Autobuy rolls when your MAS amount greater than 100 MAS
   * Restart node when stuck
   * Log his actions
 
@@ -15,12 +16,14 @@ Mount a folder to the /massa_mount path on container Store in this folder your f
   * config.toml
   * node_privkey.key
   * staking_keys.json
-All of this files is need start run a container --> You must genrate it before using this image.
+
+All of this files is needing to start run a container --> You must generate it before using this image.
+
 This folder will store the massa-guard log file.
 
 __Example:__
 
-  **run -d -v /%MY_PATH%/massa_mount:/massa_mount -p 31244-31245:31244-31245 --name massa-node rykcod/massa**
+  **docker run -d -v /%MY_PATH%/massa_mount:/massa_mount -p 31244-31245:31244-31245 --name massa-node rykcod/massa**
 
 ### HELP ###
   * Massa client is running over a "screen" named "massa-client"
@@ -30,4 +33,4 @@ For more informations:
 
 https://github.com/rykcod/massa/
 
--
+_
