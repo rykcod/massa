@@ -30,6 +30,6 @@ jobs:
     - name: Docker Hub Description
       uses: peter-evans/dockerhub-description@v2
       env:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-        repository: rykcod/massa
+        DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        DOCKERHUB_REPOSITORY: rykcod/massa
