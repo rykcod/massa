@@ -48,7 +48,7 @@ do
 	elif [ $Final_balance -gt 200 ]
 	then
 		NbRollsToBuy=$((($Final_balance-100)/100))
-		echo "[$(date +%Y%m%d-%HH%M)][ROLL][OK]AUTOBUY $NbRollsToBuy ROLL because MAS amount equal to $Final_balance" >> $path_log/massa_guard-$(date +%F).txt
+		echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOBUY $NbRollsToBuy ROLL because MAS amount equal to $Final_balance" >> $path_log/massa_guard-$(date +%F).txt
 
 		# Buy roll amount
 		cd $path_client
