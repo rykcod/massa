@@ -3,7 +3,7 @@ FROM ubuntu:20.04
  
 # LABEL about the custom image
 LABEL maintainer="benoit@alphatux.fr"
-LABEL version="0.8.3"
+LABEL version="0.8.4"
 LABEL description="Node Massa"
  
 # Defini le timezone du container
@@ -15,6 +15,7 @@ RUN apt-get update \
 && apt-get upgrade -y \
 && apt install -y pkg-config curl git build-essential libssl-dev screen procps python3-pip \
 && apt autoclean -y
+&& python3 -m pip install -U discord.py
 
 # Prepare l'environnement
 #USER massa
