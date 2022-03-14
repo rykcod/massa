@@ -1,4 +1,4 @@
-name: Docker Hub description - TESTv6
+name: Docker Hub Readme
 on:
   push:
     branches: [main]
