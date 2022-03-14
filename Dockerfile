@@ -14,7 +14,7 @@ ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/Paris"
 RUN apt-get update \
 && apt-get upgrade -y \
 && apt install -y pkg-config curl git build-essential libssl-dev screen procps python3-pip \
-&& apt autoclean -y
+&& apt autoclean -y \
 && python3 -m pip install -U discord.py
 
 # Prepare l'environnement
