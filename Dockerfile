@@ -38,7 +38,7 @@ COPY ./massa-guard.sh /
 COPY ./massa-copy-host-files.sh /
 COPY ./massa-guard_bootstrap_finder.py /
 RUN chmod +x /massa-guard.sh \
-&& RUN chmod +x /massa-copy-host-files.sh \
+&& chmod +x /massa-copy-host-files.sh \
 && chmod +x /massa-guard_bootstrap_finder.py \
 && mkdir /massa_mount
 
