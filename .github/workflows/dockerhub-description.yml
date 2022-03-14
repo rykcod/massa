@@ -17,3 +17,5 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: rykcod/massa
+        env:
+          DOCKERHUB_USERNAME: rykcod
