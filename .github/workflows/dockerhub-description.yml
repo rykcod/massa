@@ -1,4 +1,4 @@
-name: Docker Hub description - TEST
+name: Docker Hub description - TESTv2
 on:
   push:
     branches: [main]
