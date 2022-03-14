@@ -17,87 +17,69 @@ path_target="/massa/target/release"
 nRolls=1
 ##################################################
 
+# Log MASSA-GUARD Start
+echo "[$(date +%Y%m%d-%HH%M)][INFO][START]MASSA-GUARD is starting" >> $path_log/massa_guard-$(date +%F).txt
+
 # Get stacking address
 cd $path_client
 addresses=$(cargo run -- --wallet wallet.dat wallet_info | grep "Address" | awk '{ print $2}')
 
-
-##### Copy/refresh massa_mount wallet and config files if exists #####
-# Conf node file
-if [ -e $path_log/config.toml ]
-	cp $path_log/config.toml $path_node/config/config.toml
-fi
-# Wallet to use
-if [ -e $path_log/wallet.dat ]
-	cp $path_log/wallet.dat $path_client/wallet.dat
-fi
-# Node private key to use
-if [ -e $path_log/node_privkey.key ]
-	cp $path_log/node_privkey.key $path_node/node_privkey.key
-fi
-# Wallet to use to stacke
-if [ -e $path_log/staking_keys.json ]
-	cp cp $path_log/staking_keys.json $path_node/staking_keys.json
-fi
 ####################################################################
 #### Check candidate rolls >= 1 and get_status/node responsive ##### 
 while true
 do
-		# Wait 5min between check
-        sleep 5m
+	# Wait 6min between check
+	sleep 6m
 
-		# Get candidate rolls amount
-        get_addresses=$(cd $path_client;$path_target/massa-client get_addresses $addresses)
-        Candidate_rolls=$(echo "$get_addresses" | grep "Candidate rolls" | cut -d " " -f 3)
+	# Get candidate rolls and MAS amount
+	get_addresses=$(cd $path_client;$path_target/massa-client get_addresses $addresses)
+	Candidate_rolls=$(echo "$get_addresses" | grep "Candidate rolls" | cut -d " " -f 3)
+	Final_balance=$(echo "$get_addresses" | grep "Final balance" | cut -d " " -f 3 | cut -d "." -f 1)
 
-        # Check candidate roll > 0
-        if [ $Candidate_rolls -eq 0 ]
-        then
-                echo "[$(date +%Y%m%d-%HH%M)][ROLL][KO]BUY $nRolls ROLL" >> $path_log/massa_guard-$(date +%F).txt
-                cd $path_client
-				
-				# Buy roll amount
-                $path_target/massa-client buy_rolls $addresses $nRolls 0
-        fi
+	# Check candidate roll > 0
+	if [ $Candidate_rolls -eq 0 ]
+	then
+		echo "[$(date +%Y%m%d-%HH%M)][KO][ROLL]BUY $nRolls ROLL" >> $path_log/massa_guard-$(date +%F).txt
 
-        # Check node status and logs events
-        checkGetStatus=$(timeout 2 $path_target/massa-client get_status | wc -l)
-        checkDiscardStatus=$(grep "DiscardReason" $path_node/logs.txt | wc -l)
-		
-        if [ $checkGetStatus -lt 10 ]
-        then
-                # Error log
-                echo "[$(date +%Y%m%d-%HH%M)][NODE][KO]TIMEOUT - RESTART NODE" >> $path_log/massa_guard-$(date +%F).txt
+		# Buy roll amount
+		cd $path_client
+		$path_target/massa-client buy_rolls $addresses $nRolls 0
+	# If MAS amoutn > 200 MAS, buy ROLLs
+	elif [ $Final_balance -gt 200 ]
+	then
+		NbRollsToBuy=$((($Final_balance-100)/100))
+		echo "[$(date +%Y%m%d-%HH%M)][ROLL][OK]AUTOBUY $NbRollsToBuy ROLL because MAS amount equal to $Final_balance" >> $path_log/massa_guard-$(date +%F).txt
 
-                # Stop node
-                cd $path_client
-                nodePID=$(ps -ax | grep massa-node | grep SCREEN | awk '{print $1}')
-                kill $nodePID
-                sleep 10s
+		# Buy roll amount
+		cd $path_client
+		$path_target/massa-client buy_rolls $addresses $NbRollsToBuy 0
+	fi
 
-                # Backup current log file to troobleshoot
-                cd $path_node
-                mv logs.txt $path_log/$(date +%F)-logs.txt
+	# Check node status and logs events
+	checkGetStatus=$(timeout 2 $path_target/massa-client get_status | wc -l)
 
-                # Re-Launch node to new massa-node Screen
-                screen -dmS massa-node bash -c 'RUST_BACKTRACE=full cargo run --release |& tee logs.txt'
-        elif [ $checkDiscardStatus -ge 1 ]
-        then
-                # Error log
-                echo "[$(date +%Y%m%d-%HH%M)][NODE][KO]DISCARD - RESTART NODE" >> $path_log/massa_guard-$(date +%F).txt
+	if [ $checkGetStatus -lt 10 ]
+	then
+		# Error log
+		echo "[$(date +%Y%m%d-%HH%M)][KO][NODE]TIMEOUT - RESTART NODE" >> $path_log/massa_guard-$(date +%F).txt
 
-                # Stop node
-                cd $path_client
-                nodePID=$(ps -ax | grep massa-node | grep SCREEN | awk '{print $1}')
-                kill $nodePID
-                sleep 10s
+		# Stop node
+		cd $path_client
+		nodePID=$(ps -ax | grep massa-node | grep SCREEN | awk '{print $1}')
+		kill $nodePID
+		sleep 10s
 
-                # Backup current log file to troobleshoot
-                cd $path_node
-                mv logs.txt $path_log/$(date +%F)-logs.txt
+		# Backup current log file to troobleshoot
+		if [ -e $path_log/$(date +%F)-logs.txt ]
+		then
+			cat $path_node/logs.txt >> $path_log/$(date +%F)-logs.txt
+			rm $(date +%F)-logs.txt
+		else
+			mv $path_node/logs.txt $path_log/$(date +%F)-logs.txt
+		fi
 
-                # Re-Launch node to new massa-node Screen
-                screen -dmS massa-node bash -c 'RUST_BACKTRACE=full cargo run --release |& tee logs.txt'
-        fi
+		# Re-Launch node to new massa-node Screen
+		screen -dmS massa-node bash -c 'RUST_BACKTRACE=full cargo run --release |& tee logs.txt'
+	fi
 done
 #######################################################################
