@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Massa image
-      run: docker build . --file Dockerfile --tag rykcod/massa:latest
+      run: docker build . --file Dockerfile --tag rykcod/massa:$(date +%s)
 
     - name: Login to DockerHub
       uses: docker/login-action@v1 
@@ -26,10 +26,4 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: rykcod/massa:1.8.1,rykcod/massa:latest
-    - name: Docker Hub Description
-      uses: peter-evans/dockerhub-description@v2
-      env:
-        DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        DOCKERHUB_REPOSITORY: rykcod/massa
+        tags: rykcod/massa:$(date +%s),rykcod/massa:latest
