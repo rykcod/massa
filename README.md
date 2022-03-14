@@ -35,4 +35,8 @@ For more informations:
 
 https://github.com/rykcod/massa/
 
-_
+### REMERCIEMENTS ###
+Thanks to Danakane for feteares:
+  * Bootstrap list refresh
+  * INCOMING - Autoget faucet
+-->https://gitlab.com/0x6578656376652829/massa_admin
