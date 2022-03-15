@@ -4,7 +4,20 @@
 ######## Importation de la configuration du script ##########
 #############################################################
 # Configuration generale
-. /massa-guard/config/config.ini
+. /massa-guard/config/default_config.ini
+
+# Check conf folder en files exist
+if [[ ! -e $PATH_CONF_MASSAGUARD ]]
+then
+	mkdir -p /massa_mount/logs
+	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]CREATE /massa_mount/logs folder" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+	mkdir -p /massa_mount/config
+	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]CREATE /massa_mount/config folder" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+	cp /massa-guard/config/default_config.ini $PATH_CONF_MASSAGUARD
+	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]COPY default config.ini" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+else
+	. $PATH_CONF_MASSAGUARD
+fi
 
 ##### Copy/refresh massa_mount wallet and config files if exists #####
 # Conf node file

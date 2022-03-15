@@ -42,14 +42,13 @@ COPY ./config /massa-guard/config
 RUN chmod +x /massa-guard/massa-guard.sh \
 && chmod +x /massa-guard/sources/* \
 && mkdir /massa_mount \
-&& mkdir /massa_mount/logs
 
 #Ouuverture des ports
 EXPOSE 31244
 EXPOSE 31245
 
 # Lancement du node
-CMD /massa-guard/sources/copy_host_files.sh \
+CMD /massa-guard/sources/init_copy_host_files.sh \
 && source $HOME/.cargo/env \
 && cd /massa/massa-client \
 && screen -dmS massa-client bash -c 'cargo run --release' \

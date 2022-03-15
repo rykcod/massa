@@ -4,7 +4,7 @@
 ######## Importation de la configuration du script ##########
 #############################################################
 # Global configuration
-. /massa-guard/config/config.ini
+. $PATH_CONF_MASSAGUARD
 
 # Log MASSA-GUARD Start
 echo "[$(date +%Y%m%d-%HH%M)][INFO][START]MASSA-GUARD is starting" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
