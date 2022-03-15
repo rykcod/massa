@@ -103,7 +103,7 @@ class BootstrapFinder():
         cleared_bootstrappers = bootstrappers
         # edit the following line to change service name or if you don't use systemd
         # for example if you don't use systemd: journalctl = subprocess.Popen(["cat", "path_to_log_file"], stdout=subprocess.PIPE)
-        journalctl = subprocess.Popen(["cat", "/massa/massa-node/logs.txt"], stdout=subprocess.PIPE)
+        journalctl = subprocess.Popen(["cat", PATH_TO_LOG_FILE], stdout=subprocess.PIPE)
         grep = subprocess.Popen(["grep", "-B", "1", "error while bootstrapping"], stdin=journalctl.stdout, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         output, error = grep.communicate()
         if not error:

@@ -13,8 +13,6 @@ path_client="/massa/massa-client"
 path_node="/massa/massa-node"
 # Chemin ou se trouve la version compilee de massa-client
 path_target="/massa/target/release"
-# How many rolls to buy if "Candidate rolls = 0" ?
-nRolls=1
 ##################################################
 
 # Log MASSA-GUARD Start
@@ -39,11 +37,11 @@ do
 	# Check candidate roll > 0
 	if [ $Candidate_rolls -eq 0 ]
 	then
-		echo "[$(date +%Y%m%d-%HH%M)][KO][ROLL]BUY $nRolls ROLL" >> $path_log/massa_guard-$(date +%F).txt
+		echo "[$(date +%Y%m%d-%HH%M)][KO][ROLL]BUY 1 ROLL" >> $path_log/massa_guard-$(date +%F).txt
 
 		# Buy roll amount
 		cd $path_client
-		$path_target/massa-client buy_rolls $addresses $nRolls 0
+		$path_target/massa-client buy_rolls $addresses 1 0
 	# If MAS amoutn > 200 MAS, buy ROLLs
 	elif [ $Final_balance -gt 200 ]
 	then
@@ -81,7 +79,7 @@ do
 		screen -dmS massa-node bash -c 'RUST_BACKTRACE=full cargo run --release |& tee logs.txt'
 	else
 		# Refresh bootstrap nodes list
-		python3 /massa-guard_bootstrap_finder.py
+		python3 /massa-guard_bootstrap_finder.py 
 		# Backup bootstrap file
 		cp $path_node/config/config.toml $path_log/
 	fi

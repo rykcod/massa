@@ -12,7 +12,7 @@ import subprocess
 import discord # To install this dependency: python3 -m pip install -U discord.py
 import datetime
 
-TOKEN = "Insert your discord account token"
+TOKEN = sys.argv[1]
 CMD = ["/massa/target/release/massa_client", "wallet_info"] # edit this line to replace it with your massa client if needed
 FAUCET_CHANNEL_ID = 866190913030193172    
 ERROR="[ \033[0;31m\033[1m ERROR \033[0m]"
