@@ -29,7 +29,7 @@ addresses=$(cargo run -- --wallet wallet.dat wallet_info | grep "Address" | awk 
 while true
 do
 	# Wait 6min between check
-	sleep 6m
+	sleep 10m
 
 	# Get candidate rolls and MAS amount
 	get_addresses=$(cd $path_client;$path_target/massa-client get_addresses $addresses)
