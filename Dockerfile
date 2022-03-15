@@ -35,12 +35,13 @@ WORKDIR $HOME/massa/massa-client
 RUN source $HOME/.cargo/env \
 && cargo run --release
 
-COPY ./massa-guard.sh /
-COPY ./massa-copy-host-files.sh /
-COPY ./massa-guard_bootstrap_finder.py /
+RUN mkdir /massa-guard
+COPY ./massa-guard.sh /massa-guard/
+COPY ./sources /massa-guard/sources
+COPY ./config /massa-guard/config
+COPY ./massa-guard_faucet_spammer.py /
 RUN chmod +x /massa-guard.sh \
-&& chmod +x /massa-copy-host-files.sh \
-&& chmod +x /massa-guard_bootstrap_finder.py \
+&& chmod +x /massa-guard/sources/* \
 && mkdir /massa_mount
 
 #Ouuverture des ports
@@ -48,12 +49,12 @@ EXPOSE 31244
 EXPOSE 31245
 
 # Lancement du node
-CMD /massa-copy-host-files.sh \
+CMD /massa-guard/sources/copy_host_files.sh \
 && source $HOME/.cargo/env \
 && cd /massa/massa-client \
 && screen -dmS massa-client bash -c 'cargo run --release' \
 && sleep 1 \
 && cd /massa/massa-node \
 && screen -dmS massa-node bash -c 'RUST_BACKTRACE=full cargo run --release |& tee logs.txt' \
-&& /massa-guard.sh \
+&& /massa-guard/massa-guard.sh \
 && /bin/bash
