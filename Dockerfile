@@ -39,7 +39,7 @@ RUN mkdir /massa-guard
 COPY ./massa-guard.sh /massa-guard/
 COPY ./sources /massa-guard/sources
 COPY ./config /massa-guard/config
-RUN chmod +x /massa-guard.sh \
+RUN chmod +x /massa-guard/massa-guard.sh \
 && chmod +x /massa-guard/sources/* \
 && mkdir /massa_mount
 
