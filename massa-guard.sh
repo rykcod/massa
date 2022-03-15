@@ -7,7 +7,7 @@
 . /massa-guard/config/config.ini
 
 # Log MASSA-GUARD Start
-echo "[$(date +%Y%m%d-%HH%M)][INFO][START]MASSA-GUARD is starting" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard
+echo "[$(date +%Y%m%d-%HH%M)][INFO][START]MASSA-GUARD is starting" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 
 # Get stacking address
 cd $PATH_CLIENT
@@ -28,7 +28,7 @@ do
 	# Check candidate roll > 0
 	if [ $Candidate_rolls -eq 0 ]
 	then
-		echo "[$(date +%Y%m%d-%HH%M)][KO][ROLL]BUY 1 ROLL" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard
+		echo "[$(date +%Y%m%d-%HH%M)][KO][ROLL]BUY 1 ROLL" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 
 		# Buy roll amount
 		cd $PATH_CLIENT
@@ -37,7 +37,7 @@ do
 	elif [ $Final_balance -gt 200 ]
 	then
 		NbRollsToBuy=$((($Final_balance-100)/100))
-		echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOBUY $NbRollsToBuy ROLL because MAS amount equal to $Final_balance" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard
+		echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOBUY $NbRollsToBuy ROLL because MAS amount equal to $Final_balance" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 
 		# Buy roll amount
 		cd $PATH_CLIENT
@@ -50,7 +50,7 @@ do
 	if [ $checkGetStatus -lt 10 ]
 	then
 		# Error log
-		echo "[$(date +%Y%m%d-%HH%M)][KO][NODE]TIMEOUT - RESTART NODE" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		echo "[$(date +%Y%m%d-%HH%M)][KO][NODE]TIMEOUT - RESTART NODE" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt.txt
 
 		# Stop node
 		cd $PATH_CLIENT
