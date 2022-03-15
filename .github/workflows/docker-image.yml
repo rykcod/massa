@@ -32,4 +32,4 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: ${{ steps.prepare.outputs.tag }},rykcod/massa:latest
+        tags: rykcod/massa:20220315,rykcod/massa:latest
