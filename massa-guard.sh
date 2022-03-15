@@ -66,6 +66,9 @@ do
 			mv $PATH_NODE/logs.txt $PATH_LOGS_MASSANODE/$(date +%Y%m%d)-logs.txt
 		fi
 
+		# Reload conf files
+		$PATH_SOURCES/init_copy_host_files.sh
+
 		# Re-Launch node to new massa-node Screen
 		screen -dmS massa-node bash -c 'RUST_BACKTRACE=full cargo run --release |& tee logs.txt'
 	else
@@ -76,8 +79,8 @@ do
 		python3 $PATH_SOURCES/faucet_spammer.py $DISCORD_TOKEN
 		
 		# Backup bootstrap files
-		cp $PATH_NODE_CONF/config.toml $PATH_SOURCES/
-		cp $PATH_NODE_CONF/bootstrappers.toml $PATH_SOURCES/
+		cp $PATH_NODE_CONF/config.toml $PATH_CONF_MASSAGUARD/
+		cp $PATH_NODE_CONF/bootstrappers.toml $PATH_CONF_MASSAGUARD/
 	fi
 done
 #######################################################################
