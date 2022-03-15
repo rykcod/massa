@@ -35,12 +35,12 @@ fi
 # Node private key to use
 if [ -e $path_log/node_privkey.key ]
 then
-	cp $path_log/node_privkey.key $path_node/node_privkey.key
+	cp $path_log/node_privkey.key $path_node/config/node_privkey.key
 	echo "[$(date +%Y%m%d-%HH%M)][INFO][LOAD]LOAD $path_log/node_privkey.key as ref" >> $path_log/massa_guard-$(date +%F).txt
 fi
 # Wallet to use to stacke
 if [ -e $path_log/staking_keys.json ]
 then
-	cp $path_log/staking_keys.json $path_node/staking_keys.json
+	cp $path_log/staking_keys.json $path_node/config/staking_keys.json
 	echo "[$(date +%Y%m%d-%HH%M)][INFO][LOAD]LOAD $path_log/staking_keys.json as ref" >> $path_log/massa_guard-$(date +%F).txt
 fi
