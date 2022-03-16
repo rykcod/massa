@@ -1,7 +1,7 @@
 ![alt text](https://d33wubrfki0l68.cloudfront.net/7df7d7a57a8dda3cc07aab16121b3e3990cf0893/16ccd/portfolio/massa.png)
 
 #### Massa node + Massa-guard ####
-Last build for Massa testnet Episode 8
+**Last build for Massa testnet Episode 8**
 
 ### INFO ###
 Build a massa-node container This image include a script named "/massa-guard.sh" to:
@@ -49,8 +49,7 @@ https://github.com/rykcod/massa/
 
 ### CONTRIB ###
 Thanks to:
-* **GGCOM** for help
-* ***Danakane** for features:
+  * **GGCOM** for help
+  * **Danakane** for features https://gitlab.com/0x6578656376652829/massa_admin :
   * Bootstrap list refresh
   * Autoget faucet
-  * --> https://gitlab.com/0x6578656376652829/massa_admin
