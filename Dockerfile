@@ -38,6 +38,7 @@ RUN source $HOME/.cargo/env \
 RUN mkdir /massa-guard \
 && mkdir /massa-guard/sources \
 && mkdir /massa-guard/config
+
 COPY ./massa-guard.sh /massa-guard/
 COPY ./sources /massa-guard/sources
 COPY ./config /massa-guard/config
@@ -58,5 +59,4 @@ CMD /massa-guard/sources/init_copy_host_files.sh \
 && sleep 1 \
 && cd /massa/massa-node \
 && screen -dmS massa-node bash -c 'RUST_BACKTRACE=full cargo run --release |& tee logs.txt' \
-&& /massa-guard/massa-guard.sh \
-&& /bin/bash
+&& bash /massa-guard/massa-guard.sh

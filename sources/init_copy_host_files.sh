@@ -6,14 +6,16 @@
 # Check conf file exist
 if [ ! -e $PATH_CONF_MASSAGUARD/config.ini ]
 then
-	mkdir -p /massa_mount/logs
-	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]CREATE /massa_mount/logs folder" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+	mkdir -p $PATH_LOGS_MASSAGUARD
+	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]CREATE $PATH_LOGS_MASSAGUARD folder" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+	mkdir -p $PATH_LOGS_MASSANODE
+	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]CREATE $PATH_LOGS_MASSANODE folder" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 	mkdir -p /massa_mount/config
 	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]CREATE /massa_mount/config folder" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 	cp /massa-guard/config/default_config_template.ini $PATH_CONF_MASSAGUARD/config.ini
 	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]COPY default config.ini" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 else
-	. $PATH_CONF_MASSAGUARD
+	. $PATH_CONF_MASSAGUARD/config.ini
 fi
 
 ##### Copy/refresh massa_mount wallet and config files if exists #####

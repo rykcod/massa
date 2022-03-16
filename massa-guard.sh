@@ -30,7 +30,7 @@ then
 	# Stacke wallet
 	privKey=$($PATH_TARGET/massa-client wallet_info | grep "Private key" | cut -d " " -f 3)
 	$PATH_TARGET/massa-client node_add_staking_private_keys $privKey
-	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Stacke privKey" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Stake privKey" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 	# Backup staking_keys.json
 	cp $PATH_NODE_CONF/staking_keys.json $PATH_MOUNT/staking_keys.json
 	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Backup staking_keys.json" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
@@ -101,6 +101,7 @@ do
 		checkFaucet=$(cat $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | grep "FAUCET" | wc -l)
 		# Get faucet
 		if [ $DISCORD_TOKEN -eq 0 ]
+		then
 			if [ ! $checkFaucet -eq 'NULL' ]
 			then
 				python3 $PATH_SOURCES/faucet_spammer.py $DISCORD_TOKEN >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
