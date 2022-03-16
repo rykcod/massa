@@ -12,16 +12,27 @@ echo "[$(date +%Y%m%d-%HH%M)][INFO][START]MASSA-GUARD is starting" >> $PATH_LOGS
 
 # Get stacking address
 # if wallet exist
-if [ -e $PATH_CLIENT/wallet.dat)-logs.txt ]
+if [ -e $PATH_CLIENT/wallet.dat ]
 then
 	cd $PATH_CLIENT
-	addresses=$(cargo run -- --wallet wallet.dat wallet_info | grep "Address" | awk '{ print $2}')
-# Create a wallet
+	addresses=$($PATH_TARGET/massa-client wallet_info | grep "Address" | cut -d " " -f 2)
+# Create a wallet, stacke and backup
 else
-	# Generate wallet
+	# Generate and backup wallet
 	$PATH_TARGET/massa-client wallet_generate_private_key
+	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Generate wallet.dat" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 	# Backup wallet
 	cp $PATH_CLIENT/wallet.dat $PATH_MOUNT/wallet.dat
+	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Backup wallet.dat" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+fi
+if [ ! -e $PATH_NODE_CONF/staking_keys.json ]
+	# Stacke wallet
+	privKey=$($PATH_TARGET/massa-client wallet_info | grep "Private key" | cut -d " " -f 3)
+	$PATH_TARGET/massa-client node_add_staking_private_keys $privKey
+	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Stacke privKey" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+	# Backup staking_keys.json
+	cp $PATH_NODE_CONF/staking_keys.json $PATH_MOUNT/staking_keys.json
+	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Backup staking_keys.json" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 fi
 
 ####################################################################
@@ -88,15 +99,23 @@ do
 		# Check faucet
 		checkFaucet=$(cat $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | grep "FAUCET" | wc -l)
 		# Get faucet
-		if [ $checkFaucet -ge 1 ]
-		then
-			python3 $PATH_SOURCES/faucet_spammer.py $DISCORD_TOKEN
-			"[$(date +%Y%m%d-%HH%M)][INFO][FAUCET]GET $(date +%Y%m%d) FAUCET on discord" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		if [ $DISCORD_TOKEN -eq 0 ]
+			if [ ! $checkFaucet -eq 'NULL' ]
+			then
+				python3 $PATH_SOURCES/faucet_spammer.py $DISCORD_TOKEN
+				"[$(date +%Y%m%d-%HH%M)][INFO][FAUCET]GET $(date +%Y%m%d) FAUCET on discord" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+			fi
 		fi
 		
-		# Refresh bootstrap files
+		# Refresh bootstrap files and node key if dont exist on repo
 		cp $PATH_NODE_CONF/config.toml $PATH_CONF_MASSAGUARD/
 		cp $PATH_NODE_CONF/bootstrappers.toml $PATH_CONF_MASSAGUARD/
+		if [ ! -e $PATH_MOUNT/node_privkey.key ]
+		then
+			# Backup node_privkey.key
+			cp $PATH_NODE_CONF/node_privkey.key $PATH_MOUNT/node_privkey.key
+			echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Backup node_privkey.key" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		fi
 	fi
 done
 #######################################################################
