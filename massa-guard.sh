@@ -26,6 +26,7 @@ else
 	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Backup wallet.dat" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 fi
 if [ ! -e $PATH_NODE_CONF/staking_keys.json ]
+then
 	# Stacke wallet
 	privKey=$($PATH_TARGET/massa-client wallet_info | grep "Private key" | cut -d " " -f 3)
 	$PATH_TARGET/massa-client node_add_staking_private_keys $privKey
