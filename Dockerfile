@@ -36,6 +36,8 @@ RUN source $HOME/.cargo/env \
 && cargo run --release
 
 RUN mkdir /massa-guard
+&& mkdir /massa-guard/sources
+&& mkdir /massa-guard/config
 COPY ./massa-guard.sh /massa-guard/
 COPY ./sources /massa-guard/sources
 COPY ./config /massa-guard/config
