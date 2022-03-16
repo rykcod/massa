@@ -6,14 +6,14 @@
 # Configuration generale
 . /massa-guard/config/default_config.ini
 
-# Check conf folder en files exist
-if [[ ! -e $PATH_CONF_MASSAGUARD ]]
+# Check conf file exist
+if [ ! -e $PATH_CONF_MASSAGUARD/config.ini ]
 then
 	mkdir -p /massa_mount/logs
 	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]CREATE /massa_mount/logs folder" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 	mkdir -p /massa_mount/config
 	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]CREATE /massa_mount/config folder" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
-	cp /massa-guard/config/default_config.ini $PATH_CONF_MASSAGUARD
+	cp /massa-guard/config/default_config_template.ini $PATH_CONF_MASSAGUARD/config.ini
 	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]COPY default config.ini" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 else
 	. $PATH_CONF_MASSAGUARD

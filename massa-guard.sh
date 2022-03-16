@@ -4,21 +4,31 @@
 ######## Importation de la configuration du script ##########
 #############################################################
 # Global configuration
-. $PATH_CONF_MASSAGUARD
+. /massa-guard/config/default_config.ini
+. $PATH_CONF_MASSAGUARD/config.ini
 
 # Log MASSA-GUARD Start
 echo "[$(date +%Y%m%d-%HH%M)][INFO][START]MASSA-GUARD is starting" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 
 # Get stacking address
-cd $PATH_CLIENT
-addresses=$(cargo run -- --wallet wallet.dat wallet_info | grep "Address" | awk '{ print $2}')
+# if wallet exist
+if [ -e $PATH_CLIENT/wallet.dat)-logs.txt ]
+then
+	cd $PATH_CLIENT
+	addresses=$(cargo run -- --wallet wallet.dat wallet_info | grep "Address" | awk '{ print $2}')
+# Create a wallet
+else
+	# Generate wallet
+	$PATH_TARGET/massa-client wallet_generate_private_key
+	# Backup wallet
+	cp $PATH_CLIENT/wallet.dat $PATH_MOUNT/wallet.dat
+fi
 
 ####################################################################
-#### Check candidate rolls >= 1 and get_status/node responsive ##### 
 while true
 do
-	# Wait 8min between check
-	sleep 8m
+	# Wait 10min between check
+	sleep 10m
 
 	# Get candidate rolls and MAS amount
 	get_addresses=$(cd $PATH_CLIENT;$PATH_TARGET/massa-client get_addresses $addresses)
@@ -46,7 +56,6 @@ do
 
 	# Check node status and logs events
 	checkGetStatus=$(timeout 2 $PATH_TARGET/massa-client get_status | wc -l)
-
 	if [ $checkGetStatus -lt 10 ]
 	then
 		# Error log
@@ -70,15 +79,22 @@ do
 		$PATH_SOURCES/init_copy_host_files.sh
 
 		# Re-Launch node to new massa-node Screen
+		cd $PATH_NODE
 		screen -dmS massa-node bash -c 'RUST_BACKTRACE=full cargo run --release |& tee logs.txt'
 	else
 		# Refresh bootstrap nodes list
 		python3 $PATH_SOURCES/bootstrap_finder.py
 		
 		# Check faucet
-		python3 $PATH_SOURCES/faucet_spammer.py $DISCORD_TOKEN
+		checkFaucet=$(cat $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | grep "FAUCET" | wc -l)
+		# Get faucet
+		if [ $checkFaucet -ge 1 ]
+		then
+			python3 $PATH_SOURCES/faucet_spammer.py $DISCORD_TOKEN
+			"[$(date +%Y%m%d-%HH%M)][INFO][FAUCET]GET $(date +%Y%m%d) FAUCET on discord" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		fi
 		
-		# Backup bootstrap files
+		# Refresh bootstrap files
 		cp $PATH_NODE_CONF/config.toml $PATH_CONF_MASSAGUARD/
 		cp $PATH_NODE_CONF/bootstrappers.toml $PATH_CONF_MASSAGUARD/
 	fi
