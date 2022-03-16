@@ -14,7 +14,7 @@ Build a massa-node container This image include a script named "/massa-guard.sh"
 
 ### TO DO ###
 __STEP 1:__
-Mount a folder to the /massa_mount path on container Store in this folder your files:
+Mount a folder to the /massa_mount path on container and store in this folder your files:
   * wallet.dat
   * config.toml
   * node_privkey.key
