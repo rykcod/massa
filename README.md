@@ -24,7 +24,7 @@ Mount a folder to the /massa_mount path on container and store in this folder yo
 
 /!\ All of this files is needing to start run a container --> You must generate it before using this image.
 
-/!\ If the files is not present, massa-guard create a wallet.dat and stake it
+/!\ If the files is not present, massa-guard will create a wallet.dat and stake it for you
 
 __Example:__
 
