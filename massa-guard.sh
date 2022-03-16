@@ -94,7 +94,7 @@ do
 		screen -dmS massa-node bash -c 'RUST_BACKTRACE=full cargo run --release |& tee logs.txt'
 	else
 		# Refresh bootstrap nodes list
-		python3 $PATH_SOURCES/bootstrap_finder.py
+		python3 $PATH_SOURCES/bootstrap_finder.py >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 		
 		# Check faucet
 		checkFaucet=$(cat $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | grep "FAUCET" | wc -l)
@@ -102,7 +102,7 @@ do
 		if [ $DISCORD_TOKEN -eq 0 ]
 			if [ ! $checkFaucet -eq 'NULL' ]
 			then
-				python3 $PATH_SOURCES/faucet_spammer.py $DISCORD_TOKEN
+				python3 $PATH_SOURCES/faucet_spammer.py $DISCORD_TOKEN >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 				"[$(date +%Y%m%d-%HH%M)][INFO][FAUCET]GET $(date +%Y%m%d) FAUCET on discord" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 			fi
 		fi

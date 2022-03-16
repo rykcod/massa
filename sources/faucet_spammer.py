@@ -11,19 +11,20 @@
 import subprocess
 import discord # To install this dependency: python3 -m pip install -U discord.py
 import datetime
+import sys
 
 TOKEN = sys.argv[1]
 CMD = ["/massa/target/release/massa-client", "wallet_info"] # edit this line to replace it with your massa client if needed
-FAUCET_CHANNEL_ID = 866190913030193172    
-ERROR="[ \033[0;31m\033[1m ERROR \033[0m]"
-WARN="[ \033[0;33m\033[1m WARN \033[0m ]" 
-INFO="[ \033[0;32m\033[1m INFO \033[0m ]"
+FAUCET_CHANNEL_ID = 866190913030193172
+ERROR="[ERROR]"
+WARN="[WARN]"
+INFO="[INFO]"
 
 
 class DiscordClient(discord.Client):
     async def on_ready(self):
-        utcnow = datetime.datetime.utcnow()
-        print(f"{utcnow} {INFO}: Logged on as {self.user}!")
+        date = datetime.datetime.today()
+        dateLog = date.strftime('%Y%m%d-%HH%M')
         output, error = subprocess.Popen(CMD, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
         if (not error) and output:
             address = ""
@@ -33,22 +34,16 @@ class DiscordClient(discord.Client):
                     break
             if address :
                 faucet_channel = self.get_channel(FAUCET_CHANNEL_ID)
-                utcnow = datetime.datetime.utcnow()
                 if faucet_channel:
-                    print(f"{utcnow} {INFO}: Ping faucet with address {address}")
+                    print(f"[{dateLog}][{INFO}]Ping faucet with address {address} for {self.user}")
                     await faucet_channel.send(address)
                 else:
-                    print(f"{utcnow} {ERROR}: Unable to find faucet channel")
+                    print(f"[{dateLog}][{ERROR}]Unable to find faucet channel")
             else:
-                utcnow = datetime.datetime.utcnow()  
-                print(f"{utcnow} {ERROR}: Unable to find wallet address")
+                print(f"[{dateLog}][{ERROR}]Unable to find wallet address")
         else:
             error = error.decode("UTF-8")
-            utcnow = datetime.datetime.utcnow()
-            print(f"{utcnow} {ERROR}: Failed to get wallet address: {error}")
-        print(f"{utcnow} {INFO}: Terminated")
+            print(f"[{dateLog}][{ERROR}]Failed to get wallet address: {error}")
         await self.close()
 
-
-print(f"{datetime.datetime.utcnow()} {INFO}: Starting faucet ping script")
 DiscordClient().run(TOKEN, bot=False)

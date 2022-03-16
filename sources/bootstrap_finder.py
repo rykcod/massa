@@ -42,8 +42,9 @@ class BootstrapFinder():
         self.__bootstrappers_file = bootstrappers_file
 
     def get_trace(self, level, message):
-        utcnow = datetime.datetime.utcnow()
-        return f"{utcnow} {level}: {message}"
+        date = datetime.datetime.today()
+        dateLog = date.strftime('%Y%m%d-%HH%M')
+        return f"[{dateLog}]{level}[BOOTSTRAP]{message}"
 
     def get_out_nodes(self):
         client_get_status = subprocess.Popen([self.__client, "get_status"], stdout=subprocess.PIPE)
