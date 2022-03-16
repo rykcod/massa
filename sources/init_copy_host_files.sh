@@ -1,8 +1,5 @@
 #!/bin/bash
 #==================== Configuration ========================#
-#############################################################
-######## Importation de la configuration du script ##########
-#############################################################
 # Configuration generale
 . /massa-guard/config/default_config.ini
 
