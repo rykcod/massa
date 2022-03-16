@@ -8,9 +8,9 @@ import configparser
 import subprocess
 import pathlib
 
-ERROR="[ \033[0;31m\033[1m ERROR \033[0m]"
-WARN="[ \033[0;33m\033[1m WARN \033[0m ]"
-INFO="[ \033[0;32m\033[1m INFO \033[0m ]"
+ERROR="[ERROR]"
+WARN="[WARN]"
+INFO="[INFO]"
 
 BASE_CONFIG_FILE_PATH = "/massa/massa-node/base_config/config.toml"
 CONFIG_FILE_PATH = "/massa/massa-node/config/config.toml"
@@ -123,7 +123,6 @@ class BootstrapFinder():
         return cleared_bootstrappers
 
     def update_bootstrappers_file(self):
-        print (self.get_trace(INFO, f"Updating bootstrappers file {self.__bootstrappers_file}"))
         parser = configparser.ConfigParser()
         parser.read(self.__bootstrappers_file)
         out_nodes = self.get_out_nodes()[1:-1] # remove the first and the last "]"
@@ -144,16 +143,13 @@ class BootstrapFinder():
         for bootstrapper in bootstrappers:
             if (not bootstrapper in official_bootstrappers) and (not bootstrapper in friend_bootstrappers) and \
                 (not bootstrapper in banned_bootstrappers) and (not bootstrapper in other_bootstrappers):
-                print (self.get_trace(INFO, f"Adding new bootstrapper {bootstrapper} to [others] bootstrap list"))
                 other_bootstrappers.append(bootstrapper)
         other_bootstrappers = ",\n".join(other_bootstrappers)
         parser["others"]["bootstrap_list"] = f"[{other_bootstrappers}]"
         with open(self.__bootstrappers_file, "w") as bfile:
             parser.write(bfile)
-        print (self.get_trace(INFO, f"Bootstrappers file update done."))
 
     def update_config_file(self):
-        print (self.get_trace(INFO, f"Updating massa config file {self.__config_file}"))
         parser = configparser.ConfigParser()
         parser.read(self.__bootstrappers_file)
         official_bootstrappers = parser["official"]["bootstrap_list"][1:-1] # remove the first "[" and the last "]"
