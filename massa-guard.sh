@@ -102,7 +102,7 @@ do
 		# Get faucet
 		if [ $checkFaucet -eq 0 ]
 		then
-			if [ ! $DISCORD_TOKEN -eq 'NULL' ]
+			if [ ! $DISCORD_TOKEN == "NULL" ]
 			then
 				python3 $PATH_SOURCES/faucet_spammer.py $DISCORD_TOKEN >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 				"[$(date +%Y%m%d-%HH%M)][INFO][FAUCET]GET $(date +%Y%m%d) FAUCET on discord" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
