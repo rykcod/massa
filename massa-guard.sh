@@ -96,19 +96,19 @@ do
 	else
 		# Refresh bootstrap nodes list
 		python3 $PATH_SOURCES/bootstrap_finder.py >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
-		
+
 		# Check faucet
 		checkFaucet=$(cat $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | grep "FAUCET" | wc -l)
 		# Get faucet
-		if [ $DISCORD_TOKEN -eq 0 ]
+		if [ $checkFaucet -eq 0 ]
 		then
-			if [ ! $checkFaucet -eq 'NULL' ]
+			if [ ! $DISCORD_TOKEN -eq 'NULL' ]
 			then
 				python3 $PATH_SOURCES/faucet_spammer.py $DISCORD_TOKEN >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 				"[$(date +%Y%m%d-%HH%M)][INFO][FAUCET]GET $(date +%Y%m%d) FAUCET on discord" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 			fi
 		fi
-		
+
 		# Refresh bootstrap files and node key if dont exist on repo
 		cp $PATH_NODE_CONF/config.toml $PATH_CONF_MASSAGUARD/
 		cp $PATH_NODE_CONF/bootstrappers.toml $PATH_CONF_MASSAGUARD/
