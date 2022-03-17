@@ -98,7 +98,7 @@ do
 		python3 $PATH_SOURCES/bootstrap_finder.py >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 
 		# Check faucet
-		checkFaucet=$(cat $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | grep "FAUCET" | wc -l)
+		checkFaucet=$(cat $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | grep "faucet" | wc -l)
 		# Get faucet
 		if [ $checkFaucet -eq 0 ]
 		then

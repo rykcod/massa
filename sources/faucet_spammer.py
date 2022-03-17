@@ -35,15 +35,15 @@ class DiscordClient(discord.Client):
             if address :
                 faucet_channel = self.get_channel(FAUCET_CHANNEL_ID)
                 if faucet_channel:
-                    print(f"[{dateLog}][{INFO}]Ping faucet with address {address} for {self.user}")
+                    print(f"[{dateLog}]{INFO}Ping faucet with address {address} for {self.user}")
                     await faucet_channel.send(address)
                 else:
-                    print(f"[{dateLog}][{ERROR}]Unable to find faucet channel")
+                    print(f"[{dateLog}]{ERROR}Unable to find faucet channel")
             else:
-                print(f"[{dateLog}][{ERROR}]Unable to find wallet address")
+                print(f"[{dateLog}]{ERROR}Unable to find wallet address")
         else:
             error = error.decode("UTF-8")
-            print(f"[{dateLog}][{ERROR}]Failed to get wallet address: {error}")
+            print(f"[{dateLog}]{ERROR}Failed to get wallet address: {error}")
         await self.close()
 
 DiscordClient().run(TOKEN, bot=False)
