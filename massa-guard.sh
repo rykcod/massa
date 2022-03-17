@@ -110,8 +110,8 @@ do
 		fi
 
 		# Refresh bootstrap files and node key if dont exist on repo
-		cp $PATH_NODE_CONF/config.toml $PATH_CONF_MASSAGUARD/
-		cp $PATH_NODE_CONF/bootstrappers.toml $PATH_CONF_MASSAGUARD/
+		cp $PATH_NODE_CONF/config.toml $PATH_MOUNT/
+		cp $PATH_NODE_CONF/bootstrappers.toml $PATH_MOUNT/
 		if [ ! -e $PATH_MOUNT/node_privkey.key ]
 		then
 			# Backup node_privkey.key
