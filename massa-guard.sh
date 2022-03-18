@@ -71,7 +71,7 @@ do
 	if [ $checkGetStatus -lt 10 ]
 	then
 		# Error log
-		echo "[$(date +%Y%m%d-%HH%M)][KO][NODE]TIMEOUT - RESTART NODE" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt.txt
+		echo "[$(date +%Y%m%d-%HH%M)][KO][NODE]TIMEOUT - RESTART NODE" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 
 		# Stop node
 		cd $PATH_CLIENT
@@ -84,15 +84,18 @@ do
 		then
 			cat $PATH_NODE/logs.txt >> $PATH_LOGS_MASSANODE/$(date +%Y%m%d)-logs.txt
 		else
-			mv $PATH_NODE/logs.txt $PATH_LOGS_MASSANODE/$(date +%Y%m%d)-logs.txt
+			cp $PATH_NODE/logs.txt $PATH_LOGS_MASSANODE/$(date +%Y%m%d)-logs.txt
 		fi
 
 		# Reload conf files
 		$PATH_SOURCES/init_copy_host_files.sh
 
-		# Re-Launch node to new massa-node Screen
+		# Re-Launch node and client
 		cd $PATH_NODE
 		screen -dmS massa-node bash -c 'RUST_BACKTRACE=full cargo run --release |& tee logs.txt'
+		sleep 1
+		cd /massa/massa-client
+		screen -dmS massa-client bash -c 'cargo run --release'
 	else
 		# Refresh bootstrap nodes list
 		python3 $PATH_SOURCES/bootstrap_finder.py >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
