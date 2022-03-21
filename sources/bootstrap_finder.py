@@ -143,6 +143,7 @@ class BootstrapFinder():
         for bootstrapper in bootstrappers:
             if (not bootstrapper in official_bootstrappers) and (not bootstrapper in friend_bootstrappers) and \
                 (not bootstrapper in banned_bootstrappers) and (not bootstrapper in other_bootstrappers):
+                print (self.get_trace(INFO, f"Adding new bootstrapper {bootstrapper} to [others] bootstrap list"))
                 other_bootstrappers.append(bootstrapper)
         other_bootstrappers = ",\n".join(other_bootstrappers)
         parser["others"]["bootstrap_list"] = f"[{other_bootstrappers}]"
@@ -169,7 +170,6 @@ class BootstrapFinder():
         parser["bootstrap"]["bootstrap_list"] = f"[{bootstrappers}]"
         with open(self.__config_file, "w") as cfile:
             parser.write(cfile)
-        print (self.get_trace(INFO, "Massa config file update done."))
 
     def run(self):
         if not (pathlib.Path(self.__bootstrappers_file).is_file() and pathlib.Path(self.__bootstrappers_file).stat().st_size):
