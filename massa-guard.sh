@@ -39,8 +39,8 @@ fi
 ####################################################################
 while true
 do
-	# Wait 10min between check
-	sleep 10m
+	# Wait 6min between check
+	sleep 6m
 
 	# Get candidate rolls and MAS amount
 	get_addresses=$(cd $PATH_CLIENT;$PATH_TARGET/massa-client get_addresses $addresses)
