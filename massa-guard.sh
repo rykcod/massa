@@ -37,11 +37,11 @@ then
 fi
 
 ####################################################################
+# Wait 10min before first check to lets node bootstrap
+sleep 10m
+
 while true
 do
-	# Wait 6min between check
-	sleep 6m
-
 	# Get candidate rolls and MAS amount
 	get_addresses=$(cd $PATH_CLIENT;$PATH_TARGET/massa-client get_addresses $addresses)
 	Candidate_rolls=$(echo "$get_addresses" | grep "Candidate rolls" | cut -d " " -f 3)
@@ -96,6 +96,9 @@ do
 		sleep 1
 		cd /massa/massa-client
 		screen -dmS massa-client bash -c 'cargo run --release'
+
+		# Wait 8min before next check to lets node bootstrap
+		sleep 8m
 	else
 		# Refresh bootstrap nodes list
 		python3 $PATH_SOURCES/bootstrap_finder.py >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
@@ -122,5 +125,7 @@ do
 			echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Backup node_privkey.key" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 		fi
 	fi
+	# Wait 2min before next check
+	sleep 2m
 done
 #######################################################################
