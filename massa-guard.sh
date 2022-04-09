@@ -73,10 +73,13 @@ do
 		# Error log
 		echo "[$(date +%Y%m%d-%HH%M)][KO][NODE]TIMEOUT - RESTART NODE" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 
-		# Stop node
+		# Stop node and client
 		cd $PATH_CLIENT
 		nodePID=$(ps -ax | grep massa-node | grep SCREEN | awk '{print $1}')
 		kill $nodePID
+		sleep 1
+		clientPID=$(ps -ax | grep massa-client | grep SCREEN | awk '{print $1}')
+		kill $clientPID
 		sleep 5s
 
 		# Backup current log file to troobleshoot
@@ -94,7 +97,7 @@ do
 		cd $PATH_NODE
 		screen -dmS massa-node bash -c 'RUST_BACKTRACE=full cargo run --release |& tee logs.txt'
 		sleep 1
-		cd /massa/massa-client
+		cd $PATH_CLIENT
 		screen -dmS massa-client bash -c 'cargo run --release'
 
 		# Wait 8min before next check to lets node bootstrap

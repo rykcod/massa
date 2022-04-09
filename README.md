@@ -1,7 +1,7 @@
 ![alt text](https://d33wubrfki0l68.cloudfront.net/7df7d7a57a8dda3cc07aab16121b3e3990cf0893/16ccd/portfolio/massa.png)
 
 #### Massa node + Massa-guard ####
-**Last build for Massa testnet Episode 9**
+**Last build for Massa testnet Episode 9 dans sa release 9.1**
 
 ### INFO ###
 Build a massa-node container This image include a script named "**/massa-guard/massa-guard.sh**" to:
