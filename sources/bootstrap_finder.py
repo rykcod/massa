@@ -3,6 +3,9 @@
 # WARNING: This script will delete comment inside the config file it writes.
 # SOURCE --> https://gitlab.com/0x6578656376652829/massa_admin/-/blob/main/massa/services/bootstrap_finder/massa_bootstrap_finder.py
 ##############################################################################################################################################
+
+from ipaddress import ip_address, IPv4Address
+
 import datetime
 import configparser
 import subprocess
@@ -33,8 +36,13 @@ bootstrap_list=[]
 
 """
 
-class BootstrapFinder():
+def validIPAddress(IP: str) -> str:
+    try:
+        return "IPv4" if type(ip_address(IP)) is IPv4Address else "IPv6"
+    except ValueError:
+        return "Invalid"
 
+class BootstrapFinder():
     def __init__(self, client, base_config_file, config_file, bootstrappers_file):
         self.__client = client
         self.__base_config_file = base_config_file
@@ -48,8 +56,20 @@ class BootstrapFinder():
 
     def get_out_nodes(self):
         client_get_status = subprocess.Popen([self.__client, "get_status"], stdout=subprocess.PIPE)
-        grep = subprocess.Popen(["grep", "IP address: [0-9]"], stdin=client_get_status.stdout, stdout=subprocess.PIPE)
+        grep = subprocess.Popen(["grep", "-E", "IP address: [0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}"], stdin=client_get_status.stdout, stdout=subprocess.PIPE)
         awk = subprocess.Popen(["awk", "{print \"[\\\"\"$7\":31245\\\", \\\"\"$3\"\\\"],\"}"], stdin=grep.stdout, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        output, error = awk.communicate()
+        if (not error) and output:
+            output = output[:-2].decode("UTF-8")
+        else:
+            output = ""
+            print (self.get_trace(ERROR, f"Failed to obtain connected nodes: {error}"))
+        return f"[{output}]"
+
+    def get_ipv6_out_nodes(self):
+        client_get_status = subprocess.Popen([self.__client, "get_status"], stdout=subprocess.PIPE)
+        grep = subprocess.Popen(["grep", "-E", "IP address: [0-f]{4}\\:[0-f]{0,4}\\:"], stdin=client_get_status.stdout, stdout=subprocess.PIPE)
+        awk = subprocess.Popen(["awk", "{print \"[\\\"[\"$7\"]:31245\\\", \\\"\"$3\"\\\"],\"}"], stdin=grep.stdout, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         output, error = awk.communicate()
         if (not error) and output:
             output = output[:-2].decode("UTF-8")
@@ -126,6 +146,7 @@ class BootstrapFinder():
         parser = configparser.ConfigParser()
         parser.read(self.__bootstrappers_file)
         out_nodes = self.get_out_nodes()[1:-1] # remove the first and the last "]"
+        out_ipv6_nodes = self.get_ipv6_out_nodes()[1:-1]
         # get official nodes
         official_bootstrappers = self.get_official_bootstrappers()
         official_bootstrappers = [bootstrapper.strip(" ") for bootstrapper in official_bootstrappers.split(",\n") if bootstrapper]
@@ -139,12 +160,21 @@ class BootstrapFinder():
         other_bootstrappers = parser["others"]["bootstrap_list"][1:-1] # remove the first "[" and the last "]"
         other_bootstrappers = self.remove_faulty_bootstrappers([bootstrapper.strip(" ") for bootstrapper in other_bootstrappers.split(",\n") if bootstrapper])
         other_bootstrappers = [bootstrapper for bootstrapper in other_bootstrappers if bootstrapper not in banned_bootstrappers]
+	# Add IPV4 nodes
         bootstrappers = [bootstrapper.strip(" ") for bootstrapper in out_nodes.split(",\n") if bootstrapper]
         for bootstrapper in bootstrappers:
             if (not bootstrapper in official_bootstrappers) and (not bootstrapper in friend_bootstrappers) and \
                 (not bootstrapper in banned_bootstrappers) and (not bootstrapper in other_bootstrappers):
                 print (self.get_trace(INFO, f"Adding new bootstrapper {bootstrapper} to [others] bootstrap list"))
                 other_bootstrappers.append(bootstrapper)
+#                print (bootstrapper)
+        # Add IPV6 nodes
+        bootstrappers_ipv6 = [bootstrapper_ipv6.strip(" ") for bootstrapper_ipv6 in out_ipv6_nodes.split(",\n") if bootstrapper_ipv6]
+        for bootstrapper_ipv6 in bootstrappers_ipv6:
+            if (not bootstrapper_ipv6 in official_bootstrappers) and (not bootstrapper_ipv6 in friend_bootstrappers) and \
+                (not bootstrapper_ipv6 in banned_bootstrappers) and (not bootstrapper_ipv6 in other_bootstrappers):
+                print (self.get_trace(INFO, f"Adding new bootstrapper {bootstrapper_ipv6} to [others] bootstrap list"))
+                other_bootstrappers.append(bootstrapper_ipv6)
         other_bootstrappers = ",\n".join(other_bootstrappers)
         parser["others"]["bootstrap_list"] = f"[{other_bootstrappers}]"
         with open(self.__bootstrappers_file, "w") as bfile:

@@ -7,7 +7,7 @@
 Build a massa-node container This image include a script named "**/massa-guard/massa-guard.sh**" to:
   * Autobuy 1 roll when your node failed and lost his active rolls
   * Autobuy rolls when your MAS amount greater than 200 MAS
-  * Auto refresh massa online bootstrap list
+  * Auto refresh massa online bootstrap list and now support ipv6
   * Restart node when stuck
   * Autoget MAS faucet on Discord 1 time per day
   * Logs his actions over /massa_mount/logs/
