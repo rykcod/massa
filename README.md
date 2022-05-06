@@ -7,10 +7,11 @@
 Build a massa-node container This image include a script named "**/massa-guard/massa-guard.sh**" to:
   * Autobuy 1 roll when your node failed and lost his active rolls
   * Autobuy rolls when your MAS amount greater than 200 MAS
-  * Auto refresh massa online bootstrap list and now support ipv6
+  * Auto refresh massa online bootstrap list - 20220506 UPDATE --> Available for Testnet 10 format
   * Restart node when stuck
   * Autoget MAS faucet on Discord 1 time per day
   * Logs his actions over /massa_mount/logs/
+  * Expose port 33035 to allow monitoring with https://paranormal-brothers.com/massa/
 
 ### TO DO ###
 __STEP 1:__
@@ -23,12 +24,12 @@ Mount a folder to the /massa_mount path on container and store in this folder yo
   * [OPTION] config/config.ini
 
 /!\ All of this files is needing to start run a container --> You must generate it before using this image.
-
+/!\ Node key is present in this image, please remenber to use your node_privkey.key or generate it after container creation
 /!\ If the files is not present, massa-guard will create a wallet.dat and stake it for you
 
 __Example:__
 
-  **docker run -d -v /%MY_PATH%/massa_mount:/massa_mount -p 31244-31245:31244-31245 --name massa-node rykcod/massa**
+  **docker run -d -v /%MY_PATH%/massa_mount:/massa_mount -p 31244-31245:31244-31245 -p 33035:33035 --name massa-node rykcod/massa**
 
 __STEP 2:__
 Set your Discord token in /massa_mount/config/config.ini to enable "Autoget MAS faucet" feature

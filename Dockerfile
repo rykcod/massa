@@ -50,6 +50,7 @@ RUN chmod +x /massa-guard/massa-guard.sh \
 #Ouuverture des ports
 EXPOSE 31244
 EXPOSE 31245
+EXPOSE 33035
 
 # Lancement du node
 CMD /massa-guard/sources/init_copy_host_files.sh \
