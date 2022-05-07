@@ -56,7 +56,7 @@ class BootstrapFinder():
 
     def get_out_nodes(self):
         client_get_status = subprocess.Popen([self.__client, "get_status"], stdout=subprocess.PIPE)
-        grep = subprocess.Popen(["grep", "-E", "[0-z]{1,50}\"\\]\\,"], stdin=client_get_status.stdout, stdout=subprocess.PIPE)
+        grep = subprocess.Popen(["grep", "-E", "\\[\"[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}:31245\"\\, \"[0-z]{50}\"\\]\\,"], stdin=client_get_status.stdout, stdout=subprocess.PIPE)
         awk = subprocess.Popen(["awk", "{print \"\"$1\"\"$2\"\"}"], stdin=grep.stdout, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         output, error = awk.communicate()
 
@@ -66,6 +66,20 @@ class BootstrapFinder():
             output = ""
             print (self.get_trace(ERROR, f"Failed to obtain connected nodes: {error}"))
         return f"[{output}]"
+
+    def get_ipv6_out_nodes(self):
+        client_get_status = subprocess.Popen([self.__client, "get_status"], stdout=subprocess.PIPE)
+        grep = subprocess.Popen(["grep", "-E", "\[\"([0-z]{1,4}:){1,8}31245\"\\, \"[0-z]{50}\"\\]\\,"], stdin=client_get_status.stdout, stdout=subprocess.PIPE)
+        awk = subprocess.Popen(["awk", "{print \"\"$1\"\"$2\"\"}"], stdin=grep.stdout, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        output, error = awk.communicate()
+
+        if (not error) and output:
+            output = output[:-2].decode("UTF-8")
+        else:
+            output = ""
+            print (self.get_trace(ERROR, f"Failed to obtain connected ipv6 nodes: {error}"))
+        return f"[{output}]"
+
 
     def get_official_bootstrappers(self):
         parser = ""
@@ -135,6 +149,7 @@ class BootstrapFinder():
         parser = configparser.ConfigParser()
         parser.read(self.__bootstrappers_file)
         out_nodes = self.get_out_nodes()[1:-1] # remove the first and the last "]"
+#        out_ipv6_nodes = self.get_ipv6_out_nodes()[1:-1]
         # get official nodes
         official_bootstrappers = self.get_official_bootstrappers()
         official_bootstrappers = [bootstrapper.strip(" ") for bootstrapper in official_bootstrappers.split(",\n") if bootstrapper]
@@ -155,6 +170,13 @@ class BootstrapFinder():
                 (not bootstrapper in banned_bootstrappers) and (not bootstrapper in other_bootstrappers):
                 print (self.get_trace(INFO, f"Adding new bootstrapper {bootstrapper} to [others] bootstrap list"))
                 other_bootstrappers.append(bootstrapper)
+        # Add IPV6 nodes
+#        bootstrappers_ipv6 = [bootstrapper_ipv6.strip(" ") for bootstrapper_ipv6 in out_ipv6_nodes.split(",\n") if bootstrapper_ipv6]
+#        for bootstrapper_ipv6 in bootstrappers_ipv6:
+#            if (not bootstrapper_ipv6 in official_bootstrappers) and (not bootstrapper_ipv6 in friend_bootstrappers) and \
+#                (not bootstrapper_ipv6 in banned_bootstrappers) and (not bootstrapper_ipv6 in other_bootstrappers):
+#                print (self.get_trace(INFO, f"Adding new bootstrapper {bootstrapper_ipv6} to [others] bootstrap list"))
+#                other_bootstrappers.append(bootstrapper_ipv6)
         other_bootstrappers = ",\n".join(other_bootstrappers)
         parser["others"]["bootstrap_list"] = f"[{other_bootstrappers}]"
         with open(self.__bootstrappers_file, "w") as bfile:

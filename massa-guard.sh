@@ -19,6 +19,7 @@ then
 # Create a wallet, stacke and backup
 else
 	# Generate and backup wallet
+	cd $PATH_CLIENT
 	$PATH_TARGET/massa-client wallet_generate_private_key
 	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Generate wallet.dat" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 	# Backup wallet
