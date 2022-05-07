@@ -28,11 +28,7 @@ Mount a folder to the /massa_mount path on container and store in this folder yo
   * [OPTION] bootstrappers.toml
   * [OPTION] config/config.ini
 
-/!\ All of this files is needing to start run a container --> You must generate it before using this image.
-
-**/!\ Node key is present in this image, please remenber to use your node_privkey.key or generate it after container creation**
-
-/!\ If the files is not present, massa-guard will create a wallet.dat and stake it for you
+/!\ If the files is not present, massa-guard will create a node_privkey.key and a wallet.dat and stake it for you
 
 __Example:__
   * Container creation:

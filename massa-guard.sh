@@ -7,6 +7,9 @@
 . /massa-guard/config/default_config.ini
 . $PATH_CONF_MASSAGUARD/config.ini
 
+# Wait 2min before first launch and bootstrap
+sleep 8m
+
 # Log MASSA-GUARD Start
 echo "[$(date +%Y%m%d-%HH%M)][INFO][START]MASSA-GUARD is starting" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 
@@ -37,10 +40,15 @@ then
 	cp $PATH_NODE_CONF/staking_keys.json $PATH_MOUNT/staking_keys.json
 	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Backup staking_keys.json" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 fi
+if [ ! -e $PATH_MOUNT/node_privkey.key ]
+then
+	cp $PATH_NODE_CONF/node_privkey.key $PATH_MOUNT/node_privkey.key
+	echo "[$(date +%Y%m%d-%HH%M)][INFO][BACKUP]Backup $PATH_NODE_CONF/node_privkey.key to $PATH_MOUNT" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+fi
 
 ####################################################################
-# Wait 10min before first check to lets node bootstrap
-sleep 10m
+# Wait 8min before first check to lets node bootstrap
+sleep 8m
 
 while true
 do
