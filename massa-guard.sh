@@ -7,8 +7,8 @@
 . /massa-guard/config/default_config.ini
 . $PATH_CONF_MASSAGUARD/config.ini
 
-# Wait 2min before first launch and bootstrap
-sleep 8m
+# Wait node booststrap
+tail -n +1 -f $PATH_NODE/logs.txt | grep -m 1 "Start bootstrapping from"
 
 # Log MASSA-GUARD Start
 echo "[$(date +%Y%m%d-%HH%M)][INFO][START]MASSA-GUARD is starting" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
@@ -47,8 +47,6 @@ then
 fi
 
 ####################################################################
-# Wait 8min before first check to lets node bootstrap
-sleep 8m
 
 while true
 do
