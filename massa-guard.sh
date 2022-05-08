@@ -77,10 +77,18 @@ do
 
 	# Check node status and logs events
 	checkGetStatus=$(timeout 2 $PATH_TARGET/massa-client get_status | wc -l)
-	if [ $checkGetStatus -lt 10 ]
+
+	# Get ram consumption percent in integer
+	checkRam=$(ps -u | awk '/massa-node/ && !/awk/' | awk '{print $4}')
+	checkRam=${checkRam/.*}
+
+	if( [ $checkGetStatus -lt 10 ] || [ $checkRam -gt $NODE_MAX_RAM ] )
 	then
-		# Error log
-		echo "[$(date +%Y%m%d-%HH%M)][KO][NODE]TIMEOUT - RESTART NODE" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		# Error log if Get_Status error
+		if [ $checkGetStatus -lt 10 ]; then echo "[$(date +%Y%m%d-%HH%M)][KO][NODE]TIMEOUT - RESTART NODE" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt ; fi
+
+		# Error log if Ram node consumption overload error
+		if [ $checkRam -gt $NODE_MAX_RAM ]; then echo "[$(date +%Y%m%d-%HH%M)][KO][NODE]RAM EXCEED - RESTART NODE" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt ; fi
 
 		# Stop node and client
 		cd $PATH_CLIENT
