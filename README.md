@@ -8,12 +8,13 @@ Build a massa-node container This image include a script named "**/massa-guard/m
   * Autobuy 1 roll when your node failed and lost his active rolls
   * Autobuy rolls when your MAS amount greater than 200 MAS
   * Auto refresh massa online bootstrap list - 20220506 UPDATE --> Available for Testnet 10 format
-  * Restart node when stuck
+  * Restart node when stuck or ram consumption exceed
   * Autoget MAS faucet on Discord 1 time per day
   * Logs his actions over /massa_mount/logs/
   * Expose port 33035 to allow monitoring with https://paranormal-brothers.com/massa/
 
 ### RELEASE NOTES ###
+  * 20220508 - ADD node Ram overload feature
   * 20220508 - Solve issue wallet creation if missing
   * 20220507 - Solve issue bootstrapper feeding for ipv6 node since testnet 10. Now add stay available for ipv4 node but add skip ipv6 nodes.
 
