@@ -9,6 +9,7 @@
 
 # Wait node booststrap
 tail -n +1 -f $PATH_NODE/logs.txt | grep -m 1 "Start bootstrapping from"
+sleep 15s
 
 # Log MASSA-GUARD Start
 echo "[$(date +%Y%m%d-%HH%M)][INFO][START]MASSA-GUARD is starting" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
