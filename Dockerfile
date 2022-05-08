@@ -47,7 +47,7 @@ COPY ./config /massa-guard/config
 RUN chmod +x /massa-guard/massa-guard.sh \
 && chmod +x /massa-guard/sources/* \
 && mkdir /massa_mount \
-&& rm /massa/massa-node/config/node_privkey.key
+&& if -e /massa/massa-node/config/node_privkey.key; then rm /massa/massa-node/config/node_privkey.key ; fi
 
 #Ouuverture des ports
 EXPOSE 31244
