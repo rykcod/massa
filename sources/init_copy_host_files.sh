@@ -40,6 +40,10 @@ fi
 # Node private key to use
 if [ -e $PATH_MOUNT/node_privkey.key ]
 then
+	rm $PATH_NODE_CONF/node_privkey.key
+fi
+if [ -e $PATH_MOUNT/node_privkey.key ]
+then
 	cp $PATH_MOUNT/node_privkey.key $PATH_NODE_CONF/node_privkey.key
 	echo "[$(date +%Y%m%d-%HH%M)][INFO][LOAD]LOAD $PATH_MOUNT/node_privkey.key as ref" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 fi

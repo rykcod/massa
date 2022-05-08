@@ -46,8 +46,7 @@ COPY ./config /massa-guard/config
 # Conf rights and delete temporary node key
 RUN chmod +x /massa-guard/massa-guard.sh \
 && chmod +x /massa-guard/sources/* \
-&& mkdir /massa_mount \
-&& if -e /massa/massa-node/config/node_privkey.key; then rm /massa/massa-node/config/node_privkey.key ; fi
+&& mkdir /massa_mount
 
 #Ouuverture des ports
 EXPOSE 31244
