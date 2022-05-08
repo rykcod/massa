@@ -18,7 +18,7 @@ Build a massa-node container This image include a script named "**/massa-guard/m
   * 20220507 - Solve issue bootstrapper feeding for ipv6 node since testnet 10. Now add stay available for ipv4 node but add skip ipv6 nodes.
 
 
-### TO DO ###
+### USAGE ###
 __STEP 1:__
 Mount a folder to the /massa_mount path on container and store in this folder your files:
   * wallet.dat
@@ -28,7 +28,7 @@ Mount a folder to the /massa_mount path on container and store in this folder yo
   * [OPTION] bootstrappers.toml
   * [OPTION] config/config.ini
 
-/!\ If the files is not present, massa-guard will create a node_privkey.key and a wallet.dat and stake it for you
+/!\ If don't have this file, leave your folder empty, massa-guard will create it and stake wallet for you
 
 __Example:__
   * Container creation:
@@ -55,9 +55,9 @@ __STEP 3:__
 ### HELP ###
   * Massa client is running over a "screen" named "massa-client"
   * Massa node is running over a "screen" named "massa-node"
-  * To get your discord token, refer to 
+  * To get your discord token, refer to https://discordhelp.net/discord-token
 
-For more informations:
+For more informations and sources:
 https://github.com/rykcod/massa/
 
 ### CONTRIB ###
