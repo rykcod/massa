@@ -19,6 +19,7 @@ echo "[$(date +%Y%m%d-%HH%M)][INFO][START]MASSA-GUARD is starting" >> $PATH_LOGS
 if [ -e $PATH_CLIENT/wallet.dat ]
 then
 	cd $PATH_CLIENT
+	# Get wallet address
 	addresses=$($PATH_TARGET/massa-client wallet_info | grep "Address" | cut -d " " -f 2)
 # Create a wallet, stacke and backup
 else
@@ -29,6 +30,8 @@ else
 	# Backup wallet
 	cp $PATH_CLIENT/wallet.dat $PATH_MOUNT/wallet.dat
 	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Backup wallet.dat" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+	# Get wallet address
+	addresses=$($PATH_TARGET/massa-client wallet_info | grep "Address" | cut -d " " -f 2)
 fi
 if [ ! -e $PATH_NODE_CONF/staking_keys.json ]
 then
