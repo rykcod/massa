@@ -30,6 +30,7 @@ Mount a folder to the /massa_mount path on container and store in this folder yo
   * [OPTION] config/config.ini
 
 /!\ If don't have this file, leave your folder empty, massa-guard will create it and stake wallet for you
+
 /!\ __User of one release before the 20220508?__ For the node Ram overload feature **/!\ If you already have the ''/massa_mount/config/config.ini'' file, please add manually ADD this entry ''NODE_MAX_RAM=90'' in your config file**
 
 __Example:__
