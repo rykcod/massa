@@ -67,6 +67,4 @@ https://github.com/rykcod/massa/
 Thanks to:
   * **Dockyr** because it's my main nickname
   * **GGCOM** for help
-  * **Danakane** for features https://gitlab.com/0x6578656376652829/massa_admin :
-  * Bootstrap list refresh
-  * Autoget faucet
+  * **Danakane** for "Autoget faucet" and "Bootstrap list refresh" features https://gitlab.com/0x6578656376652829/massa_admin :
