@@ -1,16 +1,16 @@
 #!/bin/bash
 #==================== Configuration ========================#
-#############################################################
-######## Importation de la configuration du script ##########
-#############################################################
+# Import custom library
+. /massa-guard/sources/lib.sh
 # Global configuration
 . /massa-guard/config/default_config.ini
+# Custom configuration
 . $PATH_CONF_MASSAGUARD/config.ini
 
 # Wait node booststrap
-tail -n +1 -f $PATH_NODE/logs.txt | grep -m 1 "Successful bootstrap"
-sleep 2s
+WaitBootstrap
 
+#====================== Log begin ==========================#
 # Log MASSA-GUARD Start
 echo "[$(date +%Y%m%d-%HH%M)][INFO][START]MASSA-GUARD is starting" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 
