@@ -14,7 +14,7 @@ Build a massa-node container This image include a script named "**/massa-guard/m
   * Expose port 33035 to allow monitoring with https://paranormal-brothers.com/massa/
 
 ### RELEASE NOTES ###
-  * 20220508 - ADD node Ram overload feature
+  * 20220508 - ADD node Ram overload feature **/!\ If you already have the "/massa_mount/config/config.ini" file, please add manually ADD this variable ''NODE_MAX_RAM=90''**
   * 20220508 - Solve issue wallet creation if missing
   * 20220507 - Solve issue bootstrapper feeding for ipv6 node since testnet 10. Now add stay available for ipv4 node but add skip ipv6 nodes.
 
@@ -30,6 +30,7 @@ Mount a folder to the /massa_mount path on container and store in this folder yo
   * [OPTION] config/config.ini
 
 /!\ If don't have this file, leave your folder empty, massa-guard will create it and stake wallet for you
+/!\ __User of one release before the 20220508?__ For the node Ram overload feature **/!\ If you already have the ''/massa_mount/config/config.ini'' file, please add manually ADD this entry ''NODE_MAX_RAM=90'' in your config file**
 
 __Example:__
   * Container creation:
