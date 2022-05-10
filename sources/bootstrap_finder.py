@@ -63,7 +63,6 @@ class BootstrapFinder():
             output = output[:-2].decode("UTF-8")
         else:
             output = ""
-            print (self.get_trace(ERROR, f"Failed to obtain connected nodes: {error}"))
         return f"[{output}]"
 
     def get_ipv6_out_nodes(self):
@@ -75,7 +74,6 @@ class BootstrapFinder():
             output = output[:-2].decode("UTF-8")
         else:
             output = ""
-            print (self.get_trace(ERROR, f"Failed to obtain connected ipv6 nodes: {error}"))
         return f"[{output}]"
 
     def get_official_bootstrappers(self):
