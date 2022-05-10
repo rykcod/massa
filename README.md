@@ -1,7 +1,7 @@
 ![alt text](https://d33wubrfki0l68.cloudfront.net/7df7d7a57a8dda3cc07aab16121b3e3990cf0893/16ccd/portfolio/massa.png)
 
 #### Massa node + Massa-guard ####
-**Last build for Massa testnet Episode 10 dans sa release 10.0**
+**Last build for Massa testnet Episode 10 dans sa release 10.1**
 
 ### INFO ###
 Build a massa-node container This image include a script named "**/massa-guard/massa-guard.sh**" to:
@@ -14,6 +14,7 @@ Build a massa-node container This image include a script named "**/massa-guard/m
   * Expose port 33035 to allow monitoring with https://paranormal-brothers.com/massa/
 
 ### RELEASE NOTES ###
+  * 20220508 - Update image to v10.1
   * 20220508 - ADD node Ram overload feature **/!\ If you already have the "/massa_mount/config/config.ini" file, please add manually ADD this variable ''NODE_MAX_RAM=90''**
   * 20220508 - Solve issue wallet creation if missing
   * 20220507 - Solve issue bootstrapper feeding for ipv6 node since testnet 10. Now add stay available for ipv4 node but add skip ipv6 nodes.
