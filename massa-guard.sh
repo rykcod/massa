@@ -1,11 +1,11 @@
 #!/bin/bash
 #==================== Configuration ========================#
-# Import custom library
-. /massa-guard/sources/lib.sh
 # Global configuration
 . /massa-guard/config/default_config.ini
 # Custom configuration
 . $PATH_CONF_MASSAGUARD/config.ini
+# Import custom library
+. /massa-guard/sources/lib.sh
 
 # Wait node booststrap
 WaitBootstrap
@@ -14,47 +14,20 @@ WaitBootstrap
 # Log MASSA-GUARD Start
 echo "[$(date +%Y%m%d-%HH%M)][INFO][START]MASSA-GUARD is starting" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 
+# Load Wallet and Node key or create it and stake wallet
+CheckOrCreateWalletAndNodeKey
+
 # Get stacking address
-# if wallet exist
-if [ -e $PATH_CLIENT/wallet.dat ]
-then
-	cd $PATH_CLIENT
-	addresses=$($PATH_TARGET/massa-client wallet_info | grep "Address" | cut -d " " -f 2)
-# Create a wallet, stacke and backup
-else
-	# Generate and backup wallet
-	cd $PATH_CLIENT
-	$PATH_TARGET/massa-client wallet_generate_private_key
-	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Generate wallet.dat" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
-	# Backup wallet
-	cp $PATH_CLIENT/wallet.dat $PATH_MOUNT/wallet.dat
-	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Backup wallet.dat" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
-fi
-if [ ! -e $PATH_NODE_CONF/staking_keys.json ]
-then
-	# Stacke wallet
-	cd $PATH_CLIENT
-	privKey=$($PATH_TARGET/massa-client wallet_info | grep "Private key" | cut -d " " -f 3)
-	$PATH_TARGET/massa-client node_add_staking_private_keys $privKey
-	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Stake privKey" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
-	# Backup staking_keys.json
-	cp $PATH_NODE_CONF/staking_keys.json $PATH_MOUNT/staking_keys.json
-	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Backup staking_keys.json" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
-fi
-if [ ! -e $PATH_MOUNT/node_privkey.key ]
-then
-	cp $PATH_NODE_CONF/node_privkey.key $PATH_MOUNT/node_privkey.key
-	echo "[$(date +%Y%m%d-%HH%M)][INFO][BACKUP]Backup $PATH_NODE_CONF/node_privkey.key to $PATH_MOUNT" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
-fi
+address=$(GetWalletAddress)
 
 ####################################################################
 
 while true
 do
 	# Get candidate rolls and MAS amount
-	get_addresses=$(cd $PATH_CLIENT;$PATH_TARGET/massa-client get_addresses $addresses)
-	Candidate_rolls=$(echo "$get_addresses" | grep "Candidate rolls" | cut -d " " -f 3)
-	Final_balance=$(echo "$get_addresses" | grep "Final balance" | cut -d " " -f 3 | cut -d "." -f 1)
+	get_address=$(cd $PATH_CLIENT;$PATH_TARGET/massa-client get_address $address)
+	Candidate_rolls=$(echo "$get_address" | grep "Candidate rolls" | cut -d " " -f 3)
+	Final_balance=$(echo "$get_address" | grep "Final balance" | cut -d " " -f 3 | cut -d "." -f 1)
 
 	# Check candidate roll > 0
 	if [ $Candidate_rolls -eq 0 ]
@@ -63,7 +36,7 @@ do
 
 		# Buy roll amount
 		cd $PATH_CLIENT
-		$PATH_TARGET/massa-client buy_rolls $addresses 1 0
+		$PATH_TARGET/massa-client buy_rolls $address 1 0
 	# If MAS amount > 200 MAS, buy ROLLs
 	elif [ $Final_balance -gt 200 ]
 	then
@@ -72,7 +45,7 @@ do
 
 		# Buy roll amount
 		cd $PATH_CLIENT
-		$PATH_TARGET/massa-client buy_rolls $addresses $NbRollsToBuy 0
+		$PATH_TARGET/massa-client buy_rolls $address $NbRollsToBuy 0
 	fi
 
 	# Check node status and logs events
