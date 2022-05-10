@@ -65,7 +65,7 @@ do
 			echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Backup node_privkey.key" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 		fi
 	fi
-	# Wait 2min before next check
+	# Wait before next check
 	sleep 2m
 done
 #######################################################################

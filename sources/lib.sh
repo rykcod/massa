@@ -212,7 +212,7 @@ CheckAndReloadNode() {
 		cd $PATH_CLIENT
 		screen -dmS massa-client bash -c 'cargo run --release'
 
-		# Wait 8min before next check to lets node delay to bootstrap
+		# Wait before next check to lets node delay to bootstrap
 		sleep 8m
 	fi
 }
