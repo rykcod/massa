@@ -3,7 +3,8 @@
 # Configuration generale
 . /massa-guard/config/default_config.ini
 
-# Check conf file exist
+## Check conf file exist
+# Create paths and copy default config.ini as ref
 if [ ! -e $PATH_CONF_MASSAGUARD/config.ini ]
 then
 	mkdir -p $PATH_LOGS_MASSAGUARD
@@ -14,11 +15,11 @@ then
 	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]CREATE /massa_mount/config folder" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 	cp /massa-guard/config/default_config_template.ini $PATH_CONF_MASSAGUARD/config.ini
 	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]COPY default config.ini" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
-else
-	. $PATH_CONF_MASSAGUARD/config.ini
 fi
+# Load config.ini
+. $PATH_CONF_MASSAGUARD/config.ini
 
-##### Copy/refresh massa_mount wallet and config files if exists #####
+## Copy/refresh massa_mount wallet and config files if exists
 # Conf node file
 if [ -e $PATH_MOUNT/config.toml ]
 then
@@ -40,10 +41,8 @@ fi
 # Node private key to use
 if [ -e $PATH_MOUNT/node_privkey.key ]
 then
+	# Delete default noe_privkey and load ref node_privkey
 	rm $PATH_NODE_CONF/node_privkey.key
-fi
-if [ -e $PATH_MOUNT/node_privkey.key ]
-then
 	cp $PATH_MOUNT/node_privkey.key $PATH_NODE_CONF/node_privkey.key
 	echo "[$(date +%Y%m%d-%HH%M)][INFO][LOAD]LOAD $PATH_MOUNT/node_privkey.key as ref" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 fi
