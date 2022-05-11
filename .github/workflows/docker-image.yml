@@ -12,6 +12,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - uses: actions/checkout@v2
+    - name: Massa image
+      run: docker build . --file Dockerfile --tag rykcod/massa:latest
+
     - name: Login to DockerHub
       uses: docker/login-action@v1 
       with:
@@ -28,4 +32,4 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: rykcod/massa:episode10.0.1,rykcod/massa:latest
+        tags: rykcod/massa:episode10.1.1,rykcod/massa:latest
