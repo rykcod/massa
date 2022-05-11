@@ -5,7 +5,7 @@
 WaitBootstrap() {
 	# Wait node booststrap
 	tail -n +1 -f $PATH_NODE/logs.txt | grep -m 1 "Successful bootstrap"
-	sleep 5s
+	sleep 10s
 	return 0
 }
 
@@ -137,7 +137,7 @@ CheckNodeRam() {
 	# If ram consumption is too high
 	if [ $checkRam -gt $NODE_MAX_RAM ]
 	then
-		echo "[$(date +%Y%m%d-%HH%M)][KO][NODE]RAM EXCEED - RESTART NODE" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		echo "[$(date +%Y%m%d-%HH%M)][KO][NODE]RAM EXCEED - NODE WILL RESTART" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 		echo 1
 		return 1
 	# If ram consumption is ok
@@ -154,12 +154,13 @@ CheckNodeRam() {
 #############################################################
 CheckNodeResponsive() {
 	# Check node status and logs events
+	cd $PATH_CLIENT
 	checkGetStatus=$(timeout 2 $PATH_TARGET/massa-client get_status | wc -l)
 
 	# If get_status is responsive
 	if [ $checkGetStatus -lt 10 ]
 	then
-		echo "[$(date +%Y%m%d-%HH%M)][KO][NODE]TIMEOUT - RESTART NODE" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		echo "[$(date +%Y%m%d-%HH%M)][KO][NODE]TIMEOUT - NODE WILL RESTART" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 		echo 1
 		return 1
 	# If get_status hang
@@ -226,7 +227,7 @@ CheckAndReloadNode() {
 
 		# Wait node booststrap
 		WaitBootstrap
-		
+
 		# Return restart operation
 		return 1
 	else

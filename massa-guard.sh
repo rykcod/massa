@@ -28,9 +28,9 @@ do
 	NodeRam=$(CheckNodeRam)
 	# Restart node if issue
 	ReloadNode=$(CheckAndReloadNode "$NodeRam" "$NodeResponsive")
-	if [ "$?" = "0" ]
+	if [ $? -eq 0 ]
 	then
-		# Get candidate rolls and MAS amount
+		# Get candidate rolls
 		CandidateRolls=$(GetCandidateRoll "$WalletAddress")
 		# Get MAS amount
 		MasBalance=$(GetMASAmount "$WalletAddress")
