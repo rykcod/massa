@@ -3,7 +3,7 @@ FROM ubuntu:20.04
  
 # LABEL about the custom image
 LABEL maintainer="benoit@alphatux.fr"
-LABEL version="0.10.1.0"
+LABEL version="0.10.0"
 LABEL description="Node Massa"
  
 # Defini le timezone du container
@@ -13,7 +13,7 @@ ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/Paris"
 # Met a jour la liste des paquets
 RUN apt-get update \
 && apt-get upgrade -y \
-&& apt install -y pkg-config curl git build-essential libssl-dev screen procps python3-pip netcat \
+&& apt install -y pkg-config curl git build-essential libssl-dev screen procps python3-pip \
 && apt autoclean -y \
 && python3 -m pip install -U discord.py
 
