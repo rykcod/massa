@@ -243,7 +243,7 @@ CheckAndReloadNode() {
 #############################################################
 PingFaucet() {
 	# Check faucet
-	checkFaucet=$(cat $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | grep "FAUCET" | wc -l)
+	checkFaucet=$(cat $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | grep "faucet" | wc -l)
 	# Get faucet
 	if ([ $checkFaucet -eq 0 ] && [ ! $DISCORD_TOKEN == "NULL" ])
 	then
