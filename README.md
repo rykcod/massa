@@ -39,20 +39,21 @@ Mount a folder to the /massa_mount path on container and store your wallet, key,
 
 ### Usecase Example ###
   * Container creation:
-
-**docker run -d -v /%MY_PATH%/massa_mount:/massa_mount -p 31244-31245:31244-31245 -p 33035:33035 --name massa-node rykcod/massa**
-
+```console
+docker run -d -v /%MY_PATH%/massa_mount:/massa_mount -p 31244-31245:31244-31245 -p 33035:33035 --name massa-node rykcod/massa
+```
   * To connect to your container:
-
-** docker exec -it massa-node /bin/bash **
-
+```console
+docker exec -it massa-node /bin/bash
+```
   * Connect to massa-client after container connection:
-
-** screen -x massa-client **
-  
+```console
+screen -x massa-client
+```
   * Exit screen or container:
-
-** ctrl+a+d **
+```console
+ctrl+a+d
+```
   
 __[OPTION]STEP 2: to use ping faucet feature__
 Set your Discord token in /massa_mount/config/config.ini to enable "Autoget MAS faucet" feature
@@ -70,7 +71,7 @@ __STEP 3:__
 - A easy way for beginner to enable ipv6 on your container
 ### HELP - Easy beginner way for IPV6 usage ###
 - Create or edit your /etc/docker/daemon.json to add:
-```
+```json
 {
   "ipv6": true,
   "fixed-cidr-v6": "fd00::/80"
@@ -78,17 +79,15 @@ __STEP 3:__
 ```
 - Restart docker service to reload config setting
 - Allow MASQUERADE for ipv6
-```
+```console
 ip6tables -t nat -A POSTROUTING -s fd00::/80 ! -o docker0 -j MASQUERADE
 ```
 - Create a container which dynamicaly edit your iptables rules for port redirection
-```
+```console
 docker run -d --restart=always -v /var/run/docker.sock:/var/run/docker.sock:ro --cap-drop=ALL --cap-add=NET_RAW --cap-add=NET_ADMIN --cap-add=SYS_MODULE --net=host --name ipv6nat robbertkl/ipv6nat
 ```
 
-For more informations and sources:
-
-https://github.com/rykcod/massa/
+For more informations and sources - https://github.com/rykcod/massa/
 
 ## CONTRIB ##
 Thanks to:
