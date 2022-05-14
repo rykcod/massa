@@ -248,8 +248,9 @@ PingFaucet() {
 	if ([ $checkFaucet -eq 0 ] && [ ! $DISCORD_TOKEN == "NULL" ])
 	then
 		# Call python ping faucet script with token discord
+		cd $PATH_CLIENT
 		python3 $PATH_SOURCES/faucet_spammer.py $DISCORD_TOKEN >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
-		
+
 		# Return ping done
 		return 0
 	fi
