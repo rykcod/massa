@@ -25,7 +25,7 @@ Build a massa-node container This image include a script named "**/massa-guard/m
 ## HOWTO ##
 ### SETUP ###
 __STEP 1:__
-Mount a folder to the /massa_mount path on container and store your wallet/nodekey/stacking_key/config.toml if you have it:
+Mount a folder to the /massa_mount path on container and store your wallet /nodekey/stacking_key/config.toml if you have it:
 - wallet.dat
 - config.toml
 - node_privkey.key
