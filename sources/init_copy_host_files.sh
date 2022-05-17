@@ -2,6 +2,9 @@
 #==================== Configuration ========================#
 # Configuration generale
 . /massa-guard/config/default_config.ini
+# Import custom library
+. /massa-guard/sources/lib.sh
+
 
 ## Check conf file exist
 # Create paths and copy default config.ini as ref
@@ -18,6 +21,9 @@ then
 fi
 # Load config.ini
 . $PATH_CONF_MASSAGUARD/config.ini
+
+# Reset and backup last node log file if exist
+BackupLogsNode
 
 ## Copy/refresh massa_mount wallet and config files if exists
 # Conf node file

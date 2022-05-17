@@ -35,7 +35,7 @@ do
 		# Get MAS amount
 		MasBalance=$(GetMASAmount "$WalletAddress")
 		# Buy max roll or 1 roll if possible when candidate roll amount = 0
-		BuyRoll "$CandidateRolls" "$MasBalance" "$WalletAddress"
+		BuyOrSellRoll "$CandidateRolls" "$MasBalance" "$WalletAddress"
 		# Refresh bootstrap node with connected and routable node
 		RefreshBootstrapNode
 		# Check and get faucet of current day

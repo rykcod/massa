@@ -98,30 +98,87 @@ GetMASAmount() {
 }
 
 #############################################################
-# FONCTION = BuyRoll
+# FONCTION = BuyOrSellRoll
 # ARGUMENTS = CandidateRollAmount, MasAmount, WalletAddress
-# DESCRIPTION = Buy roll if MAS amount > 200 or if candidate roll < 1 and MAS amount >= 100
+# DESCRIPTION = Adujst roll amount with max roll settings and if MAS amount > 200 or if candidate roll < 1 and MAS amount >= 100
 #############################################################
-BuyRoll() {
-	# Check candidate roll > 0
-	if [ $1 -eq 0 ]
+BuyOrSellRoll() {
+	# Check candidate roll > 0 and Mas amount >= 100 to buy first roll
+	if ([ $1 -eq 0 ] && [ $2 -ge 100 ])
 	then
 		echo "[$(date +%Y%m%d-%HH%M)][KO][ROLL]BUY 1 ROLL" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 
 		# Buy roll amount
 		cd $PATH_CLIENT
 		$PATH_TARGET/massa-client buy_rolls $3 1 0
-	# If MAS amount > 200 MAS, buy ROLLs
-	elif [ $2 -gt 200 ]
+
+	# If MAS amount < 100 MAS and Candidate roll = 0
+	elif ([ $1 -eq 0 ] && [ $2 -lt 100 ])
+	then
+		echo "[$(date +%Y%m%d-%HH%M)][KO][ROLL]Cannot buy first ROLL because MAS Amount less than 100. Please get 100 MAS on Discord or set your DISCORD_ID on /massa_mount/config/config.ini" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+
+	# If MAS amount > 200 MAS and no rolls limitation, buy ROLLs
+	elif ([ $2 -gt 200 ] && [ $TARGET_ROLL_AMOUNT == "NULL" ])
 	then
 		NbRollsToBuy=$((($2-100)/100))
 		echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOBUY $NbRollsToBuy ROLL because MAS amount equal to $2" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
-
 		# Buy roll amount
 		cd $PATH_CLIENT
 		$PATH_TARGET/massa-client buy_rolls $3 $NbRollsToBuy 0
+
+	# If MAS amount > 200 MAS and rolls limitation is set
+	elif ([ $2 -gt 200 ] && [ ! $TARGET_ROLL_AMOUNT == "NULL" ])
+	then
+		# If max roll limit set in /massa_mount/config/config.ini greater than candidate roll
+		if [ $TARGET_ROLL_AMOUNT -gt $1 ]
+		then
+			# Calculation of max rolls you can buy with all your MAS amount
+			NbRollsCanBuyWithMAS=$((($2-100)/100))
+			# Calculation of max rolls you can buy by looking max amount set in /massa_mount/config/config.ini
+			NbRollsNeedToBuy=$(($TARGET_ROLL_AMOUNT-$1))
+			# If rolls amount you can buy less than max amount, buy all you can buy
+			if [ $NbRollsCanBuyWithMAS -le $NbRollsNeedToBuy ]
+			then
+				NbRollsToBuy=$NbRollsCanBuyWithMAS
+				echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOBUY $NbRollsToBuy ROLL because MAS amount equal to $2 and ROLL amount of $1 less than target amount of $TARGET_ROLL_AMOUNT" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+			# Else buy max amount you can buy
+			else
+				NbRollsToBuy=$NbRollsNeedToBuy
+				echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOBUY $NbRollsToBuy ROLL because MAS amount equal to $2 and ROLL amount of $1 less than target amount of $TARGET_ROLL_AMOUNT" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+			fi
+			# Buy roll amount
+			cd $PATH_CLIENT
+			$PATH_TARGET/massa-client buy_rolls $3 $NbRollsToBuy 0
+		# If roll target amount less than active roll amount sell exceed rolls
+		elif [ $TARGET_ROLL_AMOUNT -lt $1 ]
+		then
+			NbRollsToSell=$(($1-$TARGET_ROLL_AMOUNT))
+			echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOSELL $NbRollsToSell ROLL because ROLL amount of $1 greater than target amount of $TARGET_ROLL_AMOUNT" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+			# Sell roll amount
+			cd $PATH_CLIENT
+			$PATH_TARGET/massa-client sell_rolls $3 $NbRollsToSell 0
+		fi
+	# If rolls limitation is set
+	elif [ ! $TARGET_ROLL_AMOUNT == "NULL" ]
+	then
+		# If roll target amount less than active roll amount sell exceed rolls
+		if [ $TARGET_ROLL_AMOUNT -lt $1 ]
+		then
+			NbRollsToSell=$(($1-$TARGET_ROLL_AMOUNT))
+			echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOSELL $NbRollsToSell ROLL because ROLL amount of $1 greater than target amount of $TARGET_ROLL_AMOUNT" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+			# Sell roll amount
+			cd $PATH_CLIENT
+			$PATH_TARGET/massa-client sell_rolls $3 $NbRollsToSell 0
+		# Else, if max roll target is OK, do nothing
+		else
+			# Do nothing
+			return 0
+		fi
+	# Else, if MAS amount less to buy 1 roll or if max roll target is OK, do nothing
+	else
+		# Do nothing
+		return 0
 	fi
-	return 0
 }
 
 #############################################################
@@ -182,10 +239,17 @@ BackupLogsNode() {
 	then
 		# Add node logs to backup logs of the current day
 		cat $PATH_NODE/logs.txt >> $PATH_LOGS_MASSANODE/$(date +%Y%m%d)-logs.txt
+		rm $PATH_NODE/logs.txt
 	# If node backup log dont exist, create new node backup logs
 	else
 		# Create node backup logs of the day
-		cp $PATH_NODE/logs.txt $PATH_LOGS_MASSANODE/$(date +%Y%m%d)-logs.txt
+		mv $PATH_NODE/logs.txt $PATH_LOGS_MASSANODE/$(date +%Y%m%d)-logs.txt
+	fi
+        # Create clean node logs file
+        if [ ! -e $PATH_NODE/logs.txt ]
+        then
+		touch $PATH_NODE/logs.txt
+		echo "[$(date +%Y%m%d) STARTING]" >  $PATH_NODE/logs.txt
 	fi
 	return 0
 }

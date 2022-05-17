@@ -8,6 +8,7 @@
 Build a massa-node container This image include a script named "**/massa-guard/massa-guard.sh**" to:
 - Autobuy 1 roll when your node failed and lost his active rolls
 - Autobuy rolls when your MAS amount greater than 200 MAS
+- Buy or sell rolls to going to ROLL target amount set in config.ini with the "TARGET_ROLL_AMOUNT" value (Not set by default)
 - Auto refresh massa online bootstrap list
 - Restart node when stuck or ram consumption exceed 90%
 - Autoget MAS faucet on Discord 1 time per day
@@ -15,6 +16,7 @@ Build a massa-node container This image include a script named "**/massa-guard/m
 - Expose port 33035 to allow monitoring with https://paranormal-brothers.com/massa/
 
 ### RELEASE NOTES ###
+- 20220517 - ADD target roll amount feature **/!\ If you already have the "/massa_mount/config/config.ini" file, please add manually ADD this variable ''TARGET_ROLL_AMOUNT="NULL"''**
 - 20220511 - Clean code
 - 20220508 - Update image to v10.1
 - 20220508 - ADD node Ram overload feature **/!\ If you already have the "/massa_mount/config/config.ini" file, please add manually ADD this variable ''NODE_MAX_RAM=90''**
