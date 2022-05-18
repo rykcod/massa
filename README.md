@@ -69,7 +69,7 @@ __STEP 3:__
 ## HELP ##
 - Massa client is running over a "screen" named "massa-client"
 - Massa node is running over a "screen" named "massa-node"
-- To get your discord token, refer to https://discordhelp.net/discord-token
+- To get your discord token, refer to https://shufflegazine.com/get-discord-token/
 - A easy way for beginner to enable ipv6 on your container
 ### HELP - Easy beginner way for IPV6 usage ###
 - Create or edit your /etc/docker/daemon.json to add:
