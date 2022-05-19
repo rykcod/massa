@@ -6,16 +6,17 @@
 ## DESCRIPTION ##
 ### FEATURES ###
 Build a massa-node container This image include a script named "**/massa-guard/massa-guard.sh**" to:
-- Autobuy 1 roll when your node failed and lost his active rolls
-- Autobuy rolls when your MAS amount greater than 200 MAS
-- Buy or sell rolls to going to ROLL target amount set in config.ini with the "TARGET_ROLL_AMOUNT" value (Not set by default)
-- Auto refresh massa online bootstrap list
+- Autobuy 1 roll when your node failed and lost his "Active rolls"
+- Autobuy rolls when your MAS amount greater than 200 MAS and if "Active rolls" dont exceed "TARGET_ROLL_AMOUNT" set in /massa_mount/config/config.ini (If set)
+- Autosell rolls when "Active rolls" exceed "TARGET_ROLL_AMOUNT" set in /massa_mount/config/config.ini (If set)
+- Auto refresh massa online bootstrap list and check their TCP port 31244&31245 to valid if nodes is reachable 1 time by day
 - Restart node when stuck or ram consumption exceed 90%
-- Autoget MAS faucet on Discord 1 time per day
+- Autoget MAS faucet on Discord 1 time by day
 - Logs his actions over /massa_mount/logs/
 - Expose port 33035 to allow monitoring with https://paranormal-brothers.com/massa/
 
 ### RELEASE NOTES ###
+- 20220519 - One time by day, check if nodes in bootstrap list are responsives on their TCP port 31244 & 31245, or mark it as unreachable and remove it from bootstrap list
 - 20220517 - ADD target roll amount feature **/!\ If you already have the "/massa_mount/config/config.ini" file, please add manually ADD this variable ''TARGET_ROLL_AMOUNT="NULL"''**
 - 20220511 - Clean code
 - 20220508 - Update image to v10.1
@@ -32,8 +33,6 @@ Mount a folder to the /massa_mount path on container and store your wallet /node
 - config.toml
 - node_privkey.key
 - staking_keys.json
-- [OPTION] bootstrappers.toml
-- [OPTION] config/config.ini
 
 /!\ If don't have this file, leave your folder empty, massa-guard will create a wallet and node key and automaticaly stake wallet for you. This files will be backup on your mount point by massa-guard.
 
