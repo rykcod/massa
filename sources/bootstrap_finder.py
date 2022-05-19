@@ -17,9 +17,10 @@ INFO="[INFO]"
 
 BASE_CONFIG_FILE_PATH = "/massa/massa-node/base_config/config.toml"
 CONFIG_FILE_PATH = "/massa/massa-node/config/config.toml"
-BOOTSTRAPPERS_FILE_PATH = "/massa/massa-node/config/bootstrappers.toml"
+BOOTSTRAPPERS_FILE_PATH = "/massa_mount/config/bootstrappers.toml"
 CLIENT = "/massa/target/release/massa-client"
 PATH_TO_LOG_FILE = "/massa/massa-node/logs.txt"
+PATH_TO_UNREACHABLE_BOOTSTRAPPERS = "/massa_mount/config/bootstrappers_unreachable.txt"
 
 TEMPLATE = """
 [official]
@@ -134,11 +135,22 @@ class BootstrapFinder():
         else:
             error = error.decode("UTF-8")
             print (self.get_trace(ERROR, f"Failed to proceed logs: unable to remove faulty bootstrappers: {error}"))
+        # Get list of unreachable nodes on port 31245
+        with open(PATH_TO_UNREACHABLE_BOOTSTRAPPERS) as unreachablebootstrappers:
+            unreachablebootstrapperslist = unreachablebootstrappers.read().splitlines()
+        for bootstrapper in bootstrappers:
+            if any(unreachablebootstrapper in bootstrapper for unreachablebootstrapper in unreachablebootstrapperslist):
+                print (self.get_trace(WARN, f"Removing boostrapper {bootstrapper} because this node is unreachable on port TCP 31245"))
+                cleared_bootstrappers.remove(bootstrapper)
+                break
         return cleared_bootstrappers
 
     def update_bootstrappers_file(self):
         parser = configparser.ConfigParser()
         parser.read(self.__bootstrappers_file)
+	# Get list of unreachable nodes on port 31245
+        with open(PATH_TO_UNREACHABLE_BOOTSTRAPPERS) as unreachablebootstrappers:
+            unreachablebootstrapperslist = unreachablebootstrappers.read().splitlines()
         out_nodes = self.get_out_nodes()[1:-1] # remove the first and the last "]"
         out_ipv6_nodes = self.get_ipv6_out_nodes()[1:-1]
         # get official nodes
@@ -158,14 +170,16 @@ class BootstrapFinder():
         bootstrappers = [bootstrapper.strip(" ") for bootstrapper in out_nodes.split(",\n") if bootstrapper]
         for bootstrapper in bootstrappers:
             if (not bootstrapper in official_bootstrappers) and (not bootstrapper in friend_bootstrappers) and \
-                (not bootstrapper in banned_bootstrappers) and (not bootstrapper in other_bootstrappers):
+                (not bootstrapper in banned_bootstrappers) and (not bootstrapper in other_bootstrappers) and \
+		(not any(unreachablebootstrapper in bootstrapper for unreachablebootstrapper in unreachablebootstrapperslist)):
                 print (self.get_trace(INFO, f"Adding new bootstrapper {bootstrapper} to [others] bootstrap list"))
                 other_bootstrappers.append(bootstrapper)
         # Add IPV6 nodes
         bootstrappers_ipv6 = [bootstrapper_ipv6.strip(" ") for bootstrapper_ipv6 in out_ipv6_nodes.split(",\n") if bootstrapper_ipv6]
         for bootstrapper_ipv6 in bootstrappers_ipv6:
             if (not bootstrapper_ipv6 in official_bootstrappers) and (not bootstrapper_ipv6 in friend_bootstrappers) and \
-                (not bootstrapper_ipv6 in banned_bootstrappers) and (not bootstrapper_ipv6 in other_bootstrappers):
+                (not bootstrapper_ipv6 in banned_bootstrappers) and (not bootstrapper_ipv6 in other_bootstrappers) and \
+                (not any(unreachablebootstrapper in bootstrapper for unreachablebootstrapper in unreachablebootstrapperslist)):
                 print (self.get_trace(INFO, f"Adding new bootstrapper {bootstrapper_ipv6} to [others] bootstrap list"))
                 other_bootstrappers.append(bootstrapper_ipv6)
         other_bootstrappers = ",\n".join(other_bootstrappers)

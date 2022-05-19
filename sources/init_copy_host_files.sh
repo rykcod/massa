@@ -32,12 +32,6 @@ then
 	cp $PATH_MOUNT/config.toml $PATH_NODE_CONF/config.toml
 	echo "[$(date +%Y%m%d-%HH%M)][INFO][LOAD]LOAD $PATH_MOUNT/config.toml as ref" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 fi
-# Bootstrap list if exist
-if [ -e $PATH_MOUNT/bootstrappers.toml ]
-then
-	cp $PATH_MOUNT/bootstrappers.toml $PATH_NODE_CONF/bootstrappers.toml
-	echo "[$(date +%Y%m%d-%HH%M)][INFO][LOAD]LOAD $PATH_MOUNT/bootstrappers.toml index" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
-fi
 # Wallet to use
 if [ -e $PATH_MOUNT/wallet.dat ]
 then

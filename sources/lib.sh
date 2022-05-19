@@ -309,7 +309,7 @@ PingFaucet() {
 	# Check faucet
 	checkFaucet=$(cat $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | grep "faucet" | wc -l)
 	# Get faucet
-	if ([ $checkFaucet -eq 0 ] && [ ! $DISCORD_TOKEN == "NULL" ])
+	if ([ $checkFaucet -eq 0 ] && [ ! $DISCORD_TOKEN == "NULL" ] && [ $(date +%H) -gt 2 ])
 	then
 		# Call python ping faucet script with token discord
 		cd $PATH_CLIENT
@@ -323,14 +323,71 @@ PingFaucet() {
 }
 
 #############################################################
+# FONCTION = RefreshUnreachableBootstrap
+# DESCRIPTION = Check bootstrappers.toml connected [OTHERS] nodes list and set unavailable if unreacheble
+#############################################################
+RefreshUnreachableBootstrap() {
+	# If bootstrappers_unreachable.txt dont exist
+	if [ ! -e $PATH_CONF_MASSAGUARD/bootstrappers_unreachable.txt ]
+	then
+		# Create bootstrappers_unreachable.txt
+		touch $PATH_CONF_MASSAGUARD/bootstrappers_unreachable.txt
+	# Else recheck availability to bootstrap of this node
+	else
+		# Get bootstrapper tag as unreachable
+                hostUnreachableListToRecheck=$(cat $PATH_CONF_MASSAGUARD/bootstrappers_unreachable.txt)
+		# Check port again for Unreachable hosts
+		for hostUnreachable in $hostUnreachableListToRecheck
+                do
+			# If node is responsive
+                        if (( timeout 0.2 nc -z -v $hostUnreachable 31244 ) && ( timeout 0.2 nc -z -v $hostUnreachable 31245 ))
+                        then
+				# Remove node of unreachable list
+				grep -v $hostUnreachable $PATH_CONF_MASSAGUARD/bootstrappers_unreachable.txt > $PATH_CONF_MASSAGUARD/bootstrappers_unreachable.tmp
+				mv $PATH_CONF_MASSAGUARD/bootstrappers_unreachable.tmp $PATH_CONF_MASSAGUARD/bootstrappers_unreachable.txt
+                        fi
+                done
+	fi
+	# If bootstrappers list exist
+	if [ -e $PATH_CONF_MASSAGUARD/bootstrappers.toml ]
+	then
+		# Load Others bootstrappers list
+		hostListToCheck=$(cat $PATH_CONF_MASSAGUARD/bootstrappers.toml |sed '1,/^\[others\]$/d' | egrep -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}|([0-z]{4})(:[0-z]{0,4}){1,7}')
+		# Check availability to bootstrap on all bootstrappers
+		for host in $hostListToCheck
+		do
+			# If node is unreachable on TCP port 31244 or 31245
+			if (( ! timeout 0.2 nc -z -v $host 31244 ) || ( ! timeout 0.2 nc -z -v $host 31245 )) 
+			then
+				# If unreachable node dont exist in unreachable node list
+				if  ! cat $PATH_CONF_MASSAGUARD/bootstrappers_unreachable.txt | grep "$host"
+				then
+					# Add node in unreachable node list 
+					echo "$host" >> $PATH_CONF_MASSAGUARD/bootstrappers_unreachable.txt
+				fi
+			fi
+		done
+	fi
+	return 0
+}
+
+#############################################################
 # FONCTION = RefreshBootstrapNode
 # DESCRIPTION = Test and refresh bootstrap node to config.toml
 #############################################################
 RefreshBootstrapNode() {
+	# Check RefreshUnreachableBootstrap to excecute only one time per day
+	checkUnreachableNode=$(cat $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | grep "Refresh" | wc -l)
+	if ([ $checkUnreachableNode -eq 0 ] && [ $(date +%H) -gt 4 ])
+	then
+		# Refresh bootstrap nodes list and logs returns
+		RefreshUnreachableBootstrap
+		echo "[$(date +%Y%m%d-%HH%M)][INFO][BOOTSTRAP]Refresh availability of connected node to bootstrap" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+	fi
+
 	# Refresh bootstrap nodes list and logs returns
 	python3 $PATH_SOURCES/bootstrap_finder.py >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 
-	# Backup config.toml and custom bootstrapper
+	# Backup config.toml
 	cp $PATH_NODE_CONF/config.toml $PATH_MOUNT/
-	cp $PATH_NODE_CONF/bootstrappers.toml $PATH_MOUNT/
 }
