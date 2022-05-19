@@ -352,8 +352,7 @@ RefreshUnreachableBootstrap() {
 	if [ -e $PATH_CONF_MASSAGUARD/bootstrappers.toml ]
 	then
 		# Load Others bootstrappers list
-		#hostListToCheck=$(cat $PATH_CONF_MASSAGUARD/bootstrappers.toml |sed '1,/^\[others\]$/d' | egrep -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}|([0-z]{4})(:[0-z]{0,4}){1,7}')
-		hostListToCheck=$(cat $PATH_CONF_MASSAGUARD/bootstrappers.toml |sed '1,/^\[others\]$/d' | egrep -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')
+		hostListToCheck=$(cat $PATH_CONF_MASSAGUARD/bootstrappers.toml |sed '1,/^\[others\]$/d' | egrep -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}|([0-z]{4})(:[0-z]{0,4}){1,7}')
 		# Check availability to bootstrap on all bootstrappers
 		for host in $hostListToCheck
 		do
