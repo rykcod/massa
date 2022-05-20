@@ -13,9 +13,11 @@ Build a massa-node container This image include a script named "**/massa-guard/m
 - Restart node when stuck or ram consumption exceed 90%
 - Autoget MAS faucet on Discord 1 time by day
 - Logs his actions over /massa_mount/logs/
+- New user? For you, Massa-guard will create wallet + nodekey + stacke privkey + create your config.toml with your public IP. 
 - Expose port 33035 to allow monitoring with https://paranormal-brothers.com/massa/
 
 ### RELEASE NOTES ###
+- 20220520 - Add public IP of the node in config.toml file if ref config.toml don't exist in mountpoint
 - 20220519 - One time by day, check if nodes in bootstrap list are responsives on their TCP port 31244 & 31245, or mark it as unreachable and remove it from bootstrap list
 - 20220517 - ADD target roll amount feature **/!\ If you already have the "/massa_mount/config/config.ini" file, please add manually ADD this variable ''TARGET_ROLL_AMOUNT="NULL"''**
 - 20220511 - Clean code
