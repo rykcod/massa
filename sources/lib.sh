@@ -357,12 +357,12 @@ RefreshUnreachableBootstrap() {
 		for host in $hostListToCheck
 		do
 			# If node is unreachable on TCP port 31244 or 31245
-			if (( ! timeout 0.2 nc -z -v $host 31244 ) || ( ! timeout 0.2 nc -z -v $host 31245 )) 
+			if (( ! timeout 0.2 nc -z -v $host 31244 ) || ( ! timeout 0.2 nc -z -v $host 31245 ))
 			then
 				# If unreachable node dont exist in unreachable node list
 				if  ! cat $PATH_CONF_MASSAGUARD/bootstrappers_unreachable.txt | grep "$host"
 				then
-					# Add node in unreachable node list 
+					# Add node in unreachable node list
 					echo "$host" >> $PATH_CONF_MASSAGUARD/bootstrappers_unreachable.txt
 				fi
 			fi

@@ -142,7 +142,6 @@ class BootstrapFinder():
             if any(unreachablebootstrapper in bootstrapper for unreachablebootstrapper in unreachablebootstrapperslist):
                 print (self.get_trace(WARN, f"Removing boostrapper {bootstrapper} because this node is unreachable on port TCP 31245"))
                 cleared_bootstrappers.remove(bootstrapper)
-                break
         return cleared_bootstrappers
 
     def update_bootstrappers_file(self):
