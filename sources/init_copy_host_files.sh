@@ -36,7 +36,7 @@ else
 	myIP=$(curl -s ifconfig.co)
 	echo "[network]" > $PATH_MOUNT/config.toml
 	echo "routable_ip = \"$myIP\"" >> $PATH_MOUNT/config.toml
-	cp $PATH_NODE_CONF/config.toml $PATH_MOUNT/config.toml
+	cp $PATH_MOUNT/config.toml $PATH_NODE_CONF/config.toml
 fi
 # Wallet to use
 if [ -e $PATH_MOUNT/wallet.dat ]
