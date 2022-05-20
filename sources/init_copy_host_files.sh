@@ -37,6 +37,7 @@ else
 	echo "[network]" > $PATH_MOUNT/config.toml
 	echo "routable_ip = \"$myIP\"" >> $PATH_MOUNT/config.toml
 	cp $PATH_MOUNT/config.toml $PATH_NODE_CONF/config.toml
+	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Create your default config.toml with $myIP as routable IP" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 fi
 # Wallet to use
 if [ -e $PATH_MOUNT/wallet.dat ]
