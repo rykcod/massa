@@ -31,6 +31,13 @@ if [ -e $PATH_MOUNT/config.toml ]
 then
 	cp $PATH_MOUNT/config.toml $PATH_NODE_CONF/config.toml
 	echo "[$(date +%Y%m%d-%HH%M)][INFO][LOAD]LOAD $PATH_MOUNT/config.toml as ref" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+# If ref config.toml dont exist in massa_mount
+else
+	myIP=$(curl -s ifconfig.co)
+	{
+		echo "[network]" > $PATH_MOUNT/config.toml
+		echo "routable_ip = \"$myIP\"" >> $PATH_MOUNT/config.toml
+	cp $PATH_NODE_CONF/config.toml $PATH_MOUNT/config.toml
 fi
 # Wallet to use
 if [ -e $PATH_MOUNT/wallet.dat ]
