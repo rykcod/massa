@@ -34,9 +34,8 @@ then
 # If ref config.toml dont exist in massa_mount
 else
 	myIP=$(curl -s ifconfig.co)
-	{
-		echo "[network]" > $PATH_MOUNT/config.toml
-		echo "routable_ip = \"$myIP\"" >> $PATH_MOUNT/config.toml
+	echo "[network]" > $PATH_MOUNT/config.toml
+	echo "routable_ip = \"$myIP\"" >> $PATH_MOUNT/config.toml
 	cp $PATH_NODE_CONF/config.toml $PATH_MOUNT/config.toml
 fi
 # Wallet to use
