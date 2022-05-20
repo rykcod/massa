@@ -335,18 +335,18 @@ RefreshUnreachableBootstrap() {
 	# Else recheck availability to bootstrap of this node
 	else
 		# Get bootstrapper tag as unreachable
-                hostUnreachableListToRecheck=$(cat $PATH_CONF_MASSAGUARD/bootstrappers_unreachable.txt)
+		hostUnreachableListToRecheck=$(cat $PATH_CONF_MASSAGUARD/bootstrappers_unreachable.txt)
 		# Check port again for Unreachable hosts
 		for hostUnreachable in $hostUnreachableListToRecheck
-                do
+		do
 			# If node is responsive
-                        if (( timeout 0.2 nc -z -v $hostUnreachable 31244 ) && ( timeout 0.2 nc -z -v $hostUnreachable 31245 ))
-                        then
+			if (( timeout 0.2 nc -z -v $hostUnreachable 31244 ) && ( timeout 0.2 nc -z -v $hostUnreachable 31245 ))
+			then
 				# Remove node of unreachable list
 				grep -v $hostUnreachable $PATH_CONF_MASSAGUARD/bootstrappers_unreachable.txt > $PATH_CONF_MASSAGUARD/bootstrappers_unreachable.tmp
 				mv $PATH_CONF_MASSAGUARD/bootstrappers_unreachable.tmp $PATH_CONF_MASSAGUARD/bootstrappers_unreachable.txt
-                        fi
-                done
+			fi
+		done
 	fi
 	# If bootstrappers list exist
 	if [ -e $PATH_CONF_MASSAGUARD/bootstrappers.toml ]
