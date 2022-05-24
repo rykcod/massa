@@ -64,7 +64,7 @@ class BootstrapFinder():
 
     def get_ipv6_out_nodes(self):
         client_get_status = subprocess.Popen([self.__client, "get_status"], stdout=subprocess.PIPE)
-        grep = subprocess.Popen(["grep", "-E", "\[\"([0-z]{1,4})(:[0-z]{0,4}){1,7}"], stdin=client_get_status.stdout, stdout=subprocess.PIPE)
+        grep = subprocess.Popen(["grep", "-E", "\[\"([0-9a-z]{1,4})(:[0-9a-z]{0,4}){1,7}"], stdin=client_get_status.stdout, stdout=subprocess.PIPE)
         awk = subprocess.Popen(["awk", "{print \"[\\\"[\"substr($1, 3, length($1)-4)\"]:31245\\\", \"$2\"\"}"], stdin=grep.stdout, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         output, error = awk.communicate()
         if (not error) and output:
