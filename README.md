@@ -92,7 +92,7 @@ docker run -d --restart=always -v /var/run/docker.sock:/var/run/docker.sock:ro -
 
 For more informations and sources - https://github.com/rykcod/massa/
 
-## TUTORIAL VIDEO ##
+## TUTORIAL VIDEO [FR]##
 https://youtu.be/IzeRq43DBSQ
 
 ## CONTRIB ##
