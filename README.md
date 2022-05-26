@@ -6,7 +6,7 @@
 ## DESCRIPTION ##
 ### FEATURES ###
 Build a massa-node container This image include a script named "**/massa-guard/massa-guard.sh**" to:
-- Autobuy 1 roll when your node failed and lost his "Active rolls"
+- Autobuy 1 roll when your node failed and loose his "Active rolls" and/or "Czndidate rolls"
 - Autobuy rolls when your MAS amount greater than 200 MAS and if "Active rolls" dont exceed "TARGET_ROLL_AMOUNT" set in /massa_mount/config/config.ini (If set)
 - Autosell rolls when "Active rolls" exceed "TARGET_ROLL_AMOUNT" set in /massa_mount/config/config.ini (If set)
 - Auto refresh massa online bootstrap list and check their TCP port 31244&31245 to valid if nodes is reachable 1 time by day
