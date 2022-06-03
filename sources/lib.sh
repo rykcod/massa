@@ -257,7 +257,7 @@ BackupLogsNode() {
 #############################################################
 # FONCTION = CheckAndReloadNode
 # DESCRIPTION = Check node vitality parameters and restart if necessary
-# ARGUMENTS = NodeRamStatus, NodeResponsiveStatus
+# ARGUMENTS = NodeRamStatus, NodeStatus
 # RETURN = 0 for OK Continu 1 for KO Restart
 #############################################################
 CheckAndReloadNode() {
@@ -309,7 +309,7 @@ PingFaucet() {
 	# Check faucet
 	checkFaucet=$(cat $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | grep "faucet" | wc -l)
 	# Get faucet
-	if ([ $checkFaucet -eq 0 ] && [ ! $DISCORD_TOKEN == "NULL" ] && [ $(date +%H) -gt 2 ])
+	if ([ $checkFaucet -eq 0 ] && [ $(date +%H) -gt 2 ])
 	then
 		# Call python ping faucet script with token discord
 		cd $PATH_CLIENT
@@ -390,4 +390,102 @@ RefreshBootstrapNode() {
 
 	# Backup config.toml
 	cp $PATH_NODE_CONF/config.toml $PATH_MOUNT/
+}
+
+#############################################################
+# FONCTION = CheckPublicIP
+# DESCRIPTION = Check if public IP is change and set it into config.toml
+# RETURN = 0 for no change 1 for IP change
+#############################################################
+CheckPublicIP() {
+	# Get Public IP of node
+	myIP=$(GetPublicIP)
+
+	# Get Public IP conf for node
+	confIP=$(cat $PATH_NODE_CONF/config.toml | grep "routable_ip" | egrep -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}|([0-9a-z]{4})(:[0-9a-z]{0,4}){1,7}')
+
+	# Check if configured IP equal to real IP
+	if [ $myIP == $confIP ]
+	then
+		# Return no change
+		echo 0
+	else
+		# Return IP change
+		echo 1
+	fi
+	return 0
+}
+
+#############################################################
+# FONCTION = RefreshPublicIP
+# DESCRIPTION = Change Public IP into config.toml + push it to massabot if TOKEN Discord is set
+# RETURN = 0 for ping done 1 for ping already got
+#############################################################
+RefreshPublicIP() {
+        # Get Public IP of node
+        myIP=$(GetPublicIP)
+
+        # Get Public IP conf for node
+        confIP=$(cat $PATH_NODE_CONF/config.toml | grep "routable_ip" | egrep -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}|([0-9a-z]{4})(:[0-9a-z]{0,4}){1,7}')
+
+	# Push new IP to massabot
+	timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD_TOKEN $myIP > $PATH_MASSABOT_REPLY
+	# Check massabot return
+	if ($(cat $PATH_MASSABOT_REPLY | grep -q -e "IP address: $myIP"))
+	then
+		echo "[$(date +%Y%m%d-%HH%M)][INFO][IP]Dynamique public IP changed, updated for $1 in config.toml and with massabot" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+	elif ($(cat $PATH_MASSABOT_REPLY | grep -q -e "wait for announcements!"))
+	then
+		echo "[$(date +%Y%m%d-%HH%M)][WARN][IP]Unable to update registrered IP with massabot because testnet not start for now" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+	else
+		echo "[$(date +%Y%m%d-%HH%M)][ERROR][IP]Unable to update registrered IP with massabot because massabot not or wrong responsive" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+	fi
+
+	# Update IP in your ref config.toml and restart node
+	cat $PATH_NODE_CONF/config.toml | sed 's/'$confIP'/'$myIP'/' > $PATH_MOUNT/config.toml
+	CheckAndReloadNode 0 1
+}
+
+#############################################################
+# FONCTION = GetPublicIP
+# DESCRIPTION = Get public IP
+# RETURN = Node Public IP
+#############################################################
+GetPublicIP() {
+	# Get mon IP
+	myIP=$(curl -s ifconfig.co)
+
+	# Return my public IP
+	echo $myIP
+	return 0
+}
+
+#############################################################
+# FONCTION = CheckTestnetNodeRegistrationWithMassabot
+# DESCRIPTION = Check if node registrered with massabot
+# ARGUMENT = Wallet adresse
+# RETURN = 0 Registered 1 NotRegistered
+#############################################################
+CheckTestnetNodeRegistrationWithMassabot() {
+	# Push new IP to massabot
+        timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD_TOKEN "info" > $PATH_MASSABOT_REPLY
+
+	# Check massabot return
+	if ($(cat $PATH_MASSABOT_REPLY | grep -q -e "- Staking Address: \`$1\`"))
+	then
+		# Return bot registration OK
+		echo 0
+	else
+		# Return bot registration KO
+		echo 1
+	fi
+        return 0
+}
+
+#############################################################
+# FONCTION = RegisterTestnetNodeWithMassabot
+# DESCRIPTION = Register node with massabot
+#############################################################
+RegisterNodeWithMassabot() {
+        return 0
 }

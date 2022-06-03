@@ -3,9 +3,11 @@
 
 ![alt text](https://d33wubrfki0l68.cloudfront.net/7df7d7a57a8dda3cc07aab16121b3e3990cf0893/16ccd/portfolio/massa.png)
 
-## DESCRIPTION ##
-### FEATURES ###
-Build a massa-node container This image include a script named "**/massa-guard/massa-guard.sh**" to:
+## [DESCRIPTION] ##
+### [FEATURES] ###
+Build a massa-node container wich include some automation features
+
+This image include a script named "**/massa-guard/massa-guard.sh**" to:
 - Autobuy 1 roll when your node failed and lost his "Active rolls"
 - Autobuy rolls when your MAS amount greater than 200 MAS and if "Active rolls" dont exceed "TARGET_ROLL_AMOUNT" set in /massa_mount/config/config.ini (If set)
 - Autosell rolls when "Active rolls" exceed "TARGET_ROLL_AMOUNT" set in /massa_mount/config/config.ini (If set)
@@ -16,7 +18,8 @@ Build a massa-node container This image include a script named "**/massa-guard/m
 - New user? For you, Massa-guard will create wallet + nodekey + stacke privkey + create your config.toml with your public IP. 
 - Expose port 33035 to allow monitoring with https://paranormal-brothers.com/massa/
 
-### RELEASE NOTES ###
+### [RELEASE NOTES] ###
+- 20220603 - Add dynamical public IP feature to check IP change and then refresh config.toml --> restart node to reload config.toml --> push new IP to massabot
 - 20220520 - Add public IP of the node in config.toml file if ref config.toml don't exist in mountpoint
 - 20220519 - One time by day, check if nodes in bootstrap list are responsives on their TCP port 31244 & 31245, or mark it as unreachable and remove it from bootstrap list
 - 20220517 - ADD target roll amount feature **/!\ If you already have the "/massa_mount/config/config.ini" file, please add manually ADD this variable ''TARGET_ROLL_AMOUNT="NULL"''**
@@ -26,9 +29,8 @@ Build a massa-node container This image include a script named "**/massa-guard/m
 - 20220508 - Solve issue wallet creation if missing
 - 20220507 - Solve issue bootstrapper feeding for ipv6 node since testnet 10. Now add stay available for ipv4 node but add skip ipv6 nodes.
 
-
-## HOWTO ##
-### SETUP ###
+## [HOWTO] ##
+### [SETUP] ###
 __STEP 1:__
 Mount a folder to the /massa_mount path on container and store your wallet /nodekey/stacking_key/config.toml if you have it:
 - wallet.dat
@@ -38,7 +40,7 @@ Mount a folder to the /massa_mount path on container and store your wallet /node
 
 /!\ If don't have this file, leave your folder empty, massa-guard will create a wallet and node key and automaticaly stake wallet for you. This files will be backup on your mount point by massa-guard.
 
-/!\ __User of one release before the 20220508?__ For the node Ram overload feature **/!\ If you already have the ''/massa_mount/config/config.ini'' file, please add manually ADD this entry ''NODE_MAX_RAM=90'' in your config file**
+/!\ __User of one release before the 20220508?__ For the node Ram overload feature **/!\ If you already have the ''/massa_mount/config/config.ini'' file, please add manually ADD this entry ''NODE_MAX_RAM=90'' and ''DYN_PUB_IP=0''in your config file**
 
 ### Usecase Example ###
   * Container creation:
@@ -59,21 +61,21 @@ ctrl+a+d
 ```
   
 __[OPTION]STEP 2: to use ping faucet feature__
-Set your Discord token in /massa_mount/config/config.ini to enable "Autoget MAS faucet" feature
-
-Refer to https://discordhelp.net/discord-token
+  * Set your ''DISCORD_TOKEN'' value in /massa_mount/config/config.ini to enable "Autoget MAS faucet" feature and autoregistration node and IP to massabot
+  * Set your ''DYN_PUB_IP'' value in /massa_mount/config/config.ini to enable dynamical IP management
+  * Set your ''TARGET_ROLL_AMOUNT'' value in /massa_mount/config/config.ini to enable roll amount target to stake for your node
 
 __STEP 3:__
-/!\ Remember to register your node to the testnet program on Discord
+/!\ If you don't set ''DISCORD_TOKEN'' value in /massa_mount/config/config.ini, remember to register your node to the testnet program on Discord
   * Go to Discord https://discord.com/channels/828270821042159636/872395473493839913 and follow inscructions.
 
-## HELP ##
+## [HELP] ##
 - Massa client is running over a "screen" named "massa-client"
 - Massa node is running over a "screen" named "massa-node"
 - To get your discord token, refer to https://shufflegazine.com/get-discord-token/
-- A easy way for beginner to enable ipv6 on your container
-### HELP - Easy beginner way for IPV6 usage ###
-- Create or edit your /etc/docker/daemon.json to add:
+
+### [HELP - Easy beginner way for IPV6 usage] ###
+- Create or edit your host /etc/docker/daemon.json to add:
 ```json
 {
   "ipv6": true,
@@ -92,11 +94,11 @@ docker run -d --restart=always -v /var/run/docker.sock:/var/run/docker.sock:ro -
 
 For more informations and sources - https://github.com/rykcod/massa/
 
-## TUTORIAL VIDEO ##
+## [VIDEO TUTORIAL][FR] ##
 https://youtu.be/IzeRq43DBSQ
 
 ## CONTRIB ##
 Thanks to:
 - **Dockyr** because it's my main nickname
 - **GGCOM** & **GNOMUZ** for help
-- **Danakane** for "Autoget faucet" and "Bootstrap list refresh" features https://gitlab.com/0x6578656376652829/massa_admin :
+- **Danakane**

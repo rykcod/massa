@@ -38,9 +38,23 @@ do
 		BuyOrSellRoll "$CandidateRolls" "$MasBalance" "$WalletAddress"
 		# Refresh bootstrap node with connected and routable node
 		RefreshBootstrapNode
-		# Check and get faucet of current day
-		PingFaucet
+
+		# If Discord feature enable
+		if [ ! $DISCORD_TOKEN == "NULL" ]
+		then
+			# Check and get faucet of current day
+			PingFaucet
+
+			# If dynamical IP feature enable and public IP is new
+			if ([ $DYN_PUB_IP -eq 1 ] && [ $(CheckPublicIP) -eq 1 ])
+			then
+				# Refresh config.toml + restart node + push new IP to massabot
+				RefreshPublicIP
+			fi
+		fi
 	fi
 	# Wait before next loop
 	sleep 2m
+	# Refresh configuration value
+	. $PATH_CONF_MASSAGUARD/config.ini
 done
