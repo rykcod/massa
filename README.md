@@ -15,7 +15,8 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
 - Restart node when stuck or ram consumption exceed 90%
 - Autoget MAS faucet on Discord 1 time by day
 - Logs his actions over /massa_mount/logs/
-- New user? For you, Massa-guard will create wallet + nodekey + stacke privkey + create your config.toml with your public IP. 
+- New user? For you, Massa-guard will create wallet + nodekey + stacke privkey + create your config.toml with your public IP.
+- You host your node under a dynamical IP? massa-guard will wtach IP change and update your config.toml and push IP updates to massabot.
 - Expose port 33035 to allow monitoring with https://paranormal-brothers.com/massa/
 
 ### [RELEASE NOTES] ###
