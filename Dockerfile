@@ -13,7 +13,7 @@ ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/Paris"
 # Met a jour la liste des paquets
 RUN apt-get update \
 && apt-get upgrade -y \
-&& apt install -y pkg-config curl clang git build-essential libssl-dev screen procps python3-pip netcat \
+&& apt install -y pkg-config curl libclang-dev git build-essential libssl-dev screen procps python3-pip netcat \
 && apt autoclean -y \
 && python3 -m pip install -U discord.py
 

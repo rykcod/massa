@@ -22,14 +22,6 @@ fi
 # Load config.ini
 . $PATH_CONF_MASSAGUARD/config.ini
 
-# Check or create unreachable bootstrappers list
-if [ ! -e $PATH_TO_UNREACHABLE_BOOTSTRAPPERS ]
-then
-        # Create unreachable bootstrappers list
-        touch $PATH_TO_UNREACHABLE_BOOTSTRAPPERS
-        echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]CREATE unreachable bootstrappers list" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
-fi
-
 # Reset and backup last node log file if exist
 BackupLogsNode
 

@@ -4,7 +4,7 @@
 #############################################################
 WaitBootstrap() {
 	# Wait node booststrap
-	tail -n +1 -f $PATH_NODE/logs.txt | grep -m 1 "Successful bootstrap"
+	tail -n +1 -f $PATH_NODE/logs.txt | grep -m 1 "Successful state bootstrap"
 	sleep 10s
 	return 0
 }
