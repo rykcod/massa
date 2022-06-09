@@ -59,3 +59,10 @@ then
 	cp $PATH_MOUNT/staking_keys.json $PATH_NODE_CONF/staking_keys.json
 	echo "[$(date +%Y%m%d-%HH%M)][INFO][LOAD]LOAD $PATH_MOUNT/staking_keys.json as ref" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 fi
+# If unreachable node file dont exist
+if [ ! -e $PATH_CONF_MASSAGUARD/bootstrappers_unreachable.txt ]
+then
+	# Create bootstrappers_unreachable.txt
+	touch $PATH_CONF_MASSAGUARD/bootstrappers_unreachable.txt
+fi
+
