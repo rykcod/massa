@@ -54,7 +54,7 @@ class BootstrapFinder():
     def get_out_nodes(self):
         client_get_status = subprocess.Popen([self.__client, "get_status"], stdout=subprocess.PIPE)
         grep = subprocess.Popen(["grep", "-E", "Node\'s ID: [0-z]{49,50} / IP address: [[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}"], stdin=client_get_status.stdout, stdout=subprocess.PIPE)
-        awk = subprocess.Popen(["awk", "{print \"[\"$7\":31245\\\", \\\"\"$3\"\\\"],\"}"], stdin=grep.stdout, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        awk = subprocess.Popen(["awk", "{print \"[\\\"\"$7\":31245\\\", \\\"\"$3\"\\\"],\"}"], stdin=grep.stdout, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         output, error = awk.communicate()
         if (not error) and output:
             output = output[:-2].decode("UTF-8")
