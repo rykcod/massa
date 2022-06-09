@@ -27,6 +27,7 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Massa-create create your config.toml with your public IP.
 
 ### [RELEASE NOTES] ###
+- 20220609 - Testnet 11 Ready!
 - 20220603 - Add dynamical public IP feature to check IP change and then refresh config.toml --> restart node to reload config.toml --> push new IP to massabot
 - 20220520 - Add public IP of the node in config.toml file if ref config.toml don't exist in mountpoint
 - 20220519 - One time by day, check if nodes in bootstrap list are responsives on their TCP port 31244 & 31245, or mark it as unreachable and remove it from bootstrap list
