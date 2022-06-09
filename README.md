@@ -1,5 +1,5 @@
 # Massa node + Massa-guard #
-**Last build for Massa testnet Episode 11 release 11.0 (NOT TESTED)**
+**Last build for Massa testnet Episode 11 release 11.0**
 
 ![alt text](https://d33wubrfki0l68.cloudfront.net/7df7d7a57a8dda3cc07aab16121b3e3990cf0893/16ccd/portfolio/massa.png)
 
@@ -8,16 +8,23 @@
 Build a massa-node container wich include some automation features
 
 This image include a script named "**/massa-guard/massa-guard.sh**" to:
-- Autobuy 1 roll when your node failed and lost his "Active rolls"
-- Autobuy rolls when your MAS amount greater than 200 MAS and if "Active rolls" dont exceed "TARGET_ROLL_AMOUNT" set in /massa_mount/config/config.ini (If set)
-- Autosell rolls when "Active rolls" exceed "TARGET_ROLL_AMOUNT" set in /massa_mount/config/config.ini (If set)
-- Auto refresh massa online bootstrap list and check their TCP port 31244&31245 to valid if nodes is reachable 1 time by day
-- Restart node when stuck or ram consumption exceed 90%
-- Autoget MAS faucet on Discord 1 time by day
-- Logs his actions over /massa_mount/logs/
-- New user? For you, Massa-guard will create wallet + nodekey + stacke privkey + create your config.toml with your public IP.
-- You host your node under a dynamical IP? massa-guard will wtach IP change and update your config.toml and push IP updates to massabot.
-- Expose port 33035 to allow monitoring with https://paranormal-brothers.com/massa/
+- [AUTOBUY/AUTOSELL]
+  - Autobuy 1 roll when your node failed and lost his "Active rolls"
+  - Autobuy X rolls when your MAS amount greater than 200 MAS and if "Active rolls" dont exceed "TARGET_ROLL_AMOUNT" set in /massa_mount/config/config.ini (If set)
+  - Autosell X rolls when "Active rolls" exceed "TARGET_ROLL_AMOUNT" set in /massa_mount/config/config.ini (If set)
+- [BOOTSTRAPFINDER]
+  - Auto refresh massa online bootstrap list with connected node
+  - Filter to only add node which have TCP port 31244&31245 reachable
+- [WATCHDOG]
+  - Restart node when hang
+  - Restart node when ram consumption exceed 90%
+  - You host your node under a dynamical IP? massa-guard will watch IP change and update your config.toml and push IP updates to massabot.
+  - Push public IP or public IP change to massabot (Need to set discord token in /massa_mount/config/config.ini)
+  - Logs his actions over /massa_mount/logs/ and backup node logs before restart if necessary
+  - Autoget MAS faucet on Discord 1 time by day (Need to set discord token in /massa_mount/config/config.ini)
+- [STARTING]
+  - Massa-guard will create wallet + nodekey + stacke privkey
+  - Massa-create create your config.toml with your public IP.
 
 ### [RELEASE NOTES] ###
 - 20220603 - Add dynamical public IP feature to check IP change and then refresh config.toml --> restart node to reload config.toml --> push new IP to massabot
