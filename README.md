@@ -27,6 +27,7 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Massa-create create your config.toml with your public IP.
 
 ### [RELEASE NOTES] ###
+- 20220613 - Testnet 11 - v11.3 Ready!
 - 20220610 - Testnet 11 - v11.2 Ready!
 - 20220610 - Testnet 11 - v11.1 Ready!
 - 20220609 - Testnet 11 Ready!
