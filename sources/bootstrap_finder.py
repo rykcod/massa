@@ -16,7 +16,7 @@ WARN="[WARN]"
 INFO="[INFO]"
 
 BASE_CONFIG_FILE_PATH = "/massa/massa-node/base_config/config.toml"
-CONFIG_FILE_PATH = "/massa/massa-node/config/config.toml"
+CONFIG_FILE_PATH = "/massa_mount/config.toml"
 BOOTSTRAPPERS_FILE_PATH = "/massa_mount/config/bootstrappers.toml"
 CLIENT = "/massa/target/release/massa-client"
 PATH_TO_LOG_FILE = "/massa/massa-node/logs.txt"

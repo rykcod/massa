@@ -29,7 +29,7 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Massa-guard auto get faucet to buy your first roll.
 
 ### [RELEASE NOTES] ###
-- 20220629 - Add auto-registration feature
+- 20220629 - Add auto-registration feature + docker ENV for Discord token & DYNIP feature
 - 20220613 - Testnet 11 - v11.3 Ready!
 - 20220610 - Testnet 11 - v11.2 Ready!
 - 20220610 - Testnet 11 - v11.1 Ready!

@@ -17,6 +17,8 @@ then
 	mkdir -p /massa_mount/config
 	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]CREATE /massa_mount/config folder" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 	cp /massa-guard/config/default_config_template.ini $PATH_CONF_MASSAGUARD/config.ini
+	if [ $DISCORD ]; then python3 $PATH_SOURCES/set_config.py "DISCORD_TOKEN" \"$DISCORD\" $PATH_CONF_MASSAGUARD/config.ini ; fi
+	if [ $DYNIP ]; then python3 $PATH_SOURCES/set_config.py "DYN_PUB_IP" "$DYNIP" $PATH_CONF_MASSAGUARD/config.ini ; fi
 	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]COPY default config.ini" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 fi
 # Load config.ini

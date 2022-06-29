@@ -389,8 +389,8 @@ RefreshBootstrapNode() {
 	cd $PATH_CLIENT
 	python3 $PATH_SOURCES/bootstrap_finder.py >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 
-	# Backup config.toml
-	cp $PATH_NODE_CONF/config.toml $PATH_MOUNT/
+	# Copy config.toml
+	cp $PATH_MOUNT/config.toml $PATH_NODE_CONF/
 }
 
 #############################################################
@@ -423,11 +423,11 @@ CheckPublicIP() {
 # RETURN = 0 for ping done 1 for ping already got
 #############################################################
 RefreshPublicIP() {
-        # Get Public IP of node
-        myIP=$(GetPublicIP)
+    # Get Public IP of node
+	myIP=$(GetPublicIP)
 
-        # Get Public IP conf for node
-        confIP=$(cat $PATH_NODE_CONF/config.toml | grep "routable_ip" | egrep -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}|([0-9a-z]{4})(:[0-9a-z]{0,4}){1,7}')
+	# Get Public IP conf for node
+	confIP=$(cat $PATH_NODE_CONF/config.toml | grep "routable_ip" | egrep -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}|([0-9a-z]{4})(:[0-9a-z]{0,4}){1,7}')
 
 	# Push new IP to massabot
 	timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD_TOKEN $myIP > $PATH_MASSABOT_REPLY
