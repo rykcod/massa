@@ -9,24 +9,27 @@ Build a massa-node container wich include some automation features
 
 This image include a script named "**/massa-guard/massa-guard.sh**" to:
 - [AUTOBUY/AUTOSELL]
-  - Autobuy 1 roll when your node failed and lost his "Active rolls"
-  - Autobuy X rolls when your MAS amount greater than 200 MAS and if "Active rolls" dont exceed "TARGET_ROLL_AMOUNT" set in /massa_mount/config/config.ini (If set)
-  - Autosell X rolls when "Active rolls" exceed "TARGET_ROLL_AMOUNT" set in /massa_mount/config/config.ini (If set)
+  - Autobuy 1 roll when your node failed and lost his "Active rolls".
+  - Autobuy X rolls when your MAS amount greater than 200 MAS and if "Active rolls" dont exceed "TARGET_ROLL_AMOUNT" set in /massa_mount/config/config.ini (If set).
+  - Autosell X rolls when "Active rolls" exceed "TARGET_ROLL_AMOUNT" set in /massa_mount/config/config.ini (If set).
 - [BOOTSTRAPFINDER]
-  - Auto refresh massa online bootstrap list with connected node
-  - Filter to only add node which have TCP port 31244&31245 reachable
+  - Auto refresh massa online bootstrap list with connected node.
+  - Filter to only add node which have TCP port 31244 & 31245 reachable.
 - [WATCHDOG]
   - Restart node when hang
   - Restart node when ram consumption exceed 90%
   - You host your node under a dynamical IP? massa-guard will watch IP change and update your config.toml and push IP updates to massabot.
   - Push public IP or public IP change to massabot (Need to set discord token in /massa_mount/config/config.ini)
-  - Logs his actions over /massa_mount/logs/ and backup node logs before restart if necessary
+  - Logs his actions over /massa_mount/logs/ and backup node logs before restart if necessary.
   - Autoget MAS faucet on Discord 1 time by day (Need to set discord token in /massa_mount/config/config.ini)
 - [STARTING]
-  - Massa-guard will create wallet + nodekey + stacke privkey
-  - Massa-create create your config.toml with your public IP.
+  - Massa-guard will auto register your node with massabot.
+  - Massa-guard will auto create wallet + nodekey + stacke privkey.
+  - Massa-guard auto create your config.toml with your public IP.
+  - Massa-guard auto get faucet to buy your first roll.
 
 ### [RELEASE NOTES] ###
+- 20220629 - Add auto-registration feature
 - 20220613 - Testnet 11 - v11.3 Ready!
 - 20220610 - Testnet 11 - v11.2 Ready!
 - 20220610 - Testnet 11 - v11.1 Ready!

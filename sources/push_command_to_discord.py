@@ -7,8 +7,6 @@ TOKEN = sys.argv[1]
 QUERY = sys.argv[2]
 MASSABOTID="867678025653944360"
 
-MASSABOTID="867678025653944360"
-
 class SendIP(discord.Client):
     async def on_ready(self):
         user = await self.fetch_user(MASSABOTID)

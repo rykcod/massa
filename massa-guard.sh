@@ -3,7 +3,7 @@
 # Global configuration
 . /massa-guard/config/default_config.ini
 # Custom configuration
-. $PATH_CONF_MASSAGUARD/config.ini
+source <(grep = $PATH_CONF_MASSAGUARD/config.ini)
 # Import custom library
 . /massa-guard/sources/lib.sh
 

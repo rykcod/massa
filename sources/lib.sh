@@ -462,31 +462,65 @@ GetPublicIP() {
 }
 
 #############################################################
-# FONCTION = CheckTestnetNodeRegistrationWithMassabot
-# DESCRIPTION = Check if node registrered with massabot
-# ARGUMENT = Wallet adresse
-# RETURN = 0 Registered 1 NotRegistered
+# FONCTION = RegisterTestnetNodeWithMassabot
+# DESCRIPTION = Register node with massabot
+# ARGUMENTS = Address, Massa Discord ID
 #############################################################
-CheckTestnetNodeRegistrationWithMassabot() {
-	# Push new IP to massabot
-        timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD_TOKEN "info" > $PATH_MASSABOT_REPLY
+RegisterNodeWithMassabot() {
+	# Get registration hash
+	cd $PATH_CLIENT
+	registrationHashReturn=$($PATH_TARGET/massa-client "node_testnet_rewards_program_ownership_proof" $1 $2)
+	registrationHash=$(echo $registrationHashReturn | sed -r 's/^Enter the following in discord: //')
 
-	# Check massabot return
-	if ($(cat $PATH_MASSABOT_REPLY | grep -q -e "- Staking Address: \`$1\`"))
+	# Push defaut request to massabot
+	timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD_TOKEN $registrationHash > $PATH_MASSABOT_REPLY
+
+	if cat $PATH_MASSABOT_REPLY | grep -q -E "Your discord account \`[0-9]{18}\` has been associated with this node ID"
 	then
-		# Return bot registration OK
-		echo 0
+		echo "[$(date +%Y%m%d-%HH%M)][INFO][REGISTRATION]Node is now register with discord ID $2 and massabot" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		python3 $PATH_SOURCES/set_config.py "NODE_TESTNET_REGISTRATION" \"OK\" $PATH_CONF_MASSAGUARD/config.ini
+		return 0
 	else
-		# Return bot registration KO
-		echo 1
+		return 1
 	fi
-        return 0
 }
 
 #############################################################
-# FONCTION = RegisterTestnetNodeWithMassabot
-# DESCRIPTION = Register node with massabot
+# FONCTION = CheckTestnetNodeRegistrationWithMassabot
+# DESCRIPTION = Check if node registrered with massabot
+# ARGUMENTS = Address
+# RETURN = 0 Registered 1 NotRegistered
 #############################################################
-RegisterNodeWithMassabot() {
-        return 0
+CheckTestnetNodeRegistrationWithMassabot() {
+	if [ $NODE_TESTNET_REGISTRATION == "KO" ]
+	then
+		# Push new IP to massabot
+		cd $PATH_CLIENT
+		timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD_TOKEN "info" > $PATH_MASSABOT_REPLY
+
+		# Check massabot return
+		if cat $PATH_MASSABOT_REPLY | grep -q -E "Your discord user_id \`[0-9]{18}\` is not registered yet"
+		then
+			# Get Massa Discord ID
+			massaDiscordID=$(cat $PATH_MASSABOT_REPLY | grep -o -E [0-9]{18})
+
+			# Register node with massaBot
+			sleep 5s
+			RegisterNodeWithMassabot $1 $massaDiscordID
+
+			# Return bot registration KO
+			return 0
+		else
+			# Return bot registration OK
+			echo "[$(date +%Y%m%d-%HH%M)][INFO][REGISTRATION]Node already associated with and massabot or registration is not already open" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%>
+			python3 $PATH_SOURCES/set_config.py "NODE_TESTNET_REGISTRATION" \"OK\" $PATH_CONF_MASSAGUARD/config.ini
+			return 0
+		fi
+	# If node set as registrered in config.ini
+	elif [ $NODE_TESTNET_REGISTRATION == "OK" ]
+	then
+		return 0
+	else
+		return 1
+	fi
 }
