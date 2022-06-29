@@ -45,6 +45,9 @@ do
 			# Check and get faucet of current day
 			PingFaucet
 
+			# Check and registrer node with massabot if necessary
+			CheckTestnetNodeRegistrationWithMassabot "$WalletAddress"
+
 			# If dynamical IP feature enable and public IP is new
 			if ([ $DYN_PUB_IP -eq 1 ] && [ $(CheckPublicIP) -eq 1 ])
 			then
@@ -56,5 +59,5 @@ do
 	# Wait before next loop
 	sleep 2m
 	# Refresh configuration value
-	. $PATH_CONF_MASSAGUARD/config.ini
+	source <(grep = $PATH_CONF_MASSAGUARD/config.ini)
 done
