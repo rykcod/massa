@@ -16,8 +16,7 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Auto refresh massa online bootstrap list with connected node.
   - Filter to only add node which have TCP port 31244 & 31245 reachable.
 - [WATCHDOG]
-  - Restart node when hang
-  - Restart node when ram consumption exceed 90%
+  - Restart node when hang or when ram consumption exceed 90% (Value can be adjust)
   - You host your node under a dynamical IP? massa-guard will watch IP change and update your config.toml and push IP updates to massabot.
   - Push public IP or public IP change to massabot (Need to set discord token in /massa_mount/config/config.ini)
   - Logs his actions over /massa_mount/logs/ and backup node logs before restart if necessary.
@@ -36,20 +35,13 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
 - 20220609 - Testnet 11 Ready!
 - 20220603 - Add dynamical public IP feature to check IP change and then refresh config.toml --> restart node to reload config.toml --> push new IP to massabot
 - 20220520 - Add public IP of the node in config.toml file if ref config.toml don't exist in mountpoint
-- 20220519 - One time by day, check if nodes in bootstrap list are responsives on their TCP port 31244 & 31245, or mark it as unreachable and remove it from bootstrap list
-- 20220517 - ADD target roll amount feature **/!\ If you already have the "/massa_mount/config/config.ini" file, please add manually ADD this variable ''TARGET_ROLL_AMOUNT="NULL"''**
-- 20220511 - Clean code
-- 20220508 - Update image to v10.1
-- 20220508 - ADD node Ram overload feature **/!\ If you already have the "/massa_mount/config/config.ini" file, please add manually ADD this variable ''NODE_MAX_RAM=90''**
-- 20220508 - Solve issue wallet creation if missing
-- 20220507 - Solve issue bootstrapper feeding for ipv6 node since testnet 10. Now add stay available for ipv4 node but add skip ipv6 nodes.
 
 ## [HOWTO] ##
 ### [SETUP] ###
 #### [PREPARE] ####
 __STEP 1:__
-/!\ Register your discord account to the testnet program on Discord
-  * Go to Discord https://discord.com/channels/828270821042159636/872395473493839913 and follow inscructions.
+/!\ Register your discord account to the testnet program
+  * Go to Massa Discord channel https://discord.com/channels/828270821042159636/872395473493839913 and follow inscructions.
 
 __STEP 2:__
 Create an empty folder to mount in our container /massa_mount path or store your wallet /nodekey/stacking_key/config.toml into this folder if you have it:
