@@ -66,8 +66,9 @@ Create an empty folder to mount in our container /massa_mount path or store your
 /!\ You can define 2 ENV values when you create your container:
  - ''DISCORD'' - Set with your discord token id (Refer to HELP section) - To enable discord feature (GetFaucet + NodeRegistration + DynamicalIP)
  - ''DYNIP'' - Set with "0" if you host under static public IP or "1" if you host under dynimic public IP to enable update IP feature
+/!\ Please note, this ENV variables have a low priority if a previous config.ini exist in your mount point.
 
-  * Container creation example with ENV variable to define Dicord token and a static IP usage :
+  * Container creation example with ENV variables to define Dicord token and a static IP usage :
 ```console
 docker run -d -v /%MY_PATH%/massa_mount:/massa_mount -p 31244-31245:31244-31245 -p 33035:33035 -e "DISCORD=OTc2MDkyTgP0OTU4NCXsNTIy.G5jqAc.b+rV4MgEnMvo48ICeGg6E_QPg4dHjlSBJA06CA" -e "DYNIP=0" --name massa-node rykcod/massa
 ```
