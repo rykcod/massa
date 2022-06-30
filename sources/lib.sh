@@ -486,7 +486,7 @@ RegisterNodeWithMassabot() {
 }
 
 #############################################################
-# FONCTION = CheckTestnetNodeRegistrationWithMassabot
+# FONCTION = CheckTestnetNodeRegistration
 # DESCRIPTION = Check if node registrered with massabot
 # ARGUMENTS = Address
 # RETURN = 0 Registered 1 NotRegistered
@@ -512,7 +512,7 @@ CheckTestnetNodeRegistrationWithMassabot() {
 			return 0
 		else
 			# Return bot registration OK
-			echo "[$(date +%Y%m%d-%HH%M)][INFO][REGISTRATION]Node already associated with and massabot or registration is not already open" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%>
+			echo "[$(date +%Y%m%d-%HH%M)][INFO][REGISTRATION]Node already associated with and massabot or registration is not already open" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 			python3 $PATH_SOURCES/set_config.py "NODE_TESTNET_REGISTRATION" \"OK\" $PATH_CONF_MASSAGUARD/config.ini
 			return 0
 		fi

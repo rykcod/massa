@@ -22,7 +22,7 @@ then
 	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]COPY default config.ini" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 fi
 # Load config.ini
-. $PATH_CONF_MASSAGUARD/config.ini
+source <(grep = $PATH_CONF_MASSAGUARD/config.ini)
 
 # Reset and backup last node log file if exist
 BackupLogsNode

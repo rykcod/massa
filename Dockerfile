@@ -3,7 +3,7 @@ FROM ubuntu:20.04
  
 # LABEL about the custom image
 LABEL maintainer="benoit@alphatux.fr"
-LABEL version="0.11.3.2"
+LABEL version="0.11.3.4"
 LABEL description="Node Massa"
  
 # Defini le timezone du container
