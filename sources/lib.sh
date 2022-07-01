@@ -462,7 +462,7 @@ GetPublicIP() {
 }
 
 #############################################################
-# FONCTION = RegisterTestnetNodeWithMassabot
+# FONCTION = RegisterNodeWithMassabot
 # DESCRIPTION = Register node with massabot
 # ARGUMENTS = Address, Massa Discord ID
 #############################################################
@@ -491,7 +491,7 @@ RegisterNodeWithMassabot() {
 # ARGUMENTS = Address
 # RETURN = 0 Registered 1 NotRegistered
 #############################################################
-CheckTestnetNodeRegistrationWithMassabot() {
+CheckTestnetNodeRegistration() {
 	if [ $NODE_TESTNET_REGISTRATION == "KO" ]
 	then
 		# Push new IP to massabot
