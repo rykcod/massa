@@ -29,7 +29,8 @@ RUN git clone --branch testnet https://github.com/massalabs/massa.git
 
 WORKDIR $HOME/massa/massa-node
 RUN source $HOME/.cargo/env \
-&& RUST_BACKTRACE=full cargo run --release  -- -p "MassaToTheMoon2022" |& tee logs.txt | if grep -q "Start bootstrapping from"; then pkill massa ; fi
+&& if [ ! $NODEPWD ]; then NODEPWD="MassaToTheMoon2022" ; fi \
+&& RUST_BACKTRACE=full cargo run --release -- -p $NODEPWD |& tee logs.txt | if grep -q "Started node at time"; then pkill massa ; fi
 
 WORKDIR $HOME/massa/massa-client
 RUN source $HOME/.cargo/env \
@@ -56,6 +57,7 @@ EXPOSE 33035
 # Lancement du node
 CMD /massa-guard/sources/init_copy_host_files.sh \
 && source $HOME/.cargo/env \
+&& if [ ! $NODEPWD ]; then NODEPWD="MassaToTheMoon2022" ; fi \
 && cd /massa/massa-client \
 && screen -dmS massa-client bash -c 'cargo run --release' \
 && sleep 1 \
