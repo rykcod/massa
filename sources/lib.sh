@@ -283,11 +283,11 @@ CheckAndReloadNode() {
 
 		# Re-Launch node
 		cd $PATH_NODE
-		screen -dmS massa-node bash -c 'RUST_BACKTRACE=full cargo run --release |& tee logs.txt'
+		screen -dmS massa-node bash -c 'RUST_BACKTRACE=full cargo run --release -- -p $NODEPWD |& tee logs.txt'
 		sleep 1s
 		# Re-Launch client
 		cd $PATH_CLIENT
-		screen -dmS massa-client bash -c 'cargo run --release'
+		screen -dmS massa-client bash -c 'cargo run --release -- -p $WALLETPWD'
 
 		# Wait node booststrap
 		WaitBootstrap

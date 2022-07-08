@@ -34,7 +34,8 @@ RUN source $HOME/.cargo/env \
 
 WORKDIR $HOME/massa/massa-client
 RUN source $HOME/.cargo/env \
-&& cargo run --release
+&& if [ ! $WALLETPWD ]; then WALLETPWD="MassaToTheMoon2022" ; fi \
+&& cargo run --release  -- -p $WALLETPWD
 
 RUN mkdir /massa-guard \
 && mkdir /massa-guard/sources \
@@ -57,10 +58,11 @@ EXPOSE 33035
 # Lancement du node
 CMD /massa-guard/sources/init_copy_host_files.sh \
 && source $HOME/.cargo/env \
-&& if [ ! $NODEPWD ]; then NODEPWD="MassaToTheMoon2022" ; fi \
 && cd /massa/massa-client \
-&& screen -dmS massa-client bash -c 'cargo run --release' \
+&& if [ ! $WALLETPWD ]; then WALLETPWD="MassaToTheMoon2022" ; fi \
+&& screen -dmS massa-client bash -c 'cargo run --release -- -p $WALLETPWD' \
 && sleep 1 \
 && cd /massa/massa-node \
-&& screen -dmS massa-node bash -c 'RUST_BACKTRACE=full cargo run --release |& tee logs.txt' \
+&& if [ ! $NODEPWD ]; then NODEPWD="MassaToTheMoon2022" ; fi \
+&& screen -dmS massa-node bash -c 'RUST_BACKTRACE=full cargo run --release -- -p $NODEPWD |& tee logs.txt' \
 && bash /massa-guard/massa-guard.sh
