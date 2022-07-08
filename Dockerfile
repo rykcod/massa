@@ -29,7 +29,7 @@ RUN git clone --branch testnet https://github.com/massalabs/massa.git
 
 WORKDIR $HOME/massa/massa-node
 RUN source $HOME/.cargo/env \
-&& RUST_BACKTRACE=full cargo run --release |& tee logs.txt | if grep -q "Start bootstrapping from"; then pkill massa ; fi
+&& RUST_BACKTRACE=full cargo run --release  -- -p "MassaToTheMoon2022" |& tee logs.txt | if grep -q "Start bootstrapping from"; then pkill massa ; fi
 
 WORKDIR $HOME/massa/massa-client
 RUN source $HOME/.cargo/env \
