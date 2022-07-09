@@ -43,8 +43,8 @@ CheckOrCreateWalletAndNodeKey() {
 
 	## Stacke if wallet not stacke
 	# If staking_keys don't exist
-	checkStackingKey=`$PATH_TARGET/massa-client -p $WALLET_PWD node_get_staking_addresses | grep -c -E "[0-z]{49,51}"`
-	if ([ ! -e $PATH_NODE_CONF/staking_keys.json ] || [ checkStackingKey -lt 1 ])
+	checkStackingKey=`$PATH_TARGET/massa-client -p $WALLET_PWD node_get_staking_addresses | grep -c -E "[0-z]{51}"`
+	if ([ ! -e $PATH_NODE_CONF/staking_keys.json ] || [ $checkStackingKey -lt 1 ])
 	then
 		# Get private key
 		cd $PATH_CLIENT
@@ -390,7 +390,7 @@ RefreshBootstrapNode() {
 
 	# Refresh bootstrap nodes list and logs returns
 	cd $PATH_CLIENT
-#	python3 $PATH_SOURCES/bootstrap_finder.py >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+	python3 $PATH_SOURCES/bootstrap_finder.py $WALLET_PWD >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 
 	# Copy config.toml
 	cp $PATH_MOUNT/config.toml $PATH_NODE_CONF/
