@@ -113,7 +113,7 @@ BuyOrSellRoll() {
 
 		# Buy roll amount
 		cd $PATH_CLIENT
-		$PATH_TARGET/massa-client buy_rolls $3 1 0
+		$PATH_TARGET/massa-client -p $WALLET_PWD buy_rolls $3 1 0
 
 	# If MAS amount < 100 MAS and Candidate roll = 0
 	elif ([ $1 -eq 0 ] && [ $2 -lt 100 ])
@@ -171,7 +171,7 @@ BuyOrSellRoll() {
 			echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOSELL $NbRollsToSell ROLL because ROLL amount of $1 greater than target amount of $TARGET_ROLL_AMOUNT" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 			# Sell roll amount
 			cd $PATH_CLIENT
-			$PATH_TARGET/massa-client sell_rolls $3 $NbRollsToSell 0
+			$PATH_TARGET/massa-client -p $WALLET_PWD sell_rolls $3 $NbRollsToSell 0
 		# Else, if max roll target is OK, do nothing
 		else
 			# Do nothing
@@ -426,7 +426,7 @@ CheckPublicIP() {
 # RETURN = 0 for ping done 1 for ping already got
 #############################################################
 RefreshPublicIP() {
-    # Get Public IP of node
+	# Get Public IP of node
 	myIP=$(GetPublicIP)
 
 	# Get Public IP conf for node
