@@ -387,7 +387,7 @@ RefreshBootstrapNode() {
 
 	# Refresh bootstrap nodes list and logs returns
 	cd $PATH_CLIENT
-	python3 $PATH_SOURCES/bootstrap_finder.py >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+#	python3 $PATH_SOURCES/bootstrap_finder.py >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 
 	# Copy config.toml
 	cp $PATH_MOUNT/config.toml $PATH_NODE_CONF/
