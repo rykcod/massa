@@ -316,7 +316,7 @@ PingFaucet() {
 	then
 		# Call python ping faucet script with token discord
 		cd $PATH_CLIENT
-		python3 $PATH_SOURCES/faucet_spammer.py $DISCORD_TOKEN >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		python3 $PATH_SOURCES/faucet_spammer.py $DISCORD_TOKEN $WALLET_PWD >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 
 		# Return ping done
 		return 0

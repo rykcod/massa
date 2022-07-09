@@ -14,7 +14,8 @@ import datetime
 import sys
 
 TOKEN = sys.argv[1]
-CMD = ["/massa/target/release/massa-client", "wallet_info"] # edit this line to replace it with your massa client if needed
+WALLET_PWD = sys.argv[1]
+CMD = ["/massa/target/release/massa-client", "-p", WALLET_PWD, "wallet_info"] # edit this line to replace it with your massa client if needed
 FAUCET_CHANNEL_ID = 866190913030193172
 ERROR="[ERROR]"
 WARN="[WARN]"

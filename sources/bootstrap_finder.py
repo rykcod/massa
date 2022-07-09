@@ -10,6 +10,7 @@ import datetime
 import configparser
 import subprocess
 import pathlib
+import sys
 
 ERROR="[ERROR]"
 WARN="[WARN]"
@@ -21,6 +22,7 @@ BOOTSTRAPPERS_FILE_PATH = "/massa_mount/config/bootstrappers.toml"
 CLIENT = "/massa/target/release/massa-client"
 PATH_TO_LOG_FILE = "/massa/massa-node/logs.txt"
 PATH_TO_UNREACHABLE_BOOTSTRAPPERS = "/massa_mount/config/bootstrappers_unreachable.txt"
+WALLET_PWD = sys.argv[1]
 
 TEMPLATE = """
 [official]
@@ -52,8 +54,8 @@ class BootstrapFinder():
         return f"[{dateLog}]{level}[BOOTSTRAP]{message}"
 
     def get_out_nodes(self):
-        client_get_status = subprocess.Popen([self.__client, "get_status"], stdout=subprocess.PIPE)
-        grep = subprocess.Popen(["grep", "-E", "Node\'s ID: [0-z]{49,51} / IP address: [[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}"], stdin=client_get_status.stdout, stdout=subprocess.PIPE)
+        client_get_status = subprocess.Popen([self.__client, "-p", WALLET_PWD, "get_status"], stdout=subprocess.PIPE)
+        grep = subprocess.Popen(["grep", "-E", "Node\'s ID: [0-z]{51} / IP address: [[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}"], stdin=client_get_status.stdout, stdout=subprocess.PIPE)
         awk = subprocess.Popen(["awk", "{print \"[\\\"\"$7\":31245\\\", \\\"\"$3\"\\\"],\"}"], stdin=grep.stdout, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         output, error = awk.communicate()
         if (not error) and output:
@@ -63,8 +65,8 @@ class BootstrapFinder():
         return f"[{output}]"
 
     def get_ipv6_out_nodes(self):
-        client_get_status = subprocess.Popen([self.__client, "get_status"], stdout=subprocess.PIPE)
-        grep = subprocess.Popen(["grep", "-E", "Node\'s ID: [0-z]{49,51} / IP address: ([0-9a-z]{1,4})(:[0-9a-z]{0,4}){1,7}"], stdin=client_get_status.stdout, stdout=subprocess.PIPE)
+        client_get_status = subprocess.Popen([self.__client, "-p", WALLET_PWD, "get_status"], stdout=subprocess.PIPE)
+        grep = subprocess.Popen(["grep", "-E", "Node\'s ID: [0-z]{51} / IP address: ([0-9a-z]{1,4})(:[0-9a-z]{0,4}){1,7}"], stdin=client_get_status.stdout, stdout=subprocess.PIPE)
         awk = subprocess.Popen(["awk", "{print \"[\\\"[\"$7\"]:31245\\\", \\\"\"$3\"\\\"],\"}"], stdin=grep.stdout, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         output, error = awk.communicate()
         if (not error) and output:
