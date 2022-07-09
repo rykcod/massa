@@ -4,7 +4,7 @@
 #############################################################
 WaitBootstrap() {
 	# Wait node booststrap
-	tail -n +1 -f $PATH_NODE/logs.txt | grep -m 1 "Connected to node P"
+	tail -n +1 -f $PATH_NODE/logs.txt | grep -m 1 "Successful bootstrap"
 	sleep 10s
 	return 0
 }
@@ -16,7 +16,7 @@ WaitBootstrap() {
 #############################################################
 GetWalletAddress() {
 	cd $PATH_CLIENT
-	WalletAddress=$($PATH_TARGET/massa-client wallet_info | grep "Address" | cut -d " " -f 2)
+	WalletAddress=$($PATH_TARGET/massa-client -p $WALLET_PWD wallet_info | grep "Address" | cut -d " " -f 2)
 	echo "$WalletAddress"
 	return 0
 }
@@ -32,7 +32,7 @@ CheckOrCreateWalletAndNodeKey() {
 	then
 		# Generate wallet
 		cd $PATH_CLIENT
-		$PATH_TARGET/massa-client wallet_generate_private_key
+		$PATH_TARGET/massa-client -p $WALLET_PWD wallet_generate_secret_key
 		echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Generate wallet.dat" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 		# Backup wallet to the mount point as ref
 		cp $PATH_CLIENT/wallet.dat $PATH_MOUNT/wallet.dat
@@ -45,9 +45,9 @@ CheckOrCreateWalletAndNodeKey() {
 	then
 		# Get private key
 		cd $PATH_CLIENT
-		privKey=$($PATH_TARGET/massa-client wallet_info | grep "Private key" | cut -d " " -f 3)
+		privKey=$($PATH_TARGET/massa-client -p $WALLET_PWD wallet_info | grep "Secret key" | cut -d " " -f 3)
 		# Stacke wallet
-		$PATH_TARGET/massa-client node_add_staking_private_keys $privKey
+		$PATH_TARGET/massa-client -p $WALLET_PWD node_add_staking_secret_keys $privKey
 		echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Stake privKey" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 		# Backup staking_keys.json to mount point as ref
 		cp $PATH_NODE_CONF/staking_keys.json $PATH_MOUNT/staking_keys.json
@@ -73,7 +73,7 @@ CheckOrCreateWalletAndNodeKey() {
 #############################################################
 GetCandidateRoll() {
 	# Get address info
-	get_address=$(cd $PATH_CLIENT;$PATH_TARGET/massa-client get_addresses $1)
+	get_address=$(cd $PATH_CLIENT;$PATH_TARGET/massa-client -p $WALLET_PWD get_addresses $1)
 	# Select candidate roll amount
 	CandidateRolls=$(echo "$get_address" | grep "Candidate rolls" | cut -d " " -f 3)
 	# Return candidate roll amount
@@ -89,7 +89,7 @@ GetCandidateRoll() {
 #############################################################
 GetMASAmount() {
 	# Get address info
-	get_address=$(cd $PATH_CLIENT;$PATH_TARGET/massa-client get_addresses $1)
+	get_address=$(cd $PATH_CLIENT;$PATH_TARGET/massa-client -p $WALLET_PWD get_addresses $1)
 	# Get MAS amount
 	MasAmount=$(echo "$get_address" | grep "Final balance" | cut -d " " -f 3 | cut -d "." -f 1)
 	# Return candidate roll amount
@@ -124,7 +124,7 @@ BuyOrSellRoll() {
 		echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOBUY $NbRollsToBuy ROLL because MAS amount equal to $2" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 		# Buy roll amount
 		cd $PATH_CLIENT
-		$PATH_TARGET/massa-client buy_rolls $3 $NbRollsToBuy 0
+		$PATH_TARGET/massa-client -p $WALLET_PWD buy_rolls $3 $NbRollsToBuy 0
 
 	# If MAS amount > 200 MAS and rolls limitation is set
 	elif ([ $2 -gt 200 ] && [ ! $TARGET_ROLL_AMOUNT == "NULL" ])
@@ -148,7 +148,7 @@ BuyOrSellRoll() {
 			fi
 			# Buy roll amount
 			cd $PATH_CLIENT
-			$PATH_TARGET/massa-client buy_rolls $3 $NbRollsToBuy 0
+			$PATH_TARGET/massa-client -p $WALLET_PWD buy_rolls $3 $NbRollsToBuy 0
 		# If roll target amount less than active roll amount sell exceed rolls
 		elif [ $TARGET_ROLL_AMOUNT -lt $1 ]
 		then
@@ -156,7 +156,7 @@ BuyOrSellRoll() {
 			echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOSELL $NbRollsToSell ROLL because ROLL amount of $1 greater than target amount of $TARGET_ROLL_AMOUNT" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 			# Sell roll amount
 			cd $PATH_CLIENT
-			$PATH_TARGET/massa-client sell_rolls $3 $NbRollsToSell 0
+			$PATH_TARGET/massa-client -p $WALLET_PWD sell_rolls $3 $NbRollsToSell 0
 		fi
 	# If rolls limitation is set
 	elif [ ! $TARGET_ROLL_AMOUNT == "NULL" ]
@@ -212,7 +212,7 @@ CheckNodeRam() {
 CheckNodeResponsive() {
 	# Check node status and logs events
 	cd $PATH_CLIENT
-	checkGetStatus=$(timeout 2 $PATH_TARGET/massa-client get_status | wc -l)
+	checkGetStatus=$(timeout 2 $PATH_TARGET/massa-client -p $WALLET_PWD get_status | wc -l)
 
 	# If get_status is responsive
 	if [ $checkGetStatus -lt 10 ]
@@ -283,11 +283,11 @@ CheckAndReloadNode() {
 
 		# Re-Launch node
 		cd $PATH_NODE
-		screen -dmS massa-node bash -c 'RUST_BACKTRACE=full cargo run --release -- -p $NODEPWD |& tee logs.txt'
+		screen -dmS massa-node bash -c 'RUST_BACKTRACE=full cargo run --release -- -p \$NODE_PWD |& tee logs.txt'
 		sleep 1s
 		# Re-Launch client
 		cd $PATH_CLIENT
-		screen -dmS massa-client bash -c 'cargo run --release -- -p $WALLETPWD'
+		screen -dmS massa-client bash -c 'cargo run --release -- -p \$WALLET_PWD'
 
 		# Wait node booststrap
 		WaitBootstrap
@@ -469,7 +469,7 @@ GetPublicIP() {
 RegisterNodeWithMassabot() {
 	# Get registration hash
 	cd $PATH_CLIENT
-	registrationHashReturn=$($PATH_TARGET/massa-client "node_testnet_rewards_program_ownership_proof" $1 $2)
+	registrationHashReturn=$($PATH_TARGET/massa-client -p $WALLET_PWD "node_testnet_rewards_program_ownership_proof" $1 $2)
 	registrationHash=$(echo $registrationHashReturn | sed -r 's/^Enter the following in discord: //')
 
 	# Push defaut request to massabot

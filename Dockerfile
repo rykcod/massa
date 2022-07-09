@@ -48,9 +48,11 @@ COPY ./config /massa-guard/config
 # Conf rights and delete temporary node key
 RUN chmod +x /massa-guard/massa-guard.sh \
 && chmod +x /massa-guard/sources/* \
-&& mkdir /massa_mount
+&& mkdir /massa_mount \
+&& rm /massa/massa-node/config/node_privkey.key \
+&& rm /massa/massa-client/wallet.dat
 
-#Ouuverture des ports
+#Expose ports
 EXPOSE 31244
 EXPOSE 31245
 EXPOSE 33035
@@ -59,10 +61,8 @@ EXPOSE 33035
 CMD /massa-guard/sources/init_copy_host_files.sh \
 && source $HOME/.cargo/env \
 && cd /massa/massa-client \
-&& if [ ! $WALLETPWD ]; then WALLETPWD="MassaToTheMoon2022" ; fi \
-&& screen -dmS massa-client bash -c 'cargo run --release -- -p $WALLETPWD' \
+&& screen -dmS massa-client bash -c 'cargo run --release -- -p MassaToTheMoon2022' \
 && sleep 1 \
 && cd /massa/massa-node \
-&& if [ ! $NODEPWD ]; then NODEPWD="MassaToTheMoon2022" ; fi \
-&& screen -dmS massa-node bash -c 'RUST_BACKTRACE=full cargo run --release -- -p $NODEPWD |& tee logs.txt' \
+&& screen -dmS massa-node bash -c 'RUST_BACKTRACE=full cargo run --release -- -p MassaToTheMoon2022 |& tee logs.txt' \
 && bash /massa-guard/massa-guard.sh
