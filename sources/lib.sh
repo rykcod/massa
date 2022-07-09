@@ -28,7 +28,9 @@ GetWalletAddress() {
 CheckOrCreateWalletAndNodeKey() {
 	## Create a wallet, stacke and backup
 	# If wallet don't exist
-	if ([ ! -e $PATH_CLIENT/wallet.dat ] || [ `$PATH_TARGET/massa-client -p $WALLET_PWD wallet_info | wc -l` -lt 5 ])
+	cd $PATH_CLIENT
+	checkWallet=`$PATH_TARGET/massa-client -p $WALLET_PWD wallet_info | grep -c "Secret key"`
+	if ([ ! -e $PATH_CLIENT/wallet.dat ] || [ $checkWallet -lt 1 ])
 	then
 		# Generate wallet
 		cd $PATH_CLIENT
@@ -41,7 +43,8 @@ CheckOrCreateWalletAndNodeKey() {
 
 	## Stacke if wallet not stacke
 	# If staking_keys don't exist
-	if ([ ! -e $PATH_NODE_CONF/staking_keys.json ] || [ `$PATH_TARGET/massa-client -p $WALLET_PWD node_get_staking_addresses | wc -l` -lt 2 ])
+	checkStackingKey=`$PATH_TARGET/massa-client -p $WALLET_PWD node_get_staking_addresses | grep -c -E "[0-z]{49,51}"`
+	if ([ ! -e $PATH_NODE_CONF/staking_keys.json ] || [ checkStackingKey -lt 1 ])
 	then
 		# Get private key
 		cd $PATH_CLIENT
