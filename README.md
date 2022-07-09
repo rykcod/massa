@@ -1,5 +1,5 @@
 # Massa node + Massa-guard #
-**Last build for Massa testnet Episode 12 release 12.0 [NOT TESTED YET]**
+**Last build for Massa testnet Episode 12 release 12.0**
 
 ![alt text](https://d33wubrfki0l68.cloudfront.net/7df7d7a57a8dda3cc07aab16121b3e3990cf0893/16ccd/portfolio/massa.png)
 
@@ -23,12 +23,12 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Autoget MAS faucet on Discord 1 time by day (Need to set discord token in /massa_mount/config/config.ini)
 - [STARTING]
   - Massa-guard will auto register your node with massabot.
-  - Massa-guard will auto create wallet + nodekey + stacke privkey.
+  - Massa-guard will auto create wallet + nodekey + stacke privkey; all with default password "**MassaToTheMoon2022**".
   - Massa-guard auto create your config.toml with your public IP.
   - Massa-guard auto get faucet to buy your first roll.
 
 ### [RELEASE NOTES] ###
-- 20220708 - Testnet 12 Ready [NOT TESTED YET]!
+- 20220710 - Testnet 12 Ready!
 - 20220629 - Add auto-registration feature + docker ENV for Discord token & DYNIP feature
 - 20220613 - Testnet 11 - v11.3 Ready!
 - 20220610 - Testnet 11 - v11.2 Ready!
