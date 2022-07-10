@@ -38,6 +38,14 @@ CheckOrCreateWalletAndNodeKey() {
 		echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Generate wallet.dat" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 		# Backup wallet to the mount point as ref
 		cp $PATH_CLIENT/wallet.dat $PATH_MOUNT/wallet.dat
+
+		clientPID=$(ps -ax | grep massa-client | grep SCREEN | awk '{print $1}')
+		# Kill client SCREEN
+		kill $clientPID
+		# Re-Launch client
+		cd $PATH_CLIENT
+		screen -dmS massa-client bash -c 'cargo run --release -- -p MassaToTheMoon2022'
+
 		echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Backup wallet.dat" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 	fi
 
