@@ -180,7 +180,7 @@ class BootstrapFinder():
         for bootstrapper_ipv6 in bootstrappers_ipv6:
             if (not bootstrapper_ipv6 in official_bootstrappers) and (not bootstrapper_ipv6 in friend_bootstrappers) and \
                 (not bootstrapper_ipv6 in banned_bootstrappers) and (not bootstrapper_ipv6 in other_bootstrappers) and \
-                (not any(unreachablebootstrapper in bootstrapper for unreachablebootstrapper in unreachablebootstrapperslist)):
+                (not any(unreachablebootstrapper in bootstrapper_ipv6 for unreachablebootstrapper in unreachablebootstrapperslist)):
                 print (self.get_trace(INFO, f"Adding new bootstrapper {bootstrapper_ipv6} to [others] bootstrap list"))
                 other_bootstrappers.append(bootstrapper_ipv6)
         other_bootstrappers = ",\n".join(other_bootstrappers)
