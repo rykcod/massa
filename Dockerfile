@@ -60,6 +60,6 @@ EXPOSE 33035
 # Init path and values
 CMD /massa-guard/sources/init_copy_host_files.sh \
 # Run node and client
-&& bash /massa-guard/sources/run.sh
+&& bash /massa-guard/sources/run.sh \
 # Run watchdog massa-guard
 && bash /massa-guard/massa-guard.sh
