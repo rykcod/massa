@@ -44,7 +44,7 @@ CheckOrCreateWalletAndNodeKey() {
 		kill $clientPID
 		# Re-Launch client
 		cd $PATH_CLIENT
-		screen -dmS massa-client bash -c 'cargo run --release -- -p MassaToTheMoon2022'
+		screen -dmS massa-client bash -c 'cargo run --release -- -p '$WALLET_PWD''
 
 		echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Backup wallet.dat" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 	fi
@@ -294,11 +294,11 @@ CheckAndReloadNode() {
 
 		# Re-Launch node
 		cd $PATH_NODE
-		screen -dmS massa-node bash -c 'RUST_BACKTRACE=full cargo run --release -- -p MassaToTheMoon2022 |& tee logs.txt'
+		screen -dmS massa-node bash -c 'RUST_BACKTRACE=full cargo run --release -- -p 'NODE_PWD' |& tee logs.txt'
 		sleep 1s
 		# Re-Launch client
 		cd $PATH_CLIENT
-		screen -dmS massa-client bash -c 'cargo run --release -- -p MassaToTheMoon2022'
+		screen -dmS massa-client bash -c 'cargo run --release -- -p '$WALLET_PWD''
 
 		# Wait node booststrap
 		WaitBootstrap

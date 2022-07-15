@@ -57,12 +57,9 @@ EXPOSE 31244
 EXPOSE 31245
 EXPOSE 33035
 
-# Lancement du node
+# Init path and values
 CMD /massa-guard/sources/init_copy_host_files.sh \
-&& source $HOME/.cargo/env \
-&& cd /massa/massa-client \
-&& screen -dmS massa-client bash -c 'cargo run --release -- -p MassaToTheMoon2022' \
-&& sleep 1 \
-&& cd /massa/massa-node \
-&& screen -dmS massa-node bash -c 'RUST_BACKTRACE=full cargo run --release -- -p MassaToTheMoon2022 |& tee logs.txt' \
+# Run node and client
+&& bash /massa-guard/sources/run.sh
+# Run watchdog massa-guard
 && bash /massa-guard/massa-guard.sh
