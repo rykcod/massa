@@ -28,7 +28,7 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Massa-guard auto get faucet to buy your first roll.
 
 ### [RELEASE NOTES] ###
-- 20220714 - Testnet 12 - v12.1.1 - Custom wallet and node password feature + Custom public IP to config.toml
+- 20220716 - Testnet 12 - v12.1.1 - Custom wallet and node password feature + Custom public IP to config.toml
 - 20220714 - Testnet 12 - v12.1 Ready!
 - 20220710 - Testnet 12 Ready!
 - 20220629 - Add auto-registration feature + docker ENV for Discord token & DYNIP feature
