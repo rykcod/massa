@@ -37,15 +37,21 @@ then
 	echo "[$(date +%Y%m%d-%HH%M)][INFO][LOAD]LOAD $PATH_MOUNT/config.toml as ref" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 # If ref config.toml dont exist in massa_mount
 else
-	myIP=$(GetPublicIP)
+	if [ $IP ]
+	then
+		myIP=$IP
+	else
+		myIP=$(GetPublicIP)
+	fi
 	echo "[network]" > $PATH_MOUNT/config.toml
 	echo "routable_ip = \"$myIP\"" >> $PATH_MOUNT/config.toml
 	cp $PATH_MOUNT/config.toml $PATH_NODE_CONF/config.toml
 
 	if [ ! $DISCORD_TOKEN == "NULL" ]
 	then
+		echo "DISCORD_TOKEN = $DISCORD_TOKEN"
 		# Push IP to massabot
-    	timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD_TOKEN $myIP > $PATH_MASSABOT_REPLY
+		timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD_TOKEN $myIP > $PATH_MASSABOT_REPLY
 	fi
 
 	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Create your default config.toml with $myIP as routable IP" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
@@ -76,4 +82,3 @@ then
 	# Create bootstrappers_unreachable.txt
 	touch $PATH_CONF_MASSAGUARD/bootstrappers_unreachable.txt
 fi
-

@@ -294,7 +294,7 @@ CheckAndReloadNode() {
 
 		# Re-Launch node
 		cd $PATH_NODE
-		screen -dmS massa-node bash -c 'RUST_BACKTRACE=full cargo run --release -- -p 'NODE_PWD' |& tee logs.txt'
+		screen -dmS massa-node bash -c 'RUST_BACKTRACE=full cargo run --release -- -p '$NODE_PWD' |& tee logs.txt'
 		sleep 1s
 		# Re-Launch client
 		cd $PATH_CLIENT
