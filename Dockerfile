@@ -29,13 +29,11 @@ RUN git clone --branch testnet https://github.com/massalabs/massa.git
 
 WORKDIR $HOME/massa/massa-node
 RUN source $HOME/.cargo/env \
-&& if [ ! $NODEPWD ]; then NODEPWD="MassaToTheMoon2022" ; fi \
-&& RUST_BACKTRACE=full cargo run --release -- -p '$NODEPWD' |& tee logs.txt | if grep -q "Start bootstrapping"; then pkill massa ; fi
+&& RUST_BACKTRACE=full cargo run --release -- -p MassaToTheMoon2022 |& tee logs.txt | if grep -q "Start bootstrapping"; then pkill massa ; fi
 
 WORKDIR $HOME/massa/massa-client
 RUN source $HOME/.cargo/env \
-&& if [ ! $WALLETPWD ]; then WALLETPWD="MassaToTheMoon2022" ; fi \
-&& cargo run --release  -- -p '$WALLETPWD'
+&& cargo run --release  -- -p MassaToTheMoon2022
 
 RUN mkdir /massa-guard \
 && mkdir /massa-guard/sources \
