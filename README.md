@@ -28,6 +28,7 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Massa-guard auto get faucet to buy your first roll.
 
 ### [RELEASE NOTES] ###
+- 20220716 - Testnet 12 - v12.1.1 - Custom wallet and node password feature + Custom public IP to config.toml
 - 20220714 - Testnet 12 - v12.1 Ready!
 - 20220710 - Testnet 12 Ready!
 - 20220629 - Add auto-registration feature + docker ENV for Discord token & DYNIP feature
@@ -56,12 +57,15 @@ Create an empty folder to mount in our container /massa_mount path or store your
 
 /!\ __User of one of previous release?__ Please update your /massa_mount/config/config.ini to check if all entries exist. Check template last here https://github.com/rykcod/massa/blob/main/config/default_config_template.ini
 
-/!\ Please note Testnet 12 implement wallet and node password, with this release please start from scratch without historical testnet wallet/nodekey etc... massa-guard will generate new files with default password "MassaToTheMoon2022"
+/!\ Please note Testnet 12 implement wallet and node password, with this release please start from scratch without historical testnet wallet/nodekey etc... massa-guard will generate new files with default password "MassaToTheMoon2022". If you want to custopm your "node key password" or "wallet password" please define ENV docker variable WALLETPWD and/or NODEPWD.
 
 #### [RUN] Usecase Example ####
 /!\ You can define 2 ENV values when you create your container:
  - ''DISCORD'' - Set with your discord token id (Refer to HELP section) - To enable discord feature (GetFaucet + NodeRegistration + DynamicalIP)
  - ''DYNIP'' - Set with "0" if you host under static public IP or "1" if you host under dynimic public IP to enable update IP feature
+ - ''WALLETPWD'' - Set with "YourCustomPassword" if you want to use a custom wallet password.
+ - ''NODEPWD'' - Set with "YourCustomPassword" if you want to use a custom node password.
+ - ''IP'' - Set with "YourIPAddress" if your node have differents publics IPs and you want to set your custom selection.
 /!\ Please note, this ENV variables have a low priority if a previous config.ini exist in your mount point.
 
   * Container creation example with ENV variables to define Dicord token and a static IP usage :
