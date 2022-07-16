@@ -3,7 +3,7 @@ FROM ubuntu:20.04
  
 # LABEL about the custom image
 LABEL maintainer="benoit@alphatux.fr"
-LABEL version="0.12.1.0"
+LABEL version="0.12.1.1"
 LABEL description="Node Massa"
  
 # Defini le timezone du container
@@ -23,14 +23,14 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
 RUN source $HOME/.cargo/env \
 && rustup toolchain install nightly \
-&& rustup default nightly
+&& rustup default nightly-2022-07-11
 
 RUN git clone --branch testnet https://github.com/massalabs/massa.git
 
 WORKDIR $HOME/massa/massa-node
 RUN source $HOME/.cargo/env \
 && if [ ! $NODEPWD ]; then NODEPWD="MassaToTheMoon2022" ; fi \
-&& RUST_BACKTRACE=full cargo run --release -- -p '$NODEPWD' |& tee logs.txt | if grep -q "Started node at time"; then pkill massa ; fi
+&& RUST_BACKTRACE=full cargo run --release -- -p '$NODEPWD' |& tee logs.txt | if grep -q "Start bootstrapping"; then pkill massa ; fi
 
 WORKDIR $HOME/massa/massa-client
 RUN source $HOME/.cargo/env \
@@ -49,8 +49,8 @@ COPY ./config /massa-guard/config
 RUN chmod +x /massa-guard/massa-guard.sh \
 && chmod +x /massa-guard/sources/* \
 && mkdir /massa_mount \
-&& rm /massa/massa-node/config/node_privkey.key \
-&& rm /massa/massa-client/wallet.dat
+&& if [ -e /massa/massa-node/config/node_privkey.key ]; then rm /massa/massa-node/config/node_privkey.key; fi \
+&& if [ -e /massa/massa-client/wallet.dat ]; then rm /massa/massa-client/wallet.dat; fi
 
 #Expose ports
 EXPOSE 31244
