@@ -256,6 +256,11 @@ BackupLogsNode() {
 		# Create node backup logs of the day
 		mv $PATH_NODE/logs.txt $PATH_LOGS_MASSANODE/$(date +%Y%m%d)-logs.txt
 	fi
+	# Purge last current node log file in mount point
+	if [ -e $PATH_LOGS_MASSANODE/current.txt ]
+	then
+		rm $PATH_LOGS_MASSANODE/current.txt
+	fi
         # Create clean node logs file
         if [ ! -e $PATH_NODE/logs.txt ]
         then
@@ -292,13 +297,8 @@ CheckAndReloadNode() {
 		# Reload conf files from ref
 		$PATH_SOURCES/init_copy_host_files.sh
 
-		# Re-Launch node
-		cd $PATH_NODE
-		screen -dmS massa-node bash -c 'RUST_BACKTRACE=full cargo run --release -- -p '$NODE_PWD' |& tee logs.txt'
-		sleep 1s
-		# Re-Launch client
-		cd $PATH_CLIENT
-		screen -dmS massa-client bash -c 'cargo run --release -- -p '$WALLET_PWD''
+		# Re-Launch node and client
+		bash $PATH_SOURCES/run.sh
 
 		# Wait node booststrap
 		WaitBootstrap

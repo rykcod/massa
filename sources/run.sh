@@ -12,4 +12,4 @@ screen -dmS massa-client bash -c 'cargo run --release -- -p '$WALLET_PWD''
 sleep 1s
 # Launch node
 cd $PATH_NODE
-screen -dmS massa-node bash -c 'RUST_BACKTRACE=full cargo run --release -- -p '$NODE_PWD' |& tee logs.txt'
+screen -dmS massa-node bash -c 'RUST_BACKTRACE=full cargo run --release -- -p '$NODE_PWD' |& tee -a logs.txt '$PATH_LOGS_MASSANODE'/current.txt'
