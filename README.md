@@ -1,5 +1,5 @@
 # Massa node + Massa-guard #
-**Last build for Massa testnet Episode 12 release 12.1**
+**Last build for Massa testnet Episode 12 release 12.2**
 
 ![alt text](https://d33wubrfki0l68.cloudfront.net/7df7d7a57a8dda3cc07aab16121b3e3990cf0893/16ccd/portfolio/massa.png)
 
@@ -28,16 +28,11 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Massa-guard auto get faucet to buy your first roll.
 
 ### [RELEASE NOTES] ###
+- 20220716 - Testnet 12 - v12.2.0 - v12.2 Ready!
 - 20220716 - Testnet 12 - v12.1.1 - Custom wallet and node password feature + Custom public IP to config.toml
 - 20220714 - Testnet 12 - v12.1 Ready!
 - 20220710 - Testnet 12 Ready!
 - 20220629 - Add auto-registration feature + docker ENV for Discord token & DYNIP feature
-- 20220613 - Testnet 11 - v11.3 Ready!
-- 20220610 - Testnet 11 - v11.2 Ready!
-- 20220610 - Testnet 11 - v11.1 Ready!
-- 20220609 - Testnet 11 Ready!
-- 20220603 - Add dynamical public IP feature to check IP change and then refresh config.toml --> restart node to reload config.toml --> push new IP to massabot
-- 20220520 - Add public IP of the node in config.toml file if ref config.toml don't exist in mountpoint
 
 ## [HOWTO] ##
 ### [SETUP] ###
