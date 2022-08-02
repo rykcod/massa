@@ -53,8 +53,6 @@ Create an empty folder to mount in our container /massa_mount path or store your
 
 /!\ __User of one of previous release?__ Please update your /massa_mount/config/config.ini to check if all entries exist. Check template last here https://github.com/rykcod/massa/blob/main/config/default_config_template.ini
 
-/!\ Please note Testnet 12 implement wallet and node password, with this release please start from scratch without historical testnet wallet/nodekey etc... massa-guard will generate new files with default password "MassaToTheMoon2022". If you want to custopm your "node key password" or "wallet password" please define ENV docker variable WALLETPWD and/or NODEPWD.
-
 #### [RUN] Usecase Example ####
 /!\ You can define 2 ENV values when you create your container:
  - ''DISCORD'' - Set with your discord token id (Refer to HELP section) - To enable discord feature (GetFaucet + NodeRegistration + DynamicalIP)
