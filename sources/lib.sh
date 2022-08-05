@@ -121,7 +121,7 @@ BuyOrSellRoll() {
 
 		# Buy roll amount
 		cd $PATH_CLIENT
-		$PATH_TARGET/massa-client -p $WALLET_PWD buy_rolls $3 1 0
+		$PATH_TARGET/massa-client -p $WALLET_PWD buy_rolls $3 1 0 > /dev/null
 
 	# If MAS amount < 100 MAS and Candidate roll = 0
 	elif ([ $1 -eq 0 ] && [ $2 -lt 100 ])
@@ -135,7 +135,7 @@ BuyOrSellRoll() {
 		echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOBUY $NbRollsToBuy ROLL because MAS amount equal to $2" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 		# Buy roll amount
 		cd $PATH_CLIENT
-		$PATH_TARGET/massa-client -p $WALLET_PWD buy_rolls $3 $NbRollsToBuy 0
+		$PATH_TARGET/massa-client -p $WALLET_PWD buy_rolls $3 $NbRollsToBuy 0 > /dev/null
 
 	# If MAS amount > 200 MAS and rolls limitation is set
 	elif ([ $2 -gt 200 ] && [ ! $TARGET_ROLL_AMOUNT == "NULL" ])
@@ -159,7 +159,7 @@ BuyOrSellRoll() {
 			fi
 			# Buy roll amount
 			cd $PATH_CLIENT
-			$PATH_TARGET/massa-client -p $WALLET_PWD buy_rolls $3 $NbRollsToBuy 0
+			$PATH_TARGET/massa-client -p $WALLET_PWD buy_rolls $3 $NbRollsToBuy 0 > /dev/null
 		# If roll target amount less than active roll amount sell exceed rolls
 		elif [ $TARGET_ROLL_AMOUNT -lt $1 ]
 		then
@@ -167,7 +167,7 @@ BuyOrSellRoll() {
 			echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOSELL $NbRollsToSell ROLL because ROLL amount of $1 greater than target amount of $TARGET_ROLL_AMOUNT" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 			# Sell roll amount
 			cd $PATH_CLIENT
-			$PATH_TARGET/massa-client -p $WALLET_PWD sell_rolls $3 $NbRollsToSell 0
+			$PATH_TARGET/massa-client -p $WALLET_PWD sell_rolls $3 $NbRollsToSell 0 > /dev/null
 		fi
 	# If rolls limitation is set
 	elif [ ! $TARGET_ROLL_AMOUNT == "NULL" ]
@@ -179,7 +179,7 @@ BuyOrSellRoll() {
 			echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOSELL $NbRollsToSell ROLL because ROLL amount of $1 greater than target amount of $TARGET_ROLL_AMOUNT" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 			# Sell roll amount
 			cd $PATH_CLIENT
-			$PATH_TARGET/massa-client -p $WALLET_PWD sell_rolls $3 $NbRollsToSell 0
+			$PATH_TARGET/massa-client -p $WALLET_PWD sell_rolls $3 $NbRollsToSell 0 > /dev/null
 		# Else, if max roll target is OK, do nothing
 		else
 			# Do nothing
