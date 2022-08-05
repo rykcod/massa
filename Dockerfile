@@ -3,17 +3,17 @@ FROM ubuntu:20.04
  
 # LABEL about the custom image
 LABEL maintainer="benoit@alphatux.fr"
-LABEL version="0.13.0.1"
+LABEL version="0.13.0.2"
 LABEL description="Node Massa"
  
-# Defini le timezone du container
+# Set timezone and default cli
 SHELL ["/bin/bash", "-c"]
 ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/Paris"
 
-# Met a jour la liste des paquets
+# Update and install packages
 RUN apt-get update \
 && apt-get upgrade -y \
-&& apt install -y pkg-config curl wget libclang-dev build-essential libssl-dev screen procps python3-pip netcat \
+&& apt install -y curl wget screen procps python3-pip netcat \
 && apt autoclean -y \
 && python3 -m pip install -U discord.py
 
@@ -22,6 +22,7 @@ RUN wget https://github.com/massalabs/massa/releases/download/TEST.13.0/massa_TE
 && tar -zxpf massa_TEST.13.0_release_linux.tar.gz \
 && rm -f massa_TEST.13.0_release_linux.tar.gz
 
+# Create massa-guard tree
 RUN mkdir /massa-guard \
 && mkdir /massa-guard/sources \
 && mkdir /massa-guard/config
@@ -41,7 +42,7 @@ EXPOSE 31244
 EXPOSE 31245
 EXPOSE 33035
 
-# Lancement du node
+# Node run then massa-guard
 CMD /massa-guard/sources/init_copy_host_files.sh \
 && bash /massa-guard/sources/run.sh \
 && bash /massa-guard/massa-guard.sh

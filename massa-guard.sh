@@ -12,7 +12,7 @@ WaitBootstrap
 
 #====================== Check and load ==========================#
 # Log MASSA-GUARD Start
-echo "[$(date +%Y%m%d-%HH%M)][INFO][START]MASSA-GUARD is starting" >> $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+echo "[$(date +%Y%m%d-%HH%M)][INFO][START]MASSA-GUARD is starting" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 # Load Wallet and Node key or create it and stake wallet
 CheckOrCreateWalletAndNodeKey
 # Get stacking address

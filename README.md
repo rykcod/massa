@@ -28,6 +28,7 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Massa-guard auto get faucet to buy your first roll.
 
 ### [RELEASE NOTES] ###
+- 20220805 - Testnet 13 - v13.0.2 - Purge useless packages with binaries and add logs to logs container
 - 20220805 - Testnet 13 - v13.0.1 - Create from Massa binaries
 - 20220722 - Testnet 13 - v13.0.0 - v13.0 Ready!
 - 20220722 - Testnet 12 - v12.2.0 - v12.2 Ready!
