@@ -13,44 +13,30 @@ ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/Paris"
 # Met a jour la liste des paquets
 RUN apt-get update \
 && apt-get upgrade -y \
-&& apt install -y pkg-config curl libclang-dev git build-essential libssl-dev screen procps python3-pip netcat \
+&& apt install -y pkg-config curl wget libclang-dev build-essential libssl-dev screen procps python3-pip netcat \
 && apt autoclean -y \
 && python3 -m pip install -U discord.py
 
-# Prepare l'environnement
-#USER massa
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-
-RUN source $HOME/.cargo/env \
-&& rustup toolchain install nightly \
-&& rustup default nightly
-
-RUN git clone --branch testnet https://github.com/massalabs/massa.git
-
-WORKDIR $HOME/massa/massa-node
-RUN source $HOME/.cargo/env \
-&& RUST_BACKTRACE=full cargo run --release -- -p MassaToTheMoon2022 |& tee logs.txt | if grep -q "Start bootstrapping"; then pkill massa ; fi
-
-WORKDIR $HOME/massa/massa-client
-RUN source $HOME/.cargo/env \
-&& cargo run --release  -- -p MassaToTheMoon2022
+# Download Testnet 13.0 Massa binaries
+RUN wget https://github.com/massalabs/massa/releases/download/TEST.13.0/massa_TEST.13.0_release_linux.tar.gz \
+&& tar -zxpf massa_TEST.13.0_release_linux.tar.gz \
+&& rm -f massa_TEST.13.0_release_linux.tar.gz
 
 RUN mkdir /massa-guard \
 && mkdir /massa-guard/sources \
 && mkdir /massa-guard/config
 
+# Copy massa-guard sources
 COPY ./massa-guard.sh /massa-guard/
 COPY ./sources /massa-guard/sources
 COPY ./config /massa-guard/config
 
-# Conf rights and delete temporary node key
+# Conf rights
 RUN chmod +x /massa-guard/massa-guard.sh \
 && chmod +x /massa-guard/sources/* \
-&& mkdir /massa_mount \
-&& if [ -e /massa/massa-node/config/node_privkey.key ]; then rm /massa/massa-node/config/node_privkey.key; fi \
-&& if [ -e /massa/massa-client/wallet.dat ]; then rm /massa/massa-client/wallet.dat; fi
+&& mkdir /massa_mount
 
-#Expose ports
+# Expose ports
 EXPOSE 31244
 EXPOSE 31245
 EXPOSE 33035

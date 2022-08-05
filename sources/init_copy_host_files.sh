@@ -49,7 +49,6 @@ else
 
 	if [ ! $DISCORD_TOKEN == "NULL" ]
 	then
-		echo "DISCORD_TOKEN = $DISCORD_TOKEN"
 		# Push IP to massabot
 		timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD_TOKEN $myIP > $PATH_MASSABOT_REPLY
 	fi
