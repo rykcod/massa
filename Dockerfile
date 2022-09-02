@@ -1,26 +1,36 @@
 # Download custom base
 FROM ubuntu:20.04
- 
+
+# Build Arguments
+ARG VERSION
+
+ARG MASSA_PACKAGE="massa_${VERSION}_release_linux.tar.gz"
+ARG MASSA_PACKAGE_ARM64="massa_${VERSION}_release_linux_arm64.tar.gz"
+ARG MASSA_PACKAGE_LOCATION="https://github.com/massalabs/massa/releases/download/$VERSION/"
+
 # LABEL about the custom image
 LABEL maintainer="benoit@alphatux.fr"
-LABEL version="0.13.0.2"
-LABEL description="Node Massa"
- 
+LABEL version=$VERSION
+LABEL description="Massa node"
+
 # Set timezone and default cli
 SHELL ["/bin/bash", "-c"]
 ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/Paris"
 
-# Update and install packages
+# Update and install packages dependencies
 RUN apt-get update \
 && apt-get upgrade -y \
 && apt install -y curl wget screen procps python3-pip netcat \
 && apt autoclean -y \
 && python3 -m pip install -U discord.py
 
-# Download Testnet 13.0 Massa binaries
-RUN wget https://github.com/massalabs/massa/releases/download/TEST.13.0/massa_TEST.13.0_release_linux.tar.gz \
-&& tar -zxpf massa_TEST.13.0_release_linux.tar.gz \
-&& rm -f massa_TEST.13.0_release_linux.tar.gz
+# Update the package name if building for arm64 platform
+RUN if [[ $TARGETPLATFORM =~ linux/arm* ]]; then MASSA_PACKAGE=MASSA_PACKAGE_ARM64; fi
+
+# Download testnet Massa binaries
+RUN wget "$MASSA_PACKAGE_LOCATION/$MASSA_PACKAGE" \
+&& tar -zxpf $MASSA_PACKAGE \
+&& rm -f $MASSA_PACKAGE
 
 # Create massa-guard tree
 RUN mkdir /massa-guard \
