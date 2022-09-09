@@ -22,7 +22,7 @@ RUN apt-get update \
 && apt-get upgrade -y \
 && apt install -y curl wget screen procps python3-pip netcat \
 && apt autoclean -y \
-&& python3 -m pip install -U discord.py
+&& python3 -m pip install -U discord.py==1.7.3
 
 # Update the package name if building for arm64 platform
 RUN if [[ $TARGETPLATFORM =~ linux/arm* ]]; then MASSA_PACKAGE=MASSA_PACKAGE_ARM64; fi
