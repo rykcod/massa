@@ -1,5 +1,3 @@
-### Release 09/09/2022 ###
-
 # Download custom base
 FROM ubuntu:20.04
 

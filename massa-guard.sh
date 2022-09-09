@@ -1,5 +1,5 @@
 #!/bin/bash
-#==================== Configuration ========================#
+#====================== Configuration ==========================#
 # Global configuration
 . /massa-guard/config/default_config.ini
 # Custom configuration
