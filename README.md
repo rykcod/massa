@@ -5,7 +5,7 @@
 
 ## [DESCRIPTION] ##
 ### [FEATURES] ###
-Build a massa-node container wich include some automation features
+Build a massa-node container wich include some automation features from a community image with Massalabs agreements
 
 This image include a script named "**/massa-guard/massa-guard.sh**" to:
 - [AUTOBUY/AUTOSELL]

@@ -31,7 +31,7 @@ class DiscordClient(discord.Client):
             address = ""
             for line in output.decode("UTF-8").split("\n"):
                 if "Address" in line:
-                    address = line.split(" ")[-1]
+                    address = line.split(" ")[1]
                     break
             if address :
                 faucet_channel = self.get_channel(FAUCET_CHANNEL_ID)
