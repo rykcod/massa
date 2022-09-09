@@ -70,10 +70,10 @@ then
 	echo "[$(date +%Y%m%d-%HH%M)][INFO][LOAD]LOAD $PATH_MOUNT/node_privkey.key as ref" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 fi
 # Wallet to use to stacke
-if [ -e $PATH_MOUNT/staking_keys.json ]
+if [ -e $PATH_MOUNT/staking_wallet.dat ]
 then
-	cp $PATH_MOUNT/staking_keys.json $PATH_NODE_CONF/staking_keys.json
-	echo "[$(date +%Y%m%d-%HH%M)][INFO][LOAD]LOAD $PATH_MOUNT/staking_keys.json as ref" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+	cp $PATH_MOUNT/staking_wallet.dat $PATH_NODE_CONF/staking_wallet.dat
+	echo "[$(date +%Y%m%d-%HH%M)][INFO][LOAD]LOAD $PATH_MOUNT/staking_wallet.dat as ref" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 fi
 # If unreachable node file dont exist
 if [ ! -e $PATH_CONF_MASSAGUARD/bootstrappers_unreachable.txt ]

@@ -52,7 +52,7 @@ CheckOrCreateWalletAndNodeKey() {
 	## Stacke if wallet not stacke
 	# If staking_keys don't exist
 	checkStackingKey=`$PATH_TARGET/massa-client -p $WALLET_PWD node_get_staking_addresses | grep -c -E "[0-z]{51}"`
-	if ([ ! -e $PATH_NODE_CONF/staking_keys.json ] || [ $checkStackingKey -lt 1 ])
+	if ([ ! -e $PATH_NODE_CONF/staking_wallet.dat ] || [ $checkStackingKey -lt 1 ])
 	then
 		# Get private key
 		cd $PATH_CLIENT
@@ -60,9 +60,9 @@ CheckOrCreateWalletAndNodeKey() {
 		# Stacke wallet
 		$PATH_TARGET/massa-client -p $WALLET_PWD node_add_staking_secret_keys $privKey > /dev/null
 		echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Stake privKey" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
-		# Backup staking_keys.json to mount point as ref
-		cp $PATH_NODE_CONF/staking_keys.json $PATH_MOUNT/staking_keys.json
-		echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Backup staking_keys.json" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		# Backup staking_wallet.dat to mount point as ref
+		cp $PATH_NODE_CONF/staking_wallet.dat $PATH_MOUNT/staking_wallet.dat
+		echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Backup staking_wallet.dat" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 	fi
 
 	## Backup node_privkey if no ref in mount point
@@ -84,9 +84,9 @@ CheckOrCreateWalletAndNodeKey() {
 #############################################################
 GetCandidateRoll() {
 	# Get address info
-	get_address=$(cd $PATH_CLIENT;$PATH_TARGET/massa-client -p $WALLET_PWD get_addresses $1)
+	get_address=$(cd $PATH_CLIENT;$PATH_TARGET/massa-client -p $WALLET_PWD wallet_info)
 	# Select candidate roll amount
-	CandidateRolls=$(echo "$get_address" | grep "Candidate rolls" | cut -d " " -f 3)
+	CandidateRolls=$(echo "$get_address" wallet_info | grep "Rolls" | cut -d "=" -f 4)
 	# Return candidate roll amount
 	echo "$CandidateRolls"
 	return 0
@@ -100,10 +100,10 @@ GetCandidateRoll() {
 #############################################################
 GetMASAmount() {
 	# Get address info
-	get_address=$(cd $PATH_CLIENT;$PATH_TARGET/massa-client -p $WALLET_PWD get_addresses $1)
+	get_address=$(cd $PATH_CLIENT;$PATH_TARGET/massa-client -p $WALLET_PWD wallet_info)
 	# Get MAS amount
-	MasAmount=$(echo "$get_address" | grep "Final balance" | cut -d " " -f 3 | cut -d "." -f 1)
-	# Return candidate roll amount
+	MasAmount=$(echo "$get_address" | grep -E "Sequential balance"." final" | cut -d "=" -f 2 | cut -d "," -f 1)
+	# Return MAS amount
 	echo "$MasAmount"
 	return 0
 }
