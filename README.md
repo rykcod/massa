@@ -1,5 +1,5 @@
 # Massa node + Massa-guard #
-**Last build for Massa testnet Episode 14 release 14.0**
+**Last build for Massa testnet Episode 14 release 14.0.1**
 
 ![alt text](https://d33wubrfki0l68.cloudfront.net/7df7d7a57a8dda3cc07aab16121b3e3990cf0893/16ccd/portfolio/massa.png)
 
@@ -18,16 +18,17 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
 - [WATCHDOG]
   - Restart node when hang or when ram consumption exceed 90% (Value can be adjust)
   - You host your node under a dynamical IP? massa-guard will watch IP change and update your config.toml and push IP updates to massabot.
-  - Push public IP or public IP change to massabot (Need to set discord token in /massa_mount/config/config.ini) **/!\ Dont work in v14.0.0**
+  - Push public IP or public IP change to massabot (Need to set discord token in /massa_mount/config/config.ini)
   - Logs his actions over /massa_mount/logs/ and backup node logs before restart if necessary.
-  - Autoget MAS faucet on Discord 1 time by day (Need to set discord token in /massa_mount/config/config.ini) **/!\ Dont work in v14.0.0**
+  - Autoget MAS faucet on Discord 1 time by day (Need to set discord token in /massa_mount/config/config.ini)
 - [STARTING]
   - Massa-guard will auto register your node with massabot.
   - Massa-guard will auto create wallet + nodekey + stacke privkey; all with default password "**MassaToTheMoon2022**".
   - Massa-guard auto create your config.toml with your public IP.
-  - Massa-guard auto get faucet to buy your first roll. **/!\ Dont work in v14.0.0**
+  - Massa-guard auto get faucet to buy your first roll.
 
 ### [RELEASE NOTES] ###
+- 20220909 - Testnet 14 - v14.0.1 - Solve discord feature issues
 - 20220909 - Testnet 14 - v14.0.0 - Testnet 14 Ready! **/!\ Discord features dont work in this version (Faucet spammer / Dyn IP / Resgistration)**
 - 20220805 - Testnet 13 - v13.0.3 - Solve registration issue when IP already registered
 - 20220805 - Testnet 13 - v13.0.2 - Purge useless packages with binaries and add logs to logs container
