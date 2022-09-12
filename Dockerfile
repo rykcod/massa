@@ -2,7 +2,8 @@
 FROM ubuntu:20.04
 
 # Build Arguments
-ARG VERSION=TEST.14.0
+ARG TARGETPLATFORM
+ARG VERSION
 
 ARG MASSA_PACKAGE="massa_${VERSION}_release_linux.tar.gz"
 ARG MASSA_PACKAGE_ARM64="massa_${VERSION}_release_linux_arm64.tar.gz"
@@ -24,13 +25,11 @@ RUN apt-get update \
 && apt autoclean -y \
 && python3 -m pip install -U discord.py==1.7.3
 
-# Update the package name if building for arm64 platform
-RUN if [[ $TARGETPLATFORM =~ linux/arm* ]]; then MASSA_PACKAGE=MASSA_PACKAGE_ARM64; fi
-
-# Download testnet Massa binaries
-RUN wget "$MASSA_PACKAGE_LOCATION/$MASSA_PACKAGE" \
-&& tar -zxpf $MASSA_PACKAGE \
-&& rm -f $MASSA_PACKAGE
+# Download the Massa package
+COPY download-massa.sh .
+RUN chmod u+x download-massa.sh \
+&& ./download-massa.sh \
+&& rm download-massa.sh
 
 # Create massa-guard tree
 RUN mkdir /massa-guard \
@@ -38,9 +37,9 @@ RUN mkdir /massa-guard \
 && mkdir /massa-guard/config
 
 # Copy massa-guard sources
-COPY ./massa-guard.sh /massa-guard/
-COPY ./sources /massa-guard/sources
-COPY ./config /massa-guard/config
+COPY massa-guard.sh /massa-guard/
+COPY sources /massa-guard/sources
+COPY config /massa-guard/config
 
 # Conf rights
 RUN chmod +x /massa-guard/massa-guard.sh \
