@@ -1,5 +1,5 @@
 # Massa node + Massa-guard #
-**Last build for Massa testnet Episode 14 release 14.0.1**
+**Last build for Massa testnet Episode 14 release 14.1.0**
 
 ![alt text](https://d33wubrfki0l68.cloudfront.net/7df7d7a57a8dda3cc07aab16121b3e3990cf0893/16ccd/portfolio/massa.png)
 
@@ -28,6 +28,7 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Massa-guard auto get faucet to buy your first roll.
 
 ### [RELEASE NOTES] ###
+- 20220909 - Testnet 14 - v14.1.0 - Testnet 14 - v14.1 Ready!
 - 20220909 - Testnet 14 - v14.0.1 - Solve discord feature issues
 - 20220909 - Testnet 14 - v14.0.0 - Testnet 14 Ready! **/!\ Discord features dont work in this version (Faucet spammer / Dyn IP / Resgistration)**
 - 20220805 - Testnet 13 - v13.0.3 - Solve registration issue when IP already registered
