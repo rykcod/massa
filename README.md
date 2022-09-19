@@ -8,6 +8,8 @@
 Build a massa-node container wich include some automation features from a community image with Massalabs agreements
 
 This image include a script named "**/massa-guard/massa-guard.sh**" to:
+- [GENERAL]
+  - Enable/Disable all massa-guard features (Except keys creations) with the "MASSAGUARD" setting in config.ini
 - [AUTOBUY/AUTOSELL]
   - Autobuy 1 roll when your node failed and lost his "Active rolls".
   - Autobuy X rolls when your MAS amount greater than 200 MAS and if "Active rolls" dont exceed "TARGET_ROLL_AMOUNT" set in /massa_mount/config/config.ini (If set).
@@ -35,15 +37,6 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
 - 20220909 - Testnet 14 - v14.1.0 - Testnet 14 - v14.1 Ready!
 - 20220909 - Testnet 14 - v14.0.1 - Solve discord feature issues
 - 20220909 - Testnet 14 - v14.0.0 - Testnet 14 Ready! **/!\ Discord features dont work in this version (Faucet spammer / Dyn IP / Resgistration)**
-- 20220805 - Testnet 13 - v13.0.3 - Solve registration issue when IP already registered
-- 20220805 - Testnet 13 - v13.0.2 - Purge useless packages with binaries and add logs to logs container
-- 20220805 - Testnet 13 - v13.0.1 - Create from Massa binaries
-- 20220722 - Testnet 13 - v13.0.0 - v13.0 Ready!
-- 20220722 - Testnet 12 - v12.2.0 - v12.2 Ready!
-- 20220716 - Testnet 12 - v12.1.1 - Custom wallet and node password feature + Custom public IP to config.toml
-- 20220714 - Testnet 12 - v12.1 Ready!
-- 20220710 - Testnet 12 Ready!
-- 20220629 - Add auto-registration feature + docker ENV for Discord token & DYNIP feature
 
 ## [HOWTO] ##
 ### [SETUP] ###
@@ -64,7 +57,8 @@ Create an empty folder to mount in our container /massa_mount path or store your
 /!\ __User of one of previous release?__ Please update your /massa_mount/config/config.ini to check if all entries exist. Check template last here https://github.com/rykcod/massa/blob/main/config/default_config_template.ini
 
 #### [RUN] Usecase Example ####
-/!\ You can define 2 ENV values when you create your container:
+/!\ You can define ENV values when you create your container:
+ - ''MASSAGUARD'' - Set with 1 to enable all massa-guard features or with 0 to disable all features except keys creations (Enable by default without ENV value)
  - ''DISCORD'' - Set with your discord token id (Refer to HELP section) - To enable discord feature (GetFaucet + NodeRegistration + DynamicalIP)
  - ''DYNIP'' - Set with "0" if you host under static public IP or "1" if you host under dynimic public IP to enable update IP feature
  - ''WALLETPWD'' - Set with "YourCustomPassword" if you want to use a custom wallet password.
@@ -72,9 +66,13 @@ Create an empty folder to mount in our container /massa_mount path or store your
  - ''IP'' - Set with "YourIPAddress" if your node have differents publics IPs and you want to set your custom selection.
 /!\ Please note, this ENV variables have a low priority if a previous config.ini exist in your mount point.
 
-  * Container creation example with ENV variables to define Dicord token and a static IP usage :
+  * __Example N°1:__ Container creation example with ENV variables to define Dicord token :
 ```console
-docker run -d -v /%MY_PATH%/massa_mount:/massa_mount -p 31244-31245:31244-31245 -p 33035:33035 -e "DISCORD=OTc2MDkyTgP0OTU4NCXsNTIy.G5jqAc.b+rV4MgEnMvo48ICeGg6E_QPg4dHjlSBJA06CA" -e "DYNIP=0" --name massa-node rykcod/massa
+docker run -d -v /%MY_PATH%/massa_mount:/massa_mount -p 31244-31245:31244-31245 -p 33035:33035 -e "DISCORD=OTc2MDkyTgP0OTU4NCXsNTIy.G5jqAc.b+rV4MgEnMvo48ICeGg6E_QPg4dHjlSBJA06CA" --name massa-node rykcod/massa
+```
+  * __Example N°2:__ Container creation example with ENV variables to define Dicord token and run a basical container without massa-guard automation :
+```console
+docker run -d -v /%MY_PATH%/massa_mount:/massa_mount -p 31244-31245:31244-31245 -p 33035:33035 -e "DISCORD=OTc2MDkyTgP0OTU4NCXsNTIy.G5jqAc.b+rV4MgEnMvo48ICeGg6E_QPg4dHjlSBJA06CA" -e "MASSAGUARD=0" --name massa-node rykcod/massa
 ```
   * To connect into your container:
 ```console
@@ -94,6 +92,7 @@ __[OPTION] To enable or update features after container creation just edit /mass
   * Set your ''DYN_PUB_IP'' value to enable dynamical IP management (0=Disable 1=Enable)
   * Set your ''TARGET_ROLL_AMOUNT'' value to enable roll amount target to stake for your node (Integer value)
   * Set your ''NODE_TESTNET_REGISTRATION'' value to enable node registration with massabot (KO=Enable OK=AlreadyDone)
+  * Set your ''MASSAGUARD'' value to enable or disable massa-guard features 0=Disable 1=Enable (Enable by default)
 
 ## [HELP] ##
 - Massa client is running over a "screen" named "massa-client"
