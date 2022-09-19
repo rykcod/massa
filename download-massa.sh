@@ -17,6 +17,8 @@ wget "$MASSA_PACKAGE_LOCATION/$package"
 
 # Extract the package's content
 tar -zxpf "$package"
+mv ./massa ./massa-"$VERSION"
+ln -s ./massa-"$version" ./massa
 
 # Delete the package
 rm "$package"

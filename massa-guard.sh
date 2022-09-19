@@ -22,38 +22,48 @@ WalletAddress=$(GetWalletAddress)
 # Infinite check
 while true
 do
-	# Check node status
-	NodeResponsive=$(CheckNodeResponsive)
-	# Check ram consumption percent in integer
-	NodeRam=$(CheckNodeRam)
-	# Restart node if issue
-	ReloadNode=$(CheckAndReloadNode "$NodeRam" "$NodeResponsive")
-	if [ $? -eq 0 ]
+	# If massa-guard features enabled
+	if [ $MASSAGUARD -eq 1 ]
 	then
-		# Get candidate rolls
-		CandidateRolls=$(GetCandidateRoll "$WalletAddress")
-		# Get MAS amount
-		MasBalance=$(GetMASAmount "$WalletAddress")
-		# Buy max roll or 1 roll if possible when candidate roll amount = 0
-		BuyOrSellRoll "$CandidateRolls" "$MasBalance" "$WalletAddress"
-		# Refresh bootstrap node with connected and routable node
-		RefreshBootstrapNode
-
-		# If Discord feature enable
-		if [ ! $DISCORD_TOKEN == "NULL" ]
+		# Check node status
+		NodeResponsive=$(CheckNodeResponsive)
+		# Check ram consumption percent in integer
+		NodeRam=$(CheckNodeRam)
+		# Restart node if issue
+		ReloadNode=$(CheckAndReloadNode "$NodeRam" "$NodeResponsive")
+		if [ $? -eq 0 ]
 		then
-			# Check and get faucet of current day
-			PingFaucet
+			# Get candidate rolls
+			CandidateRolls=$(GetCandidateRoll "$WalletAddress")
+			# Get MAS amount
+			MasBalance=$(GetMASAmount "$WalletAddress")
+			# Buy max roll or 1 roll if possible when candidate roll amount = 0
+			BuyOrSellRoll "$CandidateRolls" "$MasBalance" "$WalletAddress"
+			# Refresh bootstrap node with connected and routable node
+			RefreshBootstrapNode
 
-			# Check and registrer node with massabot if necessary
-			CheckTestnetNodeRegistration "$WalletAddress"
-
-			# If dynamical IP feature enable and public IP is new
-			if ([ $DYN_PUB_IP -eq 1 ] && [ $(CheckPublicIP) -eq 1 ])
+			# If Discord feature enable
+			if [ ! $DISCORD_TOKEN == "NULL" ]
 			then
-				# Refresh config.toml + restart node + push new IP to massabot
-				RefreshPublicIP
+				# Check and get faucet of current day
+				PingFaucet
+
+				# Check and registrer node with massabot if necessary
+				CheckTestnetNodeRegistration "$WalletAddress"
+
+				# If dynamical IP feature enable and public IP is new
+				if ([ $DYN_PUB_IP -eq 1 ] && [ $(CheckPublicIP) -eq 1 ])
+				then
+					# Refresh config.toml + restart node + push new IP to massabot
+					RefreshPublicIP
+				fi
 			fi
+		fi
+
+		# Check and update node if autoupdate feature is enable and upate available
+		if [ $AUTOUPDATE -eq 1 ]
+		then
+			CheckAndUpdateNode
 		fi
 	fi
 	# Wait before next loop

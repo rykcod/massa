@@ -539,3 +539,12 @@ CheckTestnetNodeRegistration() {
 		return 1
 	fi
 }
+
+#############################################################
+# FONCTION = CheckAndUpdateNode
+# DESCRIPTION = Check if node registrered with massabot
+# RETURN = 0 NoUpdate 1 UpdateDone
+#############################################################
+CheckAndUpdateNode () {
+	return 0
+}

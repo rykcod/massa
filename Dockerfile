@@ -12,7 +12,7 @@ ARG MASSA_PACKAGE_LOCATION="https://github.com/massalabs/massa/releases/download
 # LABEL about the custom image
 LABEL maintainer="benoit@alphatux.fr"
 LABEL version=$VERSION
-LABEL description="Massa node"
+LABEL description="Massa node with massa-guard features"
 
 # Set timezone and default cli
 SHELL ["/bin/bash", "-c"]
