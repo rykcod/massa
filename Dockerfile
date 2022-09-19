@@ -3,7 +3,7 @@ FROM ubuntu:20.04
 
 # Build Arguments
 ARG TARGETPLATFORM
-ARG VERSION
+ARG VERSION="TEST.14.4"
 
 ARG MASSA_PACKAGE="massa_${VERSION}_release_linux.tar.gz"
 ARG MASSA_PACKAGE_ARM64="massa_${VERSION}_release_linux_arm64.tar.gz"
