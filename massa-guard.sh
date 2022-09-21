@@ -1,5 +1,7 @@
 #!/bin/bash
 #====================== Configuration ==========================#
+# Default values
+MASSAGUARD=1
 # Global configuration
 . /massa-guard/config/default_config.ini
 # Custom configuration
