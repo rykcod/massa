@@ -30,7 +30,7 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Massa-guard auto get faucet to buy your first roll.
 
 ### [RELEASE NOTES] ###
-- 20220921 - Testnet 14 - v14.7.0 - Testnet 14 - v14.7 Ready!
+- 20220921 - Testnet 14 - v14.7.0 - Testnet 14 - v14.7 Ready! Solve MAS amount calculation issue
 - 20220920 - Testnet 14 - v14.6.0 - Testnet 14 - v14.6 Ready!
 - 20220919 - Testnet 14 - v14.5.0 - Testnet 14 - v14.5 Ready! + Add MASSAGUARD setting in config.ini to switch on/off massa-guard
 - 20220917 - Testnet 14 - v14.4.0 - Testnet 14 - v14.4 Ready!
