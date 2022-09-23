@@ -102,7 +102,7 @@ GetMASAmount() {
 	# Get address info
 	get_address=$(cd $PATH_CLIENT;$PATH_TARGET/massa-client -p $WALLET_PWD wallet_info)
 	# Get MAS amount
-	MasAmount=$(echo "$get_address" | grep -E "Sequential balance"." final" | cut -d "=" -f 2 | cut -d "." -f 1)
+	MasAmount=$(echo "$get_address" | grep -E "Sequential balance"." final" | cut -d "=" -f 2 | cut -d "," -f 1 | cut -d "." -f 1)
 	# Return MAS amount
 	echo "$MasAmount"
 	return 0
