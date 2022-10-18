@@ -5,7 +5,7 @@
 WaitBootstrap() {
 	# Wait node booststrap
 	tail -n +1 -f $PATH_NODE/logs.txt | grep -m 1 "Successful bootstrap" > /dev/null
-	sleep 10s
+	sleep 20s
 	return 0
 }
 
@@ -265,9 +265,9 @@ BackupLogsNode() {
 	then
 		if [ -e $PATH_LOGS_MASSANODE/current.txt ]; then rm $PATH_LOGS_MASSANODE/current.txt; fi
 	fi
-        # Create clean node logs file
-        if [ ! -e $PATH_NODE/logs.txt ]
-        then
+	# Create clean node logs file
+	if [ ! -e $PATH_NODE/logs.txt ]
+	then
 		touch $PATH_NODE/logs.txt
 		echo "[$(date +%Y%m%d) STARTING]" >  $PATH_NODE/logs.txt
 	fi
