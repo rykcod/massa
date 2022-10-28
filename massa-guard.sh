@@ -32,7 +32,7 @@ do
 		# Check ram consumption percent in integer
 		NodeRam=$(CheckNodeRam)
 		# Restart node if issue
-		ReloadNode=$(CheckAndReloadNode "$NodeRam" "$NodeResponsive")
+		CheckAndReloadNode "$NodeRam" "$NodeResponsive"
 		if [ $? -eq 0 ]
 		then
 			# Get candidate rolls

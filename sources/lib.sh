@@ -296,10 +296,8 @@ CheckAndReloadNode() {
 		kill $clientPID
 		sleep 5s
 
-		# Backup current log file to troobleshoot
-		BackupLogsNode
 		# Reload conf files from ref
-		$PATH_SOURCES/init_copy_host_files.sh
+		bash $PATH_SOURCES/init_copy_host_files.sh
 
 		# Re-Launch node and client
 		bash $PATH_SOURCES/run.sh
