@@ -5,6 +5,10 @@
 WaitBootstrap() {
 	# Wait node booststrap
 	tail -n +1 -f $PATH_NODE/logs.txt | grep -m 1 -E "Successful bootstrap"\|"seconds remaining to genesis" > /dev/null
+
+	# Log MASSA-GUARD Start
+	echo "[$(date +%Y%m%d-%HH%M)][INFO][START]MASSA-NODE is running" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+
 	sleep 20s
 	return 0
 }
@@ -203,7 +207,7 @@ CheckNodeRam() {
 	checkRam=${checkRam/.*}
 
 	# If ram consumption is too high
-	if [ $checkRam -gt $NODE_MAX_RAM ]
+	if ([ ! -z $checkRam ] && [ $checkRam -gt $NODE_MAX_RAM ])
 	then
 		echo "[$(date +%Y%m%d-%HH%M)][KO][NODE]RAM EXCEED - NODE WILL RESTART" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 		return 1
@@ -284,12 +288,12 @@ CheckAndReloadNode() {
 		# Get node SCREEN PID
 		nodePID=$(ps -ax | grep massa-node | grep SCREEN | awk '{print $1}')
 		# Kill node SCREEN
-		kill $nodePID
+		kill $nodePID > /dev/null
 		sleep 1s
 		# Get client SCREEN PID
 		clientPID=$(ps -ax | grep massa-client | grep SCREEN | awk '{print $1}')
 		# Kill client SCREEN
-		kill $clientPID
+		kill $clientPID > /dev/null
 		sleep 5s
 
 		# Reload conf files from ref
@@ -435,20 +439,25 @@ RefreshPublicIP() {
 	# Get Public IP of node
 	myIP=$(GetPublicIP)
 
-	# Get Public IP conf for node
-	confIP=$(cat $PATH_NODE_CONF/config.toml | grep "routable_ip" | egrep -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}|([0-9a-z]{4})(:[0-9a-z]{0,4}){1,7}')
+	# Check if get IP OK
+	if [ ! -z $myIP ]
+	then
+		then
+		# Get Public IP conf for node
+		confIP=$(cat $PATH_NODE_CONF/config.toml | grep "routable_ip" | egrep -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}|([0-9a-z]{4})(:[0-9a-z]{0,4}){1,7}')
 
-	# Push new IP to massabot
-	timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD_TOKEN $myIP > $PATH_MASSABOT_REPLY
-	# Check massabot return
-	if ($(cat $PATH_MASSABOT_REPLY | grep -q -e "IP address: $myIP"))
-	then
-		echo "[$(date +%Y%m%d-%HH%M)][INFO][IP]Dynamique public IP changed, updated for $1 in config.toml and with massabot" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
-	elif ($(cat $PATH_MASSABOT_REPLY | grep -q -e "wait for announcements!"))
-	then
-		echo "[$(date +%Y%m%d-%HH%M)][WARN][IP]Unable to update registrered IP with massabot because testnet not start for now" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
-	else
-		echo "[$(date +%Y%m%d-%HH%M)][ERROR][IP]Unable to update registrered IP with massabot because massabot not or wrong responsive" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		# Push new IP to massabot
+		timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD_TOKEN $myIP > $PATH_MASSABOT_REPLY
+		# Check massabot return
+		if ($(cat $PATH_MASSABOT_REPLY | grep -q -e "IP address: $myIP"))
+		then
+			echo "[$(date +%Y%m%d-%HH%M)][INFO][IP]Dynamique public IP changed, updated for $1 in config.toml and with massabot" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		elif ($(cat $PATH_MASSABOT_REPLY | grep -q -e "wait for announcements!"))
+		then
+			echo "[$(date +%Y%m%d-%HH%M)][WARN][IP]Unable to update registrered IP with massabot because testnet not start for now" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		else
+			echo "[$(date +%Y%m%d-%HH%M)][ERROR][IP]Unable to update registrered IP with massabot because massabot not or wrong responsive" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		fi
 	fi
 
 	# Update IP in your ref config.toml and restart node
