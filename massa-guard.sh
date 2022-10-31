@@ -28,9 +28,12 @@ do
 	if [ $MASSAGUARD -eq 1 ]
 	then
 		# Check node status
-		NodeResponsive=$(CheckNodeResponsive)
+		CheckNodeResponsive
+		NodeResponsive=$?
 		# Check ram consumption percent in integer
-		NodeRam=$(CheckNodeRam)
+		CheckNodeRam
+		NodeRam=$?
+
 		# Restart node if issue
 		CheckAndReloadNode "$NodeRam" "$NodeResponsive"
 		if [ $? -eq 0 ]

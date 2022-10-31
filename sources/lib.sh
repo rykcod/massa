@@ -195,7 +195,7 @@ BuyOrSellRoll() {
 #############################################################
 # FONCTION = CheckNodeRam
 # DESCRIPTION = Buy roll if MAS amount > 200 or if candidate roll < 1 and MAS amount >= 100
-# RETURN = NodeRamStatus 0 for OK 1 for KO
+# RETURN = NodeRamStatus 0 for OK Logs for KO
 #############################################################
 CheckNodeRam() {
 	# Get ram consumption percent in integer
@@ -206,11 +206,9 @@ CheckNodeRam() {
 	if [ $checkRam -gt $NODE_MAX_RAM ]
 	then
 		echo "[$(date +%Y%m%d-%HH%M)][KO][NODE]RAM EXCEED - NODE WILL RESTART" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
-		echo 1
 		return 1
 	# If ram consumption is ok
 	else
-		echo 0
 		return 0
 	fi
 }
@@ -218,7 +216,7 @@ CheckNodeRam() {
 #############################################################
 # FONCTION = CheckNodeResponsive
 # DESCRIPTION = Check node vitality with get_status timeout
-# RETURN = NodeResponsiveStatus 0 for OK 1 for KO
+# RETURN = NodeResponsiveStatus 0 for OK Logs for KO
 #############################################################
 CheckNodeResponsive() {
 	# Check node status and logs events
@@ -229,11 +227,9 @@ CheckNodeResponsive() {
 	if [ $checkGetStatus -lt 10 ]
 	then
 		echo "[$(date +%Y%m%d-%HH%M)][KO][NODE]TIMEOUT - NODE WILL RESTART" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
-		echo 1
 		return 1
 	# If get_status hang
 	else
-		echo 0
 		return 0
 	fi
 }
