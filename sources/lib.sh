@@ -442,7 +442,6 @@ RefreshPublicIP() {
 	# Check if get IP OK
 	if [ ! -z $myIP ]
 	then
-		then
 		# Get Public IP conf for node
 		confIP=$(cat $PATH_NODE_CONF/config.toml | grep "routable_ip" | egrep -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}|([0-9a-z]{4})(:[0-9a-z]{0,4}){1,7}')
 
