@@ -457,11 +457,11 @@ RefreshPublicIP() {
 		else
 			echo "[$(date +%Y%m%d-%HH%M)][ERROR][IP]Unable to update registrered IP with massabot because massabot not or wrong responsive" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 		fi
-	fi
 
-	# Update IP in your ref config.toml and restart node
-	cat $PATH_NODE_CONF/config.toml | sed 's/'$confIP'/'$myIP'/' > $PATH_MOUNT/config.toml
-	CheckAndReloadNode 0 1
+		# Update IP in your ref config.toml and restart node
+		cat $PATH_NODE_CONF/config.toml | sed 's/'$confIP'/'$myIP'/' > $PATH_MOUNT/config.toml
+		CheckAndReloadNode 0 1
+	fi
 }
 
 #############################################################
