@@ -3,7 +3,7 @@ FROM ubuntu:20.04
 
 # Build Arguments
 ARG TARGETPLATFORM
-ARG VERSION
+ARG VERSION="TEST.16.0"
 
 # LABEL about the custom image
 LABEL maintainer="benoit@alphatux.fr"
