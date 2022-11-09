@@ -17,6 +17,7 @@ wget "$MASSA_PACKAGE_LOCATION/$package"
 
 # Extract the package's content
 tar -zxpf "$package"
+sed -i 's/retry_delay = 60000/retry_delay = 15000/' massa/massa-node/base_config/config.toml        #Change bootstrap retry delay to 10s (default 60s)
 mv /massa /massa-"$VERSION"
 ln -s /massa-"$VERSION" /massa
 
