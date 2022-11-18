@@ -1,5 +1,5 @@
 # Massa node + Massa-guard #
-**Last build for Massa testnet Episode 16 release 16.0.0**
+**Last build for Massa testnet Episode 16 release 16.1.0**
 
 ![alt text](https://d33wubrfki0l68.cloudfront.net/7df7d7a57a8dda3cc07aab16121b3e3990cf0893/16ccd/portfolio/massa.png)
 
@@ -30,6 +30,7 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Massa-guard auto get faucet to buy your first roll.
 
 ### [RELEASE NOTES] ###
+- 20221010 - Testnet 16 - v16.0.0 - Testnet 16 - v16.1 Ready!
 - 20221010 - Testnet 16 - v16.0.0 - Testnet 16 - v16.0 Ready!
 - 20221010 - Testnet 15 - v15.1.0 - Testnet 15 - v15.1 Ready!
 - 20221005 - Testnet 15 - v15.0.0 - Testnet 15 - v15.0 Ready!
