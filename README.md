@@ -14,7 +14,7 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Autobuy 1 roll when your node failed and lost his "Active rolls".
   - Autobuy X rolls when your MAS amount greater than 200 MAS and if "Active rolls" dont exceed "TARGET_ROLL_AMOUNT" set in /massa_mount/config/config.ini (If set).
   - Autosell X rolls when "Active rolls" exceed "TARGET_ROLL_AMOUNT" set in /massa_mount/config/config.ini (If set).
-- [BOOTSTRAPFINDER]
+- [BOOTSTRAPFINDER] Deprecated since testnet 16. From now and by default comminity node unable to bootstrap on other community nodes.
   - Auto refresh massa online bootstrap list with connected node.
   - Filter to only add node which have TCP port 31244 & 31245 reachable.
 - [WATCHDOG]
@@ -30,7 +30,7 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Massa-guard auto get faucet to buy your first roll.
 
 ### [RELEASE NOTES] ###
-- 20221010 - Testnet 16 - v16.0.0 - Testnet 16 - v16.1 Ready!
+- 20221123 - Testnet 16 - v16.1.0 - Testnet 16 - v16.1 Ready! Remove deprecated [BOOTSTRAPFINDER] features
 - 20221010 - Testnet 16 - v16.0.0 - Testnet 16 - v16.0 Ready!
 - 20221010 - Testnet 15 - v15.1.0 - Testnet 15 - v15.1 Ready!
 - 20221005 - Testnet 15 - v15.0.0 - Testnet 15 - v15.0 Ready!
