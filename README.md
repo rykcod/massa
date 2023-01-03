@@ -1,5 +1,5 @@
 # Massa node + Massa-guard #
-**Last build for Massa testnet Episode 17 release 17.2.0**
+**Last build for Massa testnet Episode 18 release 18.0.0**
 
 ![alt text](https://d33wubrfki0l68.cloudfront.net/7df7d7a57a8dda3cc07aab16121b3e3990cf0893/16ccd/portfolio/massa.png)
 
@@ -30,6 +30,7 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Massa-guard auto get faucet to buy your first roll.
 
 ### [RELEASE NOTES] ###
+- 20221207 - Testnet 17 - v18.0.0 - Testnet 18 - v18.0 Ready!
 - 20221207 - Testnet 17 - v17.2.0 - Testnet 17 - v17.2 Ready!
 - 20221202 - Testnet 17 - v17.1.0 - Testnet 17 - v17.1 Ready!
 - 20221130 - Testnet 17 - v17.0.0 - Testnet 17 - v17.0 Ready!
