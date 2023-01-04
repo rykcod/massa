@@ -25,7 +25,6 @@ then
 	if [ $AUTOUPDATE ]; then python3 $PATH_SOURCES/set_config.py "AUTOUPDATE" \"$AUTOUPDATE\" $PATH_CONF_MASSAGUARD/config.ini ; fi
 	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]COPY default config.ini" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 else
-then
 	if [ ! -d "$PATH_LOGS_MASSAGUARD" ]
 	then
 		mkdir -p $PATH_LOGS_MASSAGUARD
