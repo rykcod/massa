@@ -1,5 +1,5 @@
 # Massa node + Massa-guard #
-**Last build for Massa testnet Episode 16 release 16.0.0**
+**Last build for Massa testnet Episode 18 release 18.0.0**
 
 ![alt text](https://d33wubrfki0l68.cloudfront.net/7df7d7a57a8dda3cc07aab16121b3e3990cf0893/16ccd/portfolio/massa.png)
 
@@ -14,7 +14,7 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Autobuy 1 roll when your node failed and lost his "Active rolls".
   - Autobuy X rolls when your MAS amount greater than 200 MAS and if "Active rolls" dont exceed "TARGET_ROLL_AMOUNT" set in /massa_mount/config/config.ini (If set).
   - Autosell X rolls when "Active rolls" exceed "TARGET_ROLL_AMOUNT" set in /massa_mount/config/config.ini (If set).
-- [BOOTSTRAPFINDER]
+- [BOOTSTRAPFINDER] Deprecated since testnet 16. From now and by default comminity node unable to bootstrap on other community nodes.
   - Auto refresh massa online bootstrap list with connected node.
   - Filter to only add node which have TCP port 31244 & 31245 reachable.
 - [WATCHDOG]
@@ -30,6 +30,11 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Massa-guard auto get faucet to buy your first roll.
 
 ### [RELEASE NOTES] ###
+- 20230103 - Testnet 18 - v18.0.0 - Testnet 18 - v18.0 Ready!
+- 20221207 - Testnet 17 - v17.2.0 - Testnet 17 - v17.2 Ready!
+- 20221202 - Testnet 17 - v17.1.0 - Testnet 17 - v17.1 Ready!
+- 20221130 - Testnet 17 - v17.0.0 - Testnet 17 - v17.0 Ready!
+- 20221123 - Testnet 16 - v16.1.0 - Testnet 16 - v16.1 Ready! Remove deprecated [BOOTSTRAPFINDER] features
 - 20221010 - Testnet 16 - v16.0.0 - Testnet 16 - v16.0 Ready!
 - 20221010 - Testnet 15 - v15.1.0 - Testnet 15 - v15.1 Ready!
 - 20221005 - Testnet 15 - v15.0.0 - Testnet 15 - v15.0 Ready!
