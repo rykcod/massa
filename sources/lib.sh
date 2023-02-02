@@ -20,7 +20,7 @@ WaitBootstrap() {
 #############################################################
 GetWalletAddress() {
 	cd $PATH_CLIENT
-	WalletAddress=$($PATH_TARGET/massa-client -p $WALLET_PWD wallet_info | grep "Address" | cut -d " " -f 2)
+	WalletAddress=$($PATH_TARGET/massa-client -p $WALLET_PWD wallet_info | grep "Address" | cut -d " " -f 2 | head -n 1)
 	echo "$WalletAddress"
 	return 0
 }
@@ -33,7 +33,7 @@ CheckOrCreateWalletAndNodeKey() {
 	## Create a wallet, stacke and backup
 	# If wallet don't exist
 	cd $PATH_CLIENT
-	checkWallet=`$PATH_TARGET/massa-client -p $WALLET_PWD wallet_info | grep -c "Secret key"`
+	checkWallet=`$PATH_TARGET/massa-client -p $WALLET_PWD wallet_info | grep -c "Address"`
 	if ([ ! -e $PATH_CLIENT/wallet.dat ] || [ $checkWallet -lt 1 ])
 	then
 		# Generate wallet
@@ -58,11 +58,10 @@ CheckOrCreateWalletAndNodeKey() {
 	checkStackingKey=`$PATH_TARGET/massa-client -p $WALLET_PWD node_get_staking_addresses | grep -c -E "[0-z]{51}"`
 	if ([ ! -e $PATH_NODE_CONF/staking_wallet.dat ] || [ $checkStackingKey -lt 1 ])
 	then
-		# Get private key
-		cd $PATH_CLIENT
-		privKey=$($PATH_TARGET/massa-client -p $WALLET_PWD wallet_info | grep "Secret key" | cut -d " " -f 3)
+		# Get first wallet Address
+		walletAddress=$(GetWalletAddress)
 		# Stacke wallet
-		$PATH_TARGET/massa-client -p $WALLET_PWD node_add_staking_secret_keys $privKey > /dev/null
+		$PATH_TARGET/massa-client -p $WALLET_PWD node_start_staking $walletAddress > /dev/null
 		echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Stake privKey" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 		# Backup staking_wallet.dat to mount point as ref
 		cp $PATH_NODE_CONF/staking_wallet.dat $PATH_MOUNT/staking_wallet.dat
@@ -89,8 +88,8 @@ CheckOrCreateWalletAndNodeKey() {
 GetCandidateRoll() {
 	# Get address info
 	get_address=$(cd $PATH_CLIENT;$PATH_TARGET/massa-client -p $WALLET_PWD wallet_info)
-	# Select candidate roll amount
-	CandidateRolls=$(echo "$get_address" wallet_info | grep "Rolls" | cut -d "=" -f 4)
+	# Get candidate roll amount for first Address
+	CandidateRolls=$(echo "$get_address" wallet_info | grep "Rolls" | cut -d "=" -f 4 | head -n 1)
 	# Return candidate roll amount
 	echo "$CandidateRolls"
 	return 0
@@ -105,8 +104,8 @@ GetCandidateRoll() {
 GetMASAmount() {
 	# Get address info
 	get_address=$(cd $PATH_CLIENT;$PATH_TARGET/massa-client -p $WALLET_PWD wallet_info)
-	# Get MAS amount
-	MasAmount=$(echo "$get_address" | grep -E "Balance"." final" | cut -d "=" -f 2 | cut -d "," -f 1 | cut -d "." -f 1)
+	# Get MAS amount for first Address
+	MasAmount=$(echo "$get_address" | grep -E "Balance"." final" | cut -d "=" -f 2 | cut -d "," -f 1 | cut -d "." -f 1 | head -n 1)
 	# Return MAS amount
 	echo "$MasAmount"
 	return 0
