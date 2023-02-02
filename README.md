@@ -30,22 +30,14 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Massa-guard auto get faucet to buy your first roll.
 
 ### [RELEASE NOTES] ###
-- 20230201 - Testnet 19 - v19.0.0 - Testnet 19 - v19.0 Ready!
+- 20230201 - Testnet 19 - v19.0.0 - Testnet 19 - v19.0 Ready! Somes modications after massa testnet 19.0 cmd updates.
 - 20230103 - Testnet 18 - v18.0.0 - Testnet 18 - v18.0 Ready!
 - 20221207 - Testnet 17 - v17.2.0 - Testnet 17 - v17.2 Ready!
 - 20221202 - Testnet 17 - v17.1.0 - Testnet 17 - v17.1 Ready!
-- 20221130 - Testnet 17 - v17.0.0 - Testnet 17 - v17.0 Ready!
 - 20221123 - Testnet 16 - v16.1.0 - Testnet 16 - v16.1 Ready! Remove deprecated [BOOTSTRAPFINDER] features
-- 20221010 - Testnet 16 - v16.0.0 - Testnet 16 - v16.0 Ready!
 - 20221010 - Testnet 15 - v15.1.0 - Testnet 15 - v15.1 Ready!
-- 20221005 - Testnet 15 - v15.0.0 - Testnet 15 - v15.0 Ready!
 - 20220921 - Testnet 14 - v14.7.0 - Testnet 14 - v14.7 Ready! Solve MAS amount calculation issue
-- 20220920 - Testnet 14 - v14.6.0 - Testnet 14 - v14.6 Ready!
 - 20220919 - Testnet 14 - v14.5.0 - Testnet 14 - v14.5 Ready! + Add MASSAGUARD setting in config.ini to switch on/off massa-guard
-- 20220917 - Testnet 14 - v14.4.0 - Testnet 14 - v14.4 Ready!
-- 20220916 - Testnet 14 - v14.3.0 - Testnet 14 - v14.3 Ready!
-- 20220916 - Testnet 14 - v14.2.0 - Testnet 14 - v14.2 Ready!
-- 20220909 - Testnet 14 - v14.1.0 - Testnet 14 - v14.1 Ready!
 - 20220909 - Testnet 14 - v14.0.1 - Solve discord feature issues
 - 20220909 - Testnet 14 - v14.0.0 - Testnet 14 Ready! **/!\ Discord features dont work in this version (Faucet spammer / Dyn IP / Resgistration)**
 
