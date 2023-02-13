@@ -45,8 +45,6 @@ do
 			MasBalance=$(GetMASAmount "$WalletAddress")
 			# Buy max roll or 1 roll if possible when candidate roll amount = 0
 			BuyOrSellRoll "$CandidateRolls" "$MasBalance" "$WalletAddress"
-			# [Depracated since testnet 16.0] Refresh bootstrap node with community connected and routable nodes
-			# RefreshBootstrapNode
 
 			# If Discord feature enable
 			if [ ! $DISCORD == "NULL" ]

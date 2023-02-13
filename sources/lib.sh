@@ -4,12 +4,16 @@
 #############################################################
 WaitBootstrap() {
 	# Wait node booststrap
-	tail -n +1 -f $PATH_NODE/logs.txt | grep -m 1 -E "Successful bootstrap"\|"seconds remaining to genesis" > /dev/null
+	while true; do
+		CheckNodeResponsive
+		[ $? -eq 0 ] && break
+
+		sleep 5s
+	done
 
 	# Log MASSA-GUARD Start
-	echo "[$(date +%Y%m%d-%HH%M)][INFO][START]MASSA-NODE is running" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+	echo "[$(date +%Y%m%d-%HH%M)][INFO][START]MASSA-NODE is running"
 
-	sleep 20s
 	return 0
 }
 
@@ -39,11 +43,11 @@ CheckOrCreateWalletAndNodeKey() {
 		# Generate wallet
 		cd $PATH_CLIENT
 		$PATH_TARGET/massa-client -p $WALLETPWD wallet_generate_secret_key > /dev/null
-		echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Generate wallet.dat" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Generate wallet.dat"
 		# Backup wallet to the mount point as ref
 		cp $PATH_CLIENT/wallet.dat $PATH_MOUNT/wallet.dat
 
-		echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Backup wallet.dat" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Backup wallet.dat"
 	fi
 
 	## Stacke if wallet not stacke
@@ -55,10 +59,10 @@ CheckOrCreateWalletAndNodeKey() {
 		walletAddress=$(GetWalletAddress)
 		# Stacke wallet
 		$PATH_TARGET/massa-client -p $WALLETPWD node_start_staking $walletAddress > /dev/null
-		echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Stake privKey" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Stake privKey"
 		# Backup staking_wallet.dat to mount point as ref
 		cp $PATH_NODE_CONF/staking_wallet.dat $PATH_MOUNT/staking_wallet.dat
-		echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Backup staking_wallet.dat" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Backup staking_wallet.dat"
 	fi
 
 	## Backup node_privkey if no ref in mount point
@@ -67,7 +71,7 @@ CheckOrCreateWalletAndNodeKey() {
 	then
 		# Copy node_privkey.key to mount point as ref
 		cp $PATH_NODE_CONF/node_privkey.key $PATH_MOUNT/node_privkey.key
-		echo "[$(date +%Y%m%d-%HH%M)][INFO][BACKUP]Backup $PATH_NODE_CONF/node_privkey.key to $PATH_MOUNT" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		echo "[$(date +%Y%m%d-%HH%M)][INFO][BACKUP]Backup $PATH_NODE_CONF/node_privkey.key to $PATH_MOUNT"
 	fi
 	return 0
 }
@@ -113,7 +117,7 @@ BuyOrSellRoll() {
 	# Check candidate roll > 0 and Mas amount >= 100 to buy first roll
 	if ([ $1 -eq 0 ] && [ $2 -ge 100 ])
 	then
-		echo "[$(date +%Y%m%d-%HH%M)][KO][ROLL]BUY 1 ROLL" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		echo "[$(date +%Y%m%d-%HH%M)][KO][ROLL]BUY 1 ROLL"
 
 		# Buy roll amount
 		cd $PATH_CLIENT
@@ -122,13 +126,13 @@ BuyOrSellRoll() {
 	# If MAS amount < 100 MAS and Candidate roll = 0
 	elif ([ $1 -eq 0 ] && [ $2 -lt 100 ])
 	then
-		echo "[$(date +%Y%m%d-%HH%M)][KO][ROLL]Cannot buy first ROLL because MAS Amount less than 100. Please get 100 MAS on Discord or set your DISCORD_ID on /massa_mount/config/config.ini" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		echo "[$(date +%Y%m%d-%HH%M)][KO][ROLL]Cannot buy first ROLL because MAS Amount less than 100. Please get 100 MAS on Discord or set your DISCORD_ID on /massa_mount/config/config.ini"
 
 	# If MAS amount > 200 MAS and no rolls limitation, buy ROLLs
 	elif ([ $2 -gt 200 ] && [ $TARGET_ROLL_AMOUNT == "NULL" ])
 	then
 		NbRollsToBuy=$((($2-100)/100))
-		echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOBUY $NbRollsToBuy ROLL because MAS amount equal to $2" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOBUY $NbRollsToBuy ROLL because MAS amount equal to $2"
 		# Buy roll amount
 		cd $PATH_CLIENT
 		$PATH_TARGET/massa-client -p $WALLETPWD buy_rolls $3 $NbRollsToBuy 0 > /dev/null
@@ -147,11 +151,11 @@ BuyOrSellRoll() {
 			if [ $NbRollsCanBuyWithMAS -le $NbRollsNeedToBuy ]
 			then
 				NbRollsToBuy=$NbRollsCanBuyWithMAS
-				echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOBUY $NbRollsToBuy ROLL because MAS amount equal to $2 and ROLL amount of $1 less than target amount of $TARGET_ROLL_AMOUNT" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+				echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOBUY $NbRollsToBuy ROLL because MAS amount equal to $2 and ROLL amount of $1 less than target amount of $TARGET_ROLL_AMOUNT"
 			# Else buy max amount you can buy
 			else
 				NbRollsToBuy=$NbRollsNeedToBuy
-				echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOBUY $NbRollsToBuy ROLL because MAS amount equal to $2 and ROLL amount of $1 less than target amount of $TARGET_ROLL_AMOUNT" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+				echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOBUY $NbRollsToBuy ROLL because MAS amount equal to $2 and ROLL amount of $1 less than target amount of $TARGET_ROLL_AMOUNT"
 			fi
 			# Buy roll amount
 			cd $PATH_CLIENT
@@ -160,7 +164,7 @@ BuyOrSellRoll() {
 		elif [ $TARGET_ROLL_AMOUNT -lt $1 ]
 		then
 			NbRollsToSell=$(($1-$TARGET_ROLL_AMOUNT))
-			echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOSELL $NbRollsToSell ROLL because ROLL amount of $1 greater than target amount of $TARGET_ROLL_AMOUNT" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+			echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOSELL $NbRollsToSell ROLL because ROLL amount of $1 greater than target amount of $TARGET_ROLL_AMOUNT"
 			# Sell roll amount
 			cd $PATH_CLIENT
 			$PATH_TARGET/massa-client -p $WALLETPWD sell_rolls $3 $NbRollsToSell 0 > /dev/null
@@ -172,7 +176,7 @@ BuyOrSellRoll() {
 		if [ $TARGET_ROLL_AMOUNT -lt $1 ]
 		then
 			NbRollsToSell=$(($1-$TARGET_ROLL_AMOUNT))
-			echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOSELL $NbRollsToSell ROLL because ROLL amount of $1 greater than target amount of $TARGET_ROLL_AMOUNT" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+			echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOSELL $NbRollsToSell ROLL because ROLL amount of $1 greater than target amount of $TARGET_ROLL_AMOUNT"
 			# Sell roll amount
 			cd $PATH_CLIENT
 			$PATH_TARGET/massa-client -p $WALLETPWD sell_rolls $3 $NbRollsToSell 0 > /dev/null
@@ -201,7 +205,7 @@ CheckNodeRam() {
 	# If ram consumption is too high
 	if ([ ! -z $checkRam ] && [ $checkRam -gt $NODE_MAX_RAM ])
 	then
-		echo "[$(date +%Y%m%d-%HH%M)][KO][NODE]RAM EXCEED - NODE WILL RESTART" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		echo "[$(date +%Y%m%d-%HH%M)][KO][NODE]RAM EXCEED - NODE WILL RESTART"
 		return 1
 	# If ram consumption is ok
 	else
@@ -222,48 +226,11 @@ CheckNodeResponsive() {
 	# If get_status is responsive
 	if [ $checkGetStatus -lt 10 ]
 	then
-		echo "[$(date +%Y%m%d-%HH%M)][KO][NODE]TIMEOUT - NODE WILL RESTART" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 		return 1
 	# If get_status hang
 	else
 		return 0
 	fi
-}
-
-#############################################################
-# FONCTION = BackupLogsNode
-# DESCRIPTION = Backup current node logs
-# RETURN = 0 for OK, 1 for error
-#############################################################
-BackupLogsNode() {
-	## Backup current log file to troobleshoot
-	# If node backup log exist, add new current logs
-	if [ -e $PATH_LOGS_MASSANODE/$(date +%Y%m%d)-logs.txt ]
-	then
-		# If node logs file exist
-		if [ -e $PATH_NODE/logs.txt ]
-		then
-			# Add node logs to backup logs of the current day
-			cat $PATH_NODE/logs.txt >> $PATH_LOGS_MASSANODE/$(date +%Y%m%d)-logs.txt
-			rm $PATH_NODE/logs.txt
-		fi
-	# If node backup log dont exist, create new node backup logs
-	else
-		# Create node backup logs of the day
-		if [ -e $PATH_NODE/logs.txt ]; then mv $PATH_NODE/logs.txt $PATH_LOGS_MASSANODE/$(date +%Y%m%d)-logs.txt; else touch $PATH_LOGS_MASSANODE/$(date +%Y%m%d)-logs.txt; fi
-	fi
-	# Purge last current node log file in mount point
-	if [ -e $PATH_LOGS_MASSANODE/current.txt ]
-	then
-		if [ -e $PATH_LOGS_MASSANODE/current.txt ]; then rm $PATH_LOGS_MASSANODE/current.txt; fi
-	fi
-	# Create clean node logs file
-	if [ ! -e $PATH_NODE/logs.txt ]
-	then
-		touch $PATH_NODE/logs.txt
-		echo "[$(date +%Y%m%d) STARTING]" >  $PATH_NODE/logs.txt
-	fi
-	return 0
 }
 
 #############################################################
@@ -299,7 +266,7 @@ PingFaucet() {
 	then
 		# Call python ping faucet script with token discord
 		cd $PATH_CLIENT
-		python3 $PATH_SOURCES/faucet_spammer.py $DISCORD $WALLETPWD |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		python3 $PATH_SOURCES/faucet_spammer.py $DISCORD $WALLETPWD
 
 		# Return ping done
 		return 0
@@ -352,12 +319,12 @@ RefreshPublicIP() {
 		# Check massabot return
 		if ($(cat $PATH_MASSABOT_REPLY | grep -q -e "IP address: $myIP"))
 		then
-			echo "[$(date +%Y%m%d-%HH%M)][INFO][IP]Dynamique public IP changed, updated for $1 in config.toml and with massabot" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+			echo "[$(date +%Y%m%d-%HH%M)][INFO][IP]Dynamique public IP changed, updated for $1 in config.toml and with massabot"
 		elif ($(cat $PATH_MASSABOT_REPLY | grep -q -e "wait for announcements!"))
 		then
-			echo "[$(date +%Y%m%d-%HH%M)][WARN][IP]Unable to update registrered IP with massabot because testnet not start for now" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+			echo "[$(date +%Y%m%d-%HH%M)][WARN][IP]Unable to update registrered IP with massabot because testnet not start for now"
 		else
-			echo "[$(date +%Y%m%d-%HH%M)][ERROR][IP]Unable to update registrered IP with massabot because massabot not or wrong responsive" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+			echo "[$(date +%Y%m%d-%HH%M)][ERROR][IP]Unable to update registrered IP with massabot because massabot not or wrong responsive"
 		fi
 
 		# Update IP in your ref config.toml and restart node
@@ -396,7 +363,7 @@ RegisterNodeWithMassabot() {
 
 	if cat $PATH_MASSABOT_REPLY | grep -q -E "Your discord account \`[0-9]{18}\` has been associated with this node ID"
 	then
-		echo "[$(date +%Y%m%d-%HH%M)][INFO][REGISTRATION]Node is now register with discord ID $2 and massabot" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		echo "[$(date +%Y%m%d-%HH%M)][INFO][REGISTRATION]Node is now register with discord ID $2 and massabot"
 		python3 $PATH_SOURCES/set_config.py "NODE_TESTNET_REGISTRATION" \"OK\" $PATH_CONF_MASSAGUARD/config.ini
 		return 0
 	else
@@ -431,7 +398,7 @@ CheckTestnetNodeRegistration() {
 			return 0
 		else
 			# Return bot registration OK
-			echo "[$(date +%Y%m%d-%HH%M)][INFO][REGISTRATION]Node already associated with and massabot or registration is not already open" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+			echo "[$(date +%Y%m%d-%HH%M)][INFO][REGISTRATION]Node already associated with and massabot or registration is not already open"
 			python3 $PATH_SOURCES/set_config.py "NODE_TESTNET_REGISTRATION" \"OK\" $PATH_CONF_MASSAGUARD/config.ini
 			return 0
 		fi
