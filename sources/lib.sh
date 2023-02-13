@@ -11,8 +11,7 @@ WaitBootstrap() {
 		sleep 5s
 	done
 
-	# Log MASSA-GUARD Start
-	echo "[$(date +%Y%m%d-%HH%M)][INFO][START]MASSA-NODE is running"
+	echo "[$(date +%Y%m%d-%HH%M)][INFO][START]MASSA-NODE Successfully bootstraped"
 
 	return 0
 }
@@ -364,7 +363,7 @@ RegisterNodeWithMassabot() {
 	if cat $PATH_MASSABOT_REPLY | grep -q -E "Your discord account \`[0-9]{18}\` has been associated with this node ID"
 	then
 		echo "[$(date +%Y%m%d-%HH%M)][INFO][REGISTRATION]Node is now register with discord ID $2 and massabot"
-		python3 $PATH_SOURCES/set_config.py "NODE_TESTNET_REGISTRATION" \"OK\" $PATH_CONF_MASSAGUARD/config.ini
+		export NODE_TESTNET_REGISTRATION=OK
 		return 0
 	else
 		return 1
@@ -399,7 +398,7 @@ CheckTestnetNodeRegistration() {
 		else
 			# Return bot registration OK
 			echo "[$(date +%Y%m%d-%HH%M)][INFO][REGISTRATION]Node already associated with and massabot or registration is not already open"
-			python3 $PATH_SOURCES/set_config.py "NODE_TESTNET_REGISTRATION" \"OK\" $PATH_CONF_MASSAGUARD/config.ini
+			export NODE_TESTNET_REGISTRATION=OK
 			return 0
 		fi
 	# If node set as registrered in config.ini

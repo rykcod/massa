@@ -1,25 +1,18 @@
 #!/bin/bash
 #====================== Configuration ==========================#
-# Default values
-MASSAGUARD=1
 # Global configuration
 . /massa-guard/config/default_config.ini
-# Custom configuration
-source <(grep = $PATH_CONF_MASSAGUARD/config.ini)
 # Import custom library
 . /massa-guard/sources/lib.sh
 
 # Wait node booststrap
 WaitBootstrap
 
-echo "MASSAGUARD: [$(date +%Y%m%d-%HH%M)][INFO][INIT] Boostraped! $PATH_LOGS_MASSAGUARD" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
-
 #====================== Check and load ==========================#
 # Load Wallet and Node key or create it and stake wallet
 CheckOrCreateWalletAndNodeKey
 # Get stacking address
 WalletAddress=$(GetWalletAddress)
-echo "MASSAGUARD: [$(date +%Y%m%d-%HH%M)][INFO][INIT] WalletAddress! $WalletAddress" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 
 #==================== Massa-guard circle =========================# 
 # Infinite check
@@ -56,7 +49,7 @@ do
 				CheckTestnetNodeRegistration "$WalletAddress"
 
 				# If dynamical IP feature enable and public IP is new
-				if ([ $DYN_PUB_IP -eq 1 ] && [ $(CheckPublicIP) -eq 1 ])
+				if ([ $DYNIP -eq 1 ] && [ $(CheckPublicIP) -eq 1 ])
 				then
 					# Refresh config.toml + restart node + push new IP to massabot
 					RefreshPublicIP
