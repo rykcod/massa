@@ -5,10 +5,10 @@
 # Custom configuration
 source <(grep = $PATH_CONF_MASSAGUARD/config.ini)
 
-# Launch client
-cd $PATH_CLIENT
-screen -dmS massa-client bash -c './massa-client -p '$WALLET_PWD''
-sleep 1s
+/massa-guard/sources/init_copy_host_files.sh
+
+/massa-guard/massa-guard.sh &
+
 # Launch node
 cd $PATH_NODE
-screen -dmS massa-node bash -c './massa-node -p '$NODE_PWD' |& tee -a logs.txt '$PATH_LOGS_MASSANODE'/current.txt'
+./massa-node -p $WALLETPWD

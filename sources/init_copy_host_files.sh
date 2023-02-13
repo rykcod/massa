@@ -5,7 +5,6 @@
 # Import custom library
 . /massa-guard/sources/lib.sh
 
-
 ## Check conf file exist
 # Create paths and copy default config.ini as ref
 if [ ! -e $PATH_CONF_MASSAGUARD/config.ini ]
@@ -19,7 +18,6 @@ then
 	cp /massa-guard/config/default_config_template.ini $PATH_CONF_MASSAGUARD/config.ini
 	if [ $DISCORD ]; then python3 $PATH_SOURCES/set_config.py "DISCORD_TOKEN" \"$DISCORD\" $PATH_CONF_MASSAGUARD/config.ini ; fi
 	if [ $DYNIP ]; then python3 $PATH_SOURCES/set_config.py "DYN_PUB_IP" "$DYNIP" $PATH_CONF_MASSAGUARD/config.ini ; fi
-	if [ $NODEPWD ]; then python3 $PATH_SOURCES/set_config.py "NODE_PWD" \"$NODEPWD\" $PATH_CONF_MASSAGUARD/config.ini ; fi
 	if [ $WALLETPWD ]; then python3 $PATH_SOURCES/set_config.py "WALLET_PWD" \"$WALLETPWD\" $PATH_CONF_MASSAGUARD/config.ini ; fi
 	if [ $MASSAGUARD ]; then python3 $PATH_SOURCES/set_config.py "MASSAGUARD" \"$MASSAGUARD\" $PATH_CONF_MASSAGUARD/config.ini ; fi
 	if [ $AUTOUPDATE ]; then python3 $PATH_SOURCES/set_config.py "AUTOUPDATE" \"$AUTOUPDATE\" $PATH_CONF_MASSAGUARD/config.ini ; fi
@@ -58,10 +56,10 @@ else
 	echo "routable_ip = \"$myIP\"" >> $PATH_MOUNT/config.toml
 	cp $PATH_MOUNT/config.toml $PATH_NODE_CONF/config.toml
 
-	if [ ! $DISCORD_TOKEN == "NULL" ]
+	if [ ! $DISCORD == "NULL" ]
 	then
 		# Push IP to massabot
-		timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD_TOKEN $myIP > $PATH_MASSABOT_REPLY
+		timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD $myIP > $PATH_MASSABOT_REPLY
 	fi
 
 	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Create your default config.toml with $myIP as routable IP" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt

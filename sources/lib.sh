@@ -20,7 +20,7 @@ WaitBootstrap() {
 #############################################################
 GetWalletAddress() {
 	cd $PATH_CLIENT
-	WalletAddress=$($PATH_TARGET/massa-client -p $WALLET_PWD wallet_info | grep "Address" | cut -d " " -f 2 | head -n 1)
+	WalletAddress=$($PATH_TARGET/massa-client -p $WALLETPWD wallet_info | grep "Address" | cut -d " " -f 2 | head -n 1)
 	echo "$WalletAddress"
 	return 0
 }
@@ -33,35 +33,28 @@ CheckOrCreateWalletAndNodeKey() {
 	## Create a wallet, stacke and backup
 	# If wallet don't exist
 	cd $PATH_CLIENT
-	checkWallet=`$PATH_TARGET/massa-client -p $WALLET_PWD wallet_info | grep -c "Address"`
+	checkWallet=`$PATH_TARGET/massa-client -p $WALLETPWD wallet_info | grep -c "Address"`
 	if ([ ! -e $PATH_CLIENT/wallet.dat ] || [ $checkWallet -lt 1 ])
 	then
 		# Generate wallet
 		cd $PATH_CLIENT
-		$PATH_TARGET/massa-client -p $WALLET_PWD wallet_generate_secret_key > /dev/null
+		$PATH_TARGET/massa-client -p $WALLETPWD wallet_generate_secret_key > /dev/null
 		echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Generate wallet.dat" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 		# Backup wallet to the mount point as ref
 		cp $PATH_CLIENT/wallet.dat $PATH_MOUNT/wallet.dat
-
-		clientPID=$(ps -ax | grep massa-client | grep SCREEN | awk '{print $1}')
-		# Kill client SCREEN
-		kill $clientPID
-		# Re-Launch client
-		cd $PATH_CLIENT
-		screen -dmS massa-client bash -c './massa-client -p '$WALLET_PWD''
 
 		echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Backup wallet.dat" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 	fi
 
 	## Stacke if wallet not stacke
 	# If staking_keys don't exist
-	checkStackingKey=`$PATH_TARGET/massa-client -p $WALLET_PWD node_get_staking_addresses | grep -c -E "[0-z]{51}"`
+	checkStackingKey=`$PATH_TARGET/massa-client -p $WALLETPWD node_get_staking_addresses | grep -c -E "[0-z]{51}"`
 	if ([ ! -e $PATH_NODE_CONF/staking_wallet.dat ] || [ $checkStackingKey -lt 1 ])
 	then
 		# Get first wallet Address
 		walletAddress=$(GetWalletAddress)
 		# Stacke wallet
-		$PATH_TARGET/massa-client -p $WALLET_PWD node_start_staking $walletAddress > /dev/null
+		$PATH_TARGET/massa-client -p $WALLETPWD node_start_staking $walletAddress > /dev/null
 		echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Stake privKey" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 		# Backup staking_wallet.dat to mount point as ref
 		cp $PATH_NODE_CONF/staking_wallet.dat $PATH_MOUNT/staking_wallet.dat
@@ -87,7 +80,7 @@ CheckOrCreateWalletAndNodeKey() {
 #############################################################
 GetCandidateRoll() {
 	# Get address info
-	get_address=$(cd $PATH_CLIENT;$PATH_TARGET/massa-client -p $WALLET_PWD wallet_info)
+	get_address=$(cd $PATH_CLIENT;$PATH_TARGET/massa-client -p $WALLETPWD wallet_info)
 	# Get candidate roll amount for first Address
 	CandidateRolls=$(echo "$get_address" wallet_info | grep "Rolls" | cut -d "=" -f 4 | head -n 1)
 	# Return candidate roll amount
@@ -103,7 +96,7 @@ GetCandidateRoll() {
 #############################################################
 GetMASAmount() {
 	# Get address info
-	get_address=$(cd $PATH_CLIENT;$PATH_TARGET/massa-client -p $WALLET_PWD wallet_info)
+	get_address=$(cd $PATH_CLIENT;$PATH_TARGET/massa-client -p $WALLETPWD wallet_info)
 	# Get MAS amount for first Address
 	MasAmount=$(echo "$get_address" | grep -E "Balance"." final" | cut -d "=" -f 2 | cut -d "," -f 1 | cut -d "." -f 1 | head -n 1)
 	# Return MAS amount
@@ -124,7 +117,7 @@ BuyOrSellRoll() {
 
 		# Buy roll amount
 		cd $PATH_CLIENT
-		$PATH_TARGET/massa-client -p $WALLET_PWD buy_rolls $3 1 0 > /dev/null
+		$PATH_TARGET/massa-client -p $WALLETPWD buy_rolls $3 1 0 > /dev/null
 
 	# If MAS amount < 100 MAS and Candidate roll = 0
 	elif ([ $1 -eq 0 ] && [ $2 -lt 100 ])
@@ -138,7 +131,7 @@ BuyOrSellRoll() {
 		echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOBUY $NbRollsToBuy ROLL because MAS amount equal to $2" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 		# Buy roll amount
 		cd $PATH_CLIENT
-		$PATH_TARGET/massa-client -p $WALLET_PWD buy_rolls $3 $NbRollsToBuy 0 > /dev/null
+		$PATH_TARGET/massa-client -p $WALLETPWD buy_rolls $3 $NbRollsToBuy 0 > /dev/null
 
 	# If MAS amount > 200 MAS and rolls limitation is set
 	elif ([ $2 -gt 200 ] && [ ! $TARGET_ROLL_AMOUNT == "NULL" ])
@@ -162,7 +155,7 @@ BuyOrSellRoll() {
 			fi
 			# Buy roll amount
 			cd $PATH_CLIENT
-			$PATH_TARGET/massa-client -p $WALLET_PWD buy_rolls $3 $NbRollsToBuy 0 > /dev/null
+			$PATH_TARGET/massa-client -p $WALLETPWD buy_rolls $3 $NbRollsToBuy 0 > /dev/null
 		# If roll target amount less than active roll amount sell exceed rolls
 		elif [ $TARGET_ROLL_AMOUNT -lt $1 ]
 		then
@@ -170,7 +163,7 @@ BuyOrSellRoll() {
 			echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOSELL $NbRollsToSell ROLL because ROLL amount of $1 greater than target amount of $TARGET_ROLL_AMOUNT" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 			# Sell roll amount
 			cd $PATH_CLIENT
-			$PATH_TARGET/massa-client -p $WALLET_PWD sell_rolls $3 $NbRollsToSell 0 > /dev/null
+			$PATH_TARGET/massa-client -p $WALLETPWD sell_rolls $3 $NbRollsToSell 0 > /dev/null
 		fi
 	# If rolls limitation is set
 	elif [ ! $TARGET_ROLL_AMOUNT == "NULL" ]
@@ -182,7 +175,7 @@ BuyOrSellRoll() {
 			echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOSELL $NbRollsToSell ROLL because ROLL amount of $1 greater than target amount of $TARGET_ROLL_AMOUNT" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 			# Sell roll amount
 			cd $PATH_CLIENT
-			$PATH_TARGET/massa-client -p $WALLET_PWD sell_rolls $3 $NbRollsToSell 0 > /dev/null
+			$PATH_TARGET/massa-client -p $WALLETPWD sell_rolls $3 $NbRollsToSell 0 > /dev/null
 		# Else, if max roll target is OK, do nothing
 		else
 			# Do nothing
@@ -224,7 +217,7 @@ CheckNodeRam() {
 CheckNodeResponsive() {
 	# Check node status and logs events
 	cd $PATH_CLIENT
-	checkGetStatus=$(timeout 2 $PATH_TARGET/massa-client -p $WALLET_PWD get_status | wc -l)
+	checkGetStatus=$(timeout 2 $PATH_TARGET/massa-client -p $WALLETPWD get_status | wc -l)
 
 	# If get_status is responsive
 	if [ $checkGetStatus -lt 10 ]
@@ -282,27 +275,8 @@ BackupLogsNode() {
 CheckAndReloadNode() {
 	if( [ $1 -eq 1 ] || [ $2 -eq 1 ] )
 	then
-		## Stop node and client
-		cd $PATH_CLIENT
-		# Get node SCREEN PID
-		nodePID=$(ps -ax | grep massa-node | grep SCREEN | awk '{print $1}')
-		# Kill node SCREEN
-		kill $nodePID > /dev/null
-		sleep 1s
-		# Get client SCREEN PID
-		clientPID=$(ps -ax | grep massa-client | grep SCREEN | awk '{print $1}')
-		# Kill client SCREEN
-		kill $clientPID > /dev/null
-		sleep 5s
-
-		# Reload conf files from ref
-		bash $PATH_SOURCES/init_copy_host_files.sh
-
-		# Re-Launch node and client
-		bash $PATH_SOURCES/run.sh
-
-		# Wait node booststrap
-		WaitBootstrap
+			# This will stop the whole container the container
+		pkill massa-node
 
 		# Return restart operation
 		return 1
@@ -325,84 +299,13 @@ PingFaucet() {
 	then
 		# Call python ping faucet script with token discord
 		cd $PATH_CLIENT
-		python3 $PATH_SOURCES/faucet_spammer.py $DISCORD_TOKEN $WALLET_PWD |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		python3 $PATH_SOURCES/faucet_spammer.py $DISCORD $WALLETPWD |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 
 		# Return ping done
 		return 0
 	fi
 	# Return ping already done today
 	return 1
-}
-
-#############################################################
-# FONCTION = RefreshUnreachableBootstrap
-# DESCRIPTION = Check bootstrappers.toml connected [OTHERS] nodes list and set unavailable if unreacheble
-#############################################################
-RefreshUnreachableBootstrap() {
-	# If bootstrappers_unreachable.txt dont exist
-	if [ ! -e $PATH_CONF_MASSAGUARD/bootstrappers_unreachable.txt ]
-	then
-		# Create bootstrappers_unreachable.txt
-		touch $PATH_CONF_MASSAGUARD/bootstrappers_unreachable.txt
-	# Else recheck availability to bootstrap of this node
-	else
-		# Get bootstrapper tag as unreachable
-		hostUnreachableListToRecheck=$(cat $PATH_CONF_MASSAGUARD/bootstrappers_unreachable.txt)
-		# Check port again for Unreachable hosts
-		for hostUnreachable in $hostUnreachableListToRecheck
-		do
-			# If node is responsive
-			if (( timeout 0.2 nc -z -v $hostUnreachable 31244 ) && ( timeout 0.2 nc -z -v $hostUnreachable 31245 ))
-			then
-				# Remove node of unreachable list
-				grep -v $hostUnreachable $PATH_CONF_MASSAGUARD/bootstrappers_unreachable.txt > $PATH_CONF_MASSAGUARD/bootstrappers_unreachable.tmp
-				mv $PATH_CONF_MASSAGUARD/bootstrappers_unreachable.tmp $PATH_CONF_MASSAGUARD/bootstrappers_unreachable.txt
-			fi
-		done
-	fi
-	# If bootstrappers list exist
-	if [ -e $PATH_CONF_MASSAGUARD/bootstrappers.toml ]
-	then
-		# Load Others bootstrappers list
-		hostListToCheck=$(cat $PATH_CONF_MASSAGUARD/bootstrappers.toml |sed '1,/^\[others\]$/d' | egrep -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}|([0-9a-z]{4})(:[0-9a-z]{0,4}){1,7}')
-		# Check availability to bootstrap on all bootstrappers
-		for host in $hostListToCheck
-		do
-			# If node is unreachable on TCP port 31244 or 31245
-			if (( ! timeout 0.2 nc -z -v $host 31244 ) || ( ! timeout 0.2 nc -z -v $host 31245 ))
-			then
-				# If unreachable node dont exist in unreachable node list
-				if  ! cat $PATH_CONF_MASSAGUARD/bootstrappers_unreachable.txt | grep "$host"
-				then
-					# Add node in unreachable node list
-					echo "$host" >> $PATH_CONF_MASSAGUARD/bootstrappers_unreachable.txt
-				fi
-			fi
-		done
-	fi
-	return 0
-}
-
-#############################################################
-# FONCTION = RefreshBootstrapNode
-# DESCRIPTION = Test and refresh bootstrap node to config.toml
-#############################################################
-RefreshBootstrapNode() {
-	# Check RefreshUnreachableBootstrap to excecute only one time per day
-	checkUnreachableNode=$(cat $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | grep "Refresh" | wc -l)
-	if ([ $checkUnreachableNode -eq 0 ] && [ $(date +%H) -gt 4 ])
-	then
-		# Refresh bootstrap nodes list and logs returns
-		RefreshUnreachableBootstrap
-		echo "[$(date +%Y%m%d-%HH%M)][INFO][BOOTSTRAP]Refresh availability of connected node to bootstrap" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
-	fi
-
-	# Refresh bootstrap nodes list and logs returns
-	cd $PATH_CLIENT
-	python3 $PATH_SOURCES/bootstrap_finder.py $WALLET_PWD |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
-
-	# Copy config.toml
-	cp $PATH_MOUNT/config.toml $PATH_NODE_CONF/
 }
 
 #############################################################
@@ -445,7 +348,7 @@ RefreshPublicIP() {
 		confIP=$(cat $PATH_NODE_CONF/config.toml | grep "routable_ip" | egrep -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}|([0-9a-z]{4})(:[0-9a-z]{0,4}){1,7}')
 
 		# Push new IP to massabot
-		timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD_TOKEN $myIP > $PATH_MASSABOT_REPLY
+		timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD $myIP > $PATH_MASSABOT_REPLY
 		# Check massabot return
 		if ($(cat $PATH_MASSABOT_REPLY | grep -q -e "IP address: $myIP"))
 		then
@@ -485,11 +388,11 @@ GetPublicIP() {
 RegisterNodeWithMassabot() {
 	# Get registration hash
 	cd $PATH_CLIENT
-	registrationHashReturn=$($PATH_TARGET/massa-client -p $WALLET_PWD "node_testnet_rewards_program_ownership_proof" $1 $2)
+	registrationHashReturn=$($PATH_TARGET/massa-client -p $WALLETPWD "node_testnet_rewards_program_ownership_proof" $1 $2)
 	registrationHash=$(echo $registrationHashReturn | sed -r 's/^Enter the following in discord: //')
 
 	# Push defaut request to massabot
-	timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD_TOKEN $registrationHash > $PATH_MASSABOT_REPLY
+	timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD $registrationHash > $PATH_MASSABOT_REPLY
 
 	if cat $PATH_MASSABOT_REPLY | grep -q -E "Your discord account \`[0-9]{18}\` has been associated with this node ID"
 	then
@@ -512,7 +415,7 @@ CheckTestnetNodeRegistration() {
 	then
 		# Push new IP to massabot
 		cd $PATH_CLIENT
-		timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD_TOKEN "info" > $PATH_MASSABOT_REPLY
+		timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD "info" > $PATH_MASSABOT_REPLY
 
 		# Check massabot return
 		if cat $PATH_MASSABOT_REPLY | grep -q -E "Your discord user_id \`[0-9]{18}\` is not registered yet"\|"but not associated to any node ID and staking address"

@@ -12,11 +12,14 @@ source <(grep = $PATH_CONF_MASSAGUARD/config.ini)
 # Wait node booststrap
 WaitBootstrap
 
+echo "MASSAGUARD: [$(date +%Y%m%d-%HH%M)][INFO][INIT] Boostraped! $PATH_LOGS_MASSAGUARD" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+
 #====================== Check and load ==========================#
 # Load Wallet and Node key or create it and stake wallet
 CheckOrCreateWalletAndNodeKey
 # Get stacking address
 WalletAddress=$(GetWalletAddress)
+echo "MASSAGUARD: [$(date +%Y%m%d-%HH%M)][INFO][INIT] WalletAddress! $WalletAddress" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 
 #==================== Massa-guard circle =========================# 
 # Infinite check
@@ -46,7 +49,7 @@ do
 			# RefreshBootstrapNode
 
 			# If Discord feature enable
-			if [ ! $DISCORD_TOKEN == "NULL" ]
+			if [ ! $DISCORD == "NULL" ]
 			then
 				# Check and get faucet of current day
 				PingFaucet
