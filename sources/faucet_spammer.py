@@ -10,6 +10,7 @@
 
 import subprocess
 import discord # To install this dependency: python3 -m pip install -U discord.py
+import time
 import datetime
 import sys
 
@@ -24,27 +25,28 @@ INFO="[INFO]"
 
 class DiscordClient(discord.Client):
     async def on_ready(self):
-        date = datetime.datetime.today()
-        dateLog = date.strftime('%Y%m%d-%HH%M')
-        output, error = subprocess.Popen(CMD, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
-        if (not error) and output:
-            address = ""
-            for line in output.decode("UTF-8").split("\n"):
-                if "Address" in line:
-                    address = line.split(" ")[1]
-                    break
-            if address :
-                faucet_channel = self.get_channel(FAUCET_CHANNEL_ID)
-                if faucet_channel:
-                    print(f"[{dateLog}]{INFO}Ping faucet with address {address} for {self.user}")
-                    await faucet_channel.send(address)
+        while True:
+            date = datetime.datetime.today()
+            dateLog = date.strftime('%Y%m%d-%HH%M')
+            output, error = subprocess.Popen(CMD, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
+            if (not error) and output:
+                address = ""
+                for line in output.decode("UTF-8").split("\n"):
+                    if "Address" in line:
+                        address = line.split(" ")[1]
+                        break
+                if address :
+                    faucet_channel = self.get_channel(FAUCET_CHANNEL_ID)
+                    if faucet_channel:
+                        print(f"[{dateLog}]{INFO}Ping faucet with address {address} for {self.user}")
+                        await faucet_channel.send(address)
+                    else:
+                        print(f"[{dateLog}]{ERROR}Unable to find faucet channel")
                 else:
-                    print(f"[{dateLog}]{ERROR}Unable to find faucet channel")
+                    print(f"[{dateLog}]{ERROR}Unable to find wallet address")
             else:
-                print(f"[{dateLog}]{ERROR}Unable to find wallet address")
-        else:
-            error = error.decode("UTF-8")
-            print(f"[{dateLog}]{ERROR}Failed to get wallet address: {error}")
-        await self.close()
+                error = error.decode("UTF-8")
+                print(f"[{dateLog}]{ERROR}Failed to get wallet address: {error}")
+            time.sleep(3601*24)    
 
 DiscordClient().run(TOKEN, bot=False)

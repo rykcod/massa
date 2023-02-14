@@ -14,9 +14,6 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Autobuy 1 roll when your node failed and lost his "Active rolls".
   - Autobuy X rolls when your MAS amount greater than 200 MAS and if "Active rolls" dont exceed "TARGET_ROLL_AMOUNT" set in /massa_mount/config/config.ini (If set).
   - Autosell X rolls when "Active rolls" exceed "TARGET_ROLL_AMOUNT" set in /massa_mount/config/config.ini (If set).
-- [BOOTSTRAPFINDER] Deprecated since testnet 16. From now and by default comminity node unable to bootstrap on other community nodes.
-  - Auto refresh massa online bootstrap list with connected node.
-  - Filter to only add node which have TCP port 31244 & 31245 reachable.
 - [WATCHDOG]
   - Restart node when hang or when ram consumption exceed 90% (Value can be adjust)
   - You host your node under a dynamical IP? massa-guard will watch IP change and update your config.toml and push IP updates to massabot.
@@ -69,44 +66,54 @@ Create an empty folder to mount in our container /massa_mount path or store your
  - ''WALLETPWD'' - Set with "YourCustomPassword" if you want to use a custom wallet password.
  - ''NODEPWD'' - Set with "YourCustomPassword" if you want to use a custom node password.
  - ''IP'' - Set with "YourIPAddress" if your node have differents publics IPs and you want to set your custom selection.
-/!\ Please note, this ENV variables have a low priority if a previous config.ini exist in your mount point.
 
-  * __Example N°1:__ Container creation example with ENV variables to define Dicord token :
-```console
-docker run -d -v /%MY_PATH%/massa_mount:/massa_mount -p 31244-31245:31244-31245 -p 33035:33035 -e "DISCORD=OTc2MDkyTgP0OTU4NCXsNTIy.G5jqAc.b+rV4MgEnMvo48ICeGg6E_QPg4dHjlSBJA06CA" --name massa-node rykcod/massa
-```
-  * __Example N°2:__ Container creation example with ENV variables to define Dicord token and run a basical container without massa-guard automation :
-```console
-docker run -d -v /%MY_PATH%/massa_mount:/massa_mount -p 31244-31245:31244-31245 -p 33035:33035 -e "DISCORD=OTc2MDkyTgP0OTU4NCXsNTIy.G5jqAc.b+rV4MgEnMvo48ICeGg6E_QPg4dHjlSBJA06CA" -e "MASSAGUARD=0" --name massa-node rykcod/massa
+Create a docker-compose.yml file and fill it with your environment variables
+  * __Example:__ Create a docker-compose.yml file and fill it with your environment variables:
+```bash
+version: '3'
+services:
+
+  massa-core:
+    image: peterjah/massa-core
+    container_name: massa-core
+    restart: always
+    environment:
+      - MASSAGUARD=1
+      - DISCORD=
+      - DYNIP=0
+      - WALLETPWD=MassaToTheMoon2024
+      # RAM max for node in percent - If RAM is over NODE_MAX_RAM value, node will restrat to purge RAM allocation
+      - NODE_MAX_RAM=90
+      # Set if node registered with massabot - Set with OK if node registrered with massabot or KO if you want to check and use registration process
+      - NODE_TESTNET_REGISTRATION=KO
+      - TARGET_ROLL_AMOUNT=NULL
+
+    ports:
+     - "31244:31244"
+     - "31245:31245"
+     - "33035:33035"
+    cap_add:
+      - SYS_NICE
+      - SYS_RESOURCE
+      - SYS_TIME
+    volumes:
+     - ./massa_mount:/massa_mount
+
+volumes:
+  massa-core:
+
 ```
   * To connect into your container:
 ```console
-docker exec -it massa-node /bin/bash
+docker exec -it massa-core /bin/bash
 ```
-  * Connect to massa-client after container connection:
+  * Using massa client:
 ```console
-screen -x massa-client
+docker exec massa-core /cli.sh -p MassaToTheMoon2024 get_status
 ```
-  * Exit screen or container:
-```console
-ctrl+a+d
-```
-#### [MAINTENANCE] After container creation ####
-__[OPTION] To enable or update features after container creation just edit /massa_mount/config/config.ini and set__
-  * Set your ''DISCORD_TOKEN'' value to enable "Autoget MAS faucet" feature and autoregistration node and IP to massabot (Refer to HELP section)
-  * Set your ''DYN_PUB_IP'' value to enable dynamical IP management (0=Disable 1=Enable)
-  * Set your ''TARGET_ROLL_AMOUNT'' value to enable roll amount target to stake for your node (Integer value)
-  * Set your ''NODE_TESTNET_REGISTRATION'' value to enable node registration with massabot (KO=Enable OK=AlreadyDone)
-  * Set your ''MASSAGUARD'' value to enable or disable massa-guard features 0=Disable 1=Enable (Enable by default)
 
 ## [HELP] ##
-- Massa client is running over a "screen" named "massa-client"
-- Massa node is running over a "screen" named "massa-node"
-- To get your discord token, refer to https://shufflegazine.com/get-discord-token/
-
-### [LOGS PATH] ###
-- Massa-guard actions and events are logs into %MountPoint%/logs/massa-guard/%DATE%-massa_guard.txt
-- Massa-node events are archived after every restart into %MountPoint%/logs/massa-guard/%DATE%-logs.txt
+- To get your discord token, refer to https://www.androidauthority.com/get-discord-token-3149920/
 
 ### [HELP - Easy beginner way for IPV6 usage] ###
 - Create or edit your host /etc/docker/daemon.json to add:

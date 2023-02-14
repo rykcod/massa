@@ -125,7 +125,7 @@ BuyOrSellRoll() {
 	# If MAS amount < 100 MAS and Candidate roll = 0
 	elif ([ $1 -eq 0 ] && [ $2 -lt 100 ])
 	then
-		echo "[$(date +%Y%m%d-%HH%M)][KO][ROLL]Cannot buy first ROLL because MAS Amount less than 100. Please get 100 MAS on Discord or set your DISCORD_ID on /massa_mount/config/config.ini"
+		echo "[$(date +%Y%m%d-%HH%M)][KO][ROLL]Cannot buy first ROLL because MAS Amount less than 100. Please get 100 MAS on Discord or set your DISCORD ID"
 
 	# If MAS amount > 200 MAS and no rolls limitation, buy ROLLs
 	elif ([ $2 -gt 200 ] && [ $TARGET_ROLL_AMOUNT == "NULL" ])
@@ -139,12 +139,10 @@ BuyOrSellRoll() {
 	# If MAS amount > 200 MAS and rolls limitation is set
 	elif ([ $2 -gt 200 ] && [ ! $TARGET_ROLL_AMOUNT == "NULL" ])
 	then
-		# If max roll limit set in /massa_mount/config/config.ini greater than candidate roll
 		if [ $TARGET_ROLL_AMOUNT -gt $1 ]
 		then
 			# Calculation of max rolls you can buy with all your MAS amount
 			NbRollsCanBuyWithMAS=$((($2-100)/100))
-			# Calculation of max rolls you can buy by looking max amount set in /massa_mount/config/config.ini
 			NbRollsNeedToBuy=$(($TARGET_ROLL_AMOUNT-$1))
 			# If rolls amount you can buy less than max amount, buy all you can buy
 			if [ $NbRollsCanBuyWithMAS -le $NbRollsNeedToBuy ]
@@ -185,9 +183,6 @@ BuyOrSellRoll() {
 			return 0
 		fi
 	# Else, if MAS amount less to buy 1 roll or if max roll target is OK, do nothing
-	else
-		# Do nothing
-		return 0
 	fi
 }
 
@@ -201,14 +196,13 @@ CheckNodeRam() {
 	checkRam=$(ps -u | awk '/massa-node/ && !/awk/' | awk '{print $4}')
 	checkRam=${checkRam/.*}
 
+	MAX_RAM=${NODE_MAX_RAM:-90}
+
 	# If ram consumption is too high
-	if ([ ! -z $checkRam ] && [ $checkRam -gt $NODE_MAX_RAM ])
+	if ([ ! -z $checkRam ] && [ $checkRam -gt $MAX_RAM ])
 	then
 		echo "[$(date +%Y%m%d-%HH%M)][KO][NODE]RAM EXCEED - NODE WILL RESTART"
 		return 1
-	# If ram consumption is ok
-	else
-		return 0
 	fi
 }
 
@@ -226,9 +220,6 @@ CheckNodeResponsive() {
 	if [ $checkGetStatus -lt 10 ]
 	then
 		return 1
-	# If get_status hang
-	else
-		return 0
 	fi
 }
 
@@ -246,9 +237,6 @@ CheckAndReloadNode() {
 
 		# Return restart operation
 		return 1
-	else
-		# Return already ok
-		return 0
 	fi
 }
 
@@ -258,20 +246,7 @@ CheckAndReloadNode() {
 # RETURN = 0 for ping done 1 for ping already got
 #############################################################
 PingFaucet() {
-	# Check faucet
-	checkFaucet=$(cat $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | grep "faucet" | wc -l)
-	# Get faucet
-	if ([ $checkFaucet -eq 0 ] && [ $(date +%H) -gt 2 ])
-	then
-		# Call python ping faucet script with token discord
-		cd $PATH_CLIENT
-		python3 $PATH_SOURCES/faucet_spammer.py $DISCORD $WALLETPWD
-
-		# Return ping done
-		return 0
-	fi
-	# Return ping already done today
-	return 1
+	python3 $PATH_SOURCES/faucet_spammer.py $DISCORD $WALLETPWD &
 }
 
 #############################################################
@@ -295,7 +270,6 @@ CheckPublicIP() {
 		# Return IP change
 		echo 1
 	fi
-	return 0
 }
 
 #############################################################
@@ -401,20 +375,10 @@ CheckTestnetNodeRegistration() {
 			export NODE_TESTNET_REGISTRATION=OK
 			return 0
 		fi
-	# If node set as registrered in config.ini
 	elif [ $NODE_TESTNET_REGISTRATION == "OK" ]
 	then
 		return 0
 	else
 		return 1
 	fi
-}
-
-#############################################################
-# FONCTION = CheckAndUpdateNode
-# DESCRIPTION = Check if node registrered with massabot
-# RETURN = 0 NoUpdate 1 UpdateDone
-#############################################################
-CheckAndUpdateNode () {
-	return 0
 }

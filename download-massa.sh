@@ -6,7 +6,7 @@ MASSA_PACKAGE_LOCATION="https://github.com/massalabs/massa/releases/download/$VE
 
 package=""
 
-if [[ $TARGETPLATFORM =~ linux/arm* ]]; then
+if [ -n "$ARM" ]; then
 	package=$MASSA_PACKAGE_ARM64
 else
 	package=$MASSA_PACKAGE

@@ -5,17 +5,6 @@
 # Import custom library
 . /massa-guard/sources/lib.sh
 
-## Check conf file exist
-# Create paths and copy default config.ini as ref
-if [ ! -e $PATH_CONF_MASSAGUARD/config.ini ]
-then
-	mkdir -p /massa_mount/config
-	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]CREATE /massa_mount/config folder"
-	cp /massa-guard/config/default_config_template.ini $PATH_CONF_MASSAGUARD/config.ini
-fi
-# Load config.ini
-source <(grep = $PATH_CONF_MASSAGUARD/config.ini)
-
 ## Copy/refresh massa_mount wallet and config files if exists
 # Conf node file
 if [ -e $PATH_MOUNT/config.toml ]

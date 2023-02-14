@@ -14,6 +14,13 @@ CheckOrCreateWalletAndNodeKey
 # Get stacking address
 WalletAddress=$(GetWalletAddress)
 
+export NODE_TESTNET_REGISTRATION=KO
+
+if [ ! $DISCORD == "NULL" ]; then
+	# Check and get faucet of current day
+	PingFaucet
+fi
+
 #==================== Massa-guard circle =========================# 
 # Infinite check
 while true
@@ -42,9 +49,6 @@ do
 			# If Discord feature enable
 			if [ ! $DISCORD == "NULL" ]
 			then
-				# Check and get faucet of current day
-				PingFaucet
-
 				# Check and registrer node with massabot if necessary
 				CheckTestnetNodeRegistration "$WalletAddress"
 
@@ -56,15 +60,7 @@ do
 				fi
 			fi
 		fi
-
-		# Check and update node if autoupdate feature is enable and upate available
-		if [ $AUTOUPDATE -eq 1 ]
-		then
-			CheckAndUpdateNode
-		fi
 	fi
 	# Wait before next loop
 	sleep 2m
-	# Refresh configuration value
-	source <(grep = $PATH_CONF_MASSAGUARD/config.ini)
 done
