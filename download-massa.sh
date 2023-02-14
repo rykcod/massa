@@ -13,7 +13,7 @@ else
 fi
 
 # Download the package
-wget "$MASSA_PACKAGE_LOCATION/$package"
+curl -Ls -o "$package" "$MASSA_PACKAGE_LOCATION/$package"
 
 # Extract the package's content
 tar -zxpf "$package"
