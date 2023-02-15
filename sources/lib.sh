@@ -313,7 +313,7 @@ RefreshPublicIP() {
 #############################################################
 GetPublicIP() {
 	# Get mon IP
-	myIP=$(curl -s ifconfig.co)
+	myIP=$(curl checkip.amazonaws.com)
 
 	# Return my public IP
 	echo $myIP
