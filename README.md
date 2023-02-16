@@ -3,13 +3,15 @@
 
 ![alt text](https://d33wubrfki0l68.cloudfront.net/7df7d7a57a8dda3cc07aab16121b3e3990cf0893/16ccd/portfolio/massa.png)
 
-## [HOWTO] ##
-### [SETUP] ###
-__STEP 1:__
-/!\ Register your discord account to the testnet program
-  * Go to Massa Discord channel https://discord.com/channels/828270821042159636/872395473493839913 and follow inscructions.
+## Requirements
 
-__STEP 2:__
+### Testnet reward program registration
+
+  Register your discord account to the testnet program:
+  Go to Massa Discord channel https://discord.com/channels/828270821042159636/872395473493839913 and follow instructions.
+
+### Import existing wallet
+
 Create an empty folder to mount in our container /massa_mount path or store your wallet /nodekey/stacking_key/config.toml into this folder if you have it:
 - wallet.dat
 - config.toml
@@ -18,20 +20,12 @@ Create an empty folder to mount in our container /massa_mount path or store your
 
 /!\ If don't have this file, leave your folder empty, massa-guard will create a wallet and node key and automaticaly stake wallet for you. This files will be backup on your mount point by massa-guard.
 
-/!\ __User of one of previous release?__ Please update your /massa_mount/config/config.ini to check if all entries exist. Check template last here https://github.com/rykcod/massa/blob/main/config/default_config_template.ini
 
+## How to use
 
-#### [RUN] Usecase Example ####
-/!\ You can define ENV values when you create your container:
- - ''MASSAGUARD'' - Set with 1 to enable all massa-guard features or with 0 to disable all features except keys creations (Enable by default without ENV value)
- - ''DISCORD'' - Set with your discord token id (Refer to HELP section) - To enable discord feature (GetFaucet + NodeRegistration + DynamicalIP)
- - ''DYNIP'' - Set with "0" if you host under static public IP or "1" if you host under dynimic public IP to enable update IP feature
- - ''WALLETPWD'' - Set with "YourCustomPassword" if you want to use a custom wallet password.
- - ''NODEPWD'' - Set with "YourCustomPassword" if you want to use a custom node password.
- - ''IP'' - Set with "YourIPAddress" if your node have differents publics IPs and you want to set your custom selection.
-
-  * __How to use:__ 
-  Create a docker-compose.yml file and fill it with your environment variables
+  * Install docker and docker-compose on your system
+  * Create a docker-compose.yml file and fill it with your environment variables
+  
 
 ```bash
 version: '3'
@@ -42,10 +36,9 @@ services:
     container_name: massa-core
     restart: always
     environment:
-      - MASSAGUARD=1
       - DISCORD=
       - DYNIP=0
-      - WALLETPWD=MassaToTheMoon2024
+      - WALLETPWD=
       - NODE_MAX_RAM=90
       - TARGET_ROLL_AMOUNT=NULL
 
@@ -64,6 +57,12 @@ volumes:
   massa-core:
 
 ```
+Available options:
+
+ - ''DISCORD'' - Set with your discord token id (Refer to HELP section) - To enable discord feature (GetFaucet + NodeRegistration + DynamicalIP)
+ - ''DYNIP'' - Set with "0" if you host under static public IP or "1" if you host under dynimic public IP to enable update IP feature
+ - ''WALLETPWD'' - Set with "YourCustomPassword" if you want to use a custom wallet password.
+
 
   * Start the container in detached mode:
 ```console
@@ -75,7 +74,7 @@ docker compose up -d
 docker compose logs
 ```
 
-  * To connect into your container:
+  * To enter your container:
 ```console
 docker exec -it massa-core /bin/bash
 ```
