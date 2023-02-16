@@ -82,7 +82,7 @@ docker exec -it massa-core /bin/bash
 
   * Using massa client:
 ```console
-docker exec massa-core /cli.sh -p MassaToTheMoon2024 get_status
+docker exec massa-core massa-cli get_status
 ```
 
 ## [HELP] ##

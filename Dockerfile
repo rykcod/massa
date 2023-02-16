@@ -36,5 +36,8 @@ RUN chmod +x /massa-guard/massa-guard.sh \
 && chmod +x /cli.sh \
 && mkdir /massa_mount
 
+# Add Massa cli binary
+RUN ln -sf /cli.sh /usr/bin/massa-cli
+
 # Node run then massa-guard
 CMD [ "/massa-guard/sources/run.sh" ]
