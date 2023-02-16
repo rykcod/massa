@@ -4,21 +4,19 @@ MASSA_PACKAGE="massa_${VERSION}_release_linux.tar.gz"
 MASSA_PACKAGE_ARM64="massa_${VERSION}_release_linux_arm64.tar.gz"
 MASSA_PACKAGE_LOCATION="https://github.com/massalabs/massa/releases/download/$VERSION/"
 
-package=""
-
 if [ -n "$ARM" ]; then
-	package=$MASSA_PACKAGE_ARM64
+	TARBALL=$MASSA_PACKAGE_ARM64
 else
-	package=$MASSA_PACKAGE
+	TARBALL=$MASSA_PACKAGE
 fi
 
 # Download the package
-curl -Ls -o "$package" "$MASSA_PACKAGE_LOCATION/$package"
+curl -Ls -o $TARBALL $MASSA_PACKAGE_LOCATION/$TARBALL
 
 # Extract the package's content
-tar -zxpf "$package"
-mv /massa /massa-"$VERSION"
-ln -s /massa-"$VERSION" /massa
+tar -zxpf $TARBALL
+mv /massa /massa-$VERSION
+ln -s /massa-$VERSION /massa
 
 # Delete the package
-rm "$package"
+rm $TARBALL

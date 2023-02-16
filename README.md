@@ -3,6 +3,109 @@
 
 ![alt text](https://d33wubrfki0l68.cloudfront.net/7df7d7a57a8dda3cc07aab16121b3e3990cf0893/16ccd/portfolio/massa.png)
 
+## [HOWTO] ##
+### [SETUP] ###
+__STEP 1:__
+/!\ Register your discord account to the testnet program
+  * Go to Massa Discord channel https://discord.com/channels/828270821042159636/872395473493839913 and follow inscructions.
+
+__STEP 2:__
+Create an empty folder to mount in our container /massa_mount path or store your wallet /nodekey/stacking_key/config.toml into this folder if you have it:
+- wallet.dat
+- config.toml
+- node_privkey.key
+- staking_keys.json
+
+/!\ If don't have this file, leave your folder empty, massa-guard will create a wallet and node key and automaticaly stake wallet for you. This files will be backup on your mount point by massa-guard.
+
+/!\ __User of one of previous release?__ Please update your /massa_mount/config/config.ini to check if all entries exist. Check template last here https://github.com/rykcod/massa/blob/main/config/default_config_template.ini
+
+
+#### [RUN] Usecase Example ####
+/!\ You can define ENV values when you create your container:
+ - ''MASSAGUARD'' - Set with 1 to enable all massa-guard features or with 0 to disable all features except keys creations (Enable by default without ENV value)
+ - ''DISCORD'' - Set with your discord token id (Refer to HELP section) - To enable discord feature (GetFaucet + NodeRegistration + DynamicalIP)
+ - ''DYNIP'' - Set with "0" if you host under static public IP or "1" if you host under dynimic public IP to enable update IP feature
+ - ''WALLETPWD'' - Set with "YourCustomPassword" if you want to use a custom wallet password.
+ - ''NODEPWD'' - Set with "YourCustomPassword" if you want to use a custom node password.
+ - ''IP'' - Set with "YourIPAddress" if your node have differents publics IPs and you want to set your custom selection.
+
+  * __How to use:__ 
+  Create a docker-compose.yml file and fill it with your environment variables
+
+```bash
+version: '3'
+services:
+
+  massa-core:
+    image: peterjah/massa-core
+    container_name: massa-core
+    restart: always
+    environment:
+      - MASSAGUARD=1
+      - DISCORD=
+      - DYNIP=0
+      - WALLETPWD=MassaToTheMoon2024
+      - NODE_MAX_RAM=90
+      - TARGET_ROLL_AMOUNT=NULL
+
+    ports:
+     - "31244:31244"
+     - "31245:31245"
+     - "33035:33035"
+    cap_add:
+      - SYS_NICE
+      - SYS_RESOURCE
+      - SYS_TIME
+    volumes:
+     - ./massa_mount:/massa_mount
+
+volumes:
+  massa-core:
+
+```
+
+  * Start the container in detached mode:
+```console
+docker compose up -d
+```
+
+  * See the node logs:
+```console
+docker compose logs
+```
+
+  * To connect into your container:
+```console
+docker exec -it massa-core /bin/bash
+```
+
+  * Using massa client:
+```console
+docker exec massa-core /cli.sh -p MassaToTheMoon2024 get_status
+```
+
+## [HELP] ##
+- To get your discord token, refer to https://www.androidauthority.com/get-discord-token-3149920/
+
+### [HELP - Easy beginner way for IPV6 usage] ###
+- Create or edit your host /etc/docker/daemon.json to add:
+```json
+{
+  "ipv6": true,
+  "fixed-cidr-v6": "fd00::/80"
+}
+```
+- Restart docker service to reload config setting
+- Allow MASQUERADE for ipv6
+```console
+ip6tables -t nat -A POSTROUTING -s fd00::/80 ! -o docker0 -j MASQUERADE
+```
+- Create a container which dynamicaly edit your iptables rules for port redirection
+```console
+docker run -d --restart=always -v /var/run/docker.sock:/var/run/docker.sock:ro --cap-drop=ALL --cap-add=NET_RAW --cap-add=NET_ADMIN --cap-add=SYS_MODULE --net=host --name ipv6nat robbertkl/ipv6nat
+```
+
 ## [DESCRIPTION] ##
 ### [FEATURES] ###
 Build a massa-node container wich include some automation features from a community image with Massalabs agreements
@@ -40,98 +143,6 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
 - 20220909 - Testnet 14 - v14.0.1 - Solve discord feature issues
 - 20220909 - Testnet 14 - v14.0.0 - Testnet 14 Ready! **/!\ Discord features dont work in this version (Faucet spammer / Dyn IP / Resgistration)**
 
-## [HOWTO] ##
-### [SETUP] ###
-#### [PREPARE] ####
-__STEP 1:__
-/!\ Register your discord account to the testnet program
-  * Go to Massa Discord channel https://discord.com/channels/828270821042159636/872395473493839913 and follow inscructions.
-
-__STEP 2:__
-Create an empty folder to mount in our container /massa_mount path or store your wallet /nodekey/stacking_key/config.toml into this folder if you have it:
-- wallet.dat
-- config.toml
-- node_privkey.key
-- staking_keys.json
-
-/!\ If don't have this file, leave your folder empty, massa-guard will create a wallet and node key and automaticaly stake wallet for you. This files will be backup on your mount point by massa-guard.
-
-/!\ __User of one of previous release?__ Please update your /massa_mount/config/config.ini to check if all entries exist. Check template last here https://github.com/rykcod/massa/blob/main/config/default_config_template.ini
-
-#### [RUN] Usecase Example ####
-/!\ You can define ENV values when you create your container:
- - ''MASSAGUARD'' - Set with 1 to enable all massa-guard features or with 0 to disable all features except keys creations (Enable by default without ENV value)
- - ''DISCORD'' - Set with your discord token id (Refer to HELP section) - To enable discord feature (GetFaucet + NodeRegistration + DynamicalIP)
- - ''DYNIP'' - Set with "0" if you host under static public IP or "1" if you host under dynimic public IP to enable update IP feature
- - ''WALLETPWD'' - Set with "YourCustomPassword" if you want to use a custom wallet password.
- - ''NODEPWD'' - Set with "YourCustomPassword" if you want to use a custom node password.
- - ''IP'' - Set with "YourIPAddress" if your node have differents publics IPs and you want to set your custom selection.
-
-Create a docker-compose.yml file and fill it with your environment variables
-  * __Example:__ Create a docker-compose.yml file and fill it with your environment variables:
-```bash
-version: '3'
-services:
-
-  massa-core:
-    image: peterjah/massa-core
-    container_name: massa-core
-    restart: always
-    environment:
-      - MASSAGUARD=1
-      - DISCORD=
-      - DYNIP=0
-      - WALLETPWD=MassaToTheMoon2024
-      # RAM max for node in percent - If RAM is over NODE_MAX_RAM value, node will restrat to purge RAM allocation
-      - NODE_MAX_RAM=90
-      # Set if node registered with massabot - Set with OK if node registrered with massabot or KO if you want to check and use registration process
-      - NODE_TESTNET_REGISTRATION=KO
-      - TARGET_ROLL_AMOUNT=NULL
-
-    ports:
-     - "31244:31244"
-     - "31245:31245"
-     - "33035:33035"
-    cap_add:
-      - SYS_NICE
-      - SYS_RESOURCE
-      - SYS_TIME
-    volumes:
-     - ./massa_mount:/massa_mount
-
-volumes:
-  massa-core:
-
-```
-  * To connect into your container:
-```console
-docker exec -it massa-core /bin/bash
-```
-  * Using massa client:
-```console
-docker exec massa-core /cli.sh -p MassaToTheMoon2024 get_status
-```
-
-## [HELP] ##
-- To get your discord token, refer to https://www.androidauthority.com/get-discord-token-3149920/
-
-### [HELP - Easy beginner way for IPV6 usage] ###
-- Create or edit your host /etc/docker/daemon.json to add:
-```json
-{
-  "ipv6": true,
-  "fixed-cidr-v6": "fd00::/80"
-}
-```
-- Restart docker service to reload config setting
-- Allow MASQUERADE for ipv6
-```console
-ip6tables -t nat -A POSTROUTING -s fd00::/80 ! -o docker0 -j MASQUERADE
-```
-- Create a container which dynamicaly edit your iptables rules for port redirection
-```console
-docker run -d --restart=always -v /var/run/docker.sock:/var/run/docker.sock:ro --cap-drop=ALL --cap-add=NET_RAW --cap-add=NET_ADMIN --cap-add=SYS_MODULE --net=host --name ipv6nat robbertkl/ipv6nat
-```
 
 For more informations and sources - https://github.com/rykcod/massa/
 
