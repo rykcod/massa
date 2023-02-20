@@ -53,7 +53,7 @@ do
 				CheckTestnetNodeRegistration "$WalletAddress"
 
 				# If dynamical IP feature enable and public IP is new
-				if ([ $DYNIP -eq 1 ] && [ $(CheckPublicIP) -eq 1 ])
+				if ([ $DYNIP == "1" ] && [ $(CheckPublicIP) -eq 1 ])
 				then
 					# Refresh config.toml + restart node + push new IP to massabot
 					RefreshPublicIP
