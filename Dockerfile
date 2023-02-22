@@ -5,7 +5,7 @@ ARG ARM
 ARG VERSION
 
 # LABEL about the custom image
-LABEL maintainer="benoit@alphatux.fr"
+LABEL maintainers="benoit@alphatux.fr, ps@massa.org"
 LABEL version=$VERSION
 LABEL description="Massa node with massa-guard features"
 

@@ -31,6 +31,16 @@ else
 
 	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Create your default config.toml with $myIP as routable IP"
 fi
+
+# Custom node config
+if [ -e $PATH_MOUNT/node_config.toml ]
+then
+	cp $PATH_MOUNT/node_config.toml $PATH_NODE/base_config/config.toml
+	echo "[$(date +%Y%m%d-%HH%M)][INFO][LOAD]LOAD $PATH_MOUNT/node_config.toml as ref"
+else
+	cp $PATH_NODE/base_config/config.toml $PATH_MOUNT/node_config.toml
+fi
+
 # Wallet to use
 if [ -e $PATH_MOUNT/wallet.dat ]
 then
