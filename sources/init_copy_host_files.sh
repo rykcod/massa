@@ -10,7 +10,8 @@
 if [ -e $PATH_MOUNT/config.toml ]
 then
 	cp $PATH_MOUNT/config.toml $PATH_NODE_CONF/config.toml
-	echo "[$(date +%Y%m%d-%HH%M)][INFO][LOAD]LOAD $PATH_MOUNT/config.toml as ref"
+	green "INFO" "Load $PATH_MOUNT/config.toml"
+
 # If ref config.toml dont exist in massa_mount
 else
 	if [ $IP ]
@@ -29,14 +30,14 @@ else
 		timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD $myIP > $PATH_MASSABOT_REPLY
 	fi
 
-	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Create your default config.toml with $myIP as routable IP"
+	green "INFO" "Create your default config.toml with $myIP as routable IP"
 fi
 
 # Custom node config
 if [ -e $PATH_MOUNT/node_config.toml ]
 then
 	cp $PATH_MOUNT/node_config.toml $PATH_NODE/base_config/config.toml
-	echo "[$(date +%Y%m%d-%HH%M)][INFO][LOAD]LOAD $PATH_MOUNT/node_config.toml as ref"
+	green "INFO" "Load $PATH_MOUNT/node_config.toml"
 else
 	cp $PATH_NODE/base_config/config.toml $PATH_MOUNT/node_config.toml
 fi
@@ -45,7 +46,7 @@ fi
 if [ -e $PATH_MOUNT/wallet.dat ]
 then
 	cp $PATH_MOUNT/wallet.dat $PATH_CLIENT/wallet.dat
-	echo "[$(date +%Y%m%d-%HH%M)][INFO][LOAD]LOAD $PATH_MOUNT/wallet.dat as ref"
+	green "INFO" "Load $PATH_MOUNT/wallet.dat"
 fi
 # Node private key to use
 if [ -e $PATH_MOUNT/node_privkey.key ]
@@ -53,11 +54,12 @@ then
 	# Delete default node_privkey and load ref node_privkey
 	if [ -e $PATH_NODE_CONF/node_privkey.key ]; then rm $PATH_NODE_CONF/node_privkey.key; fi
 	cp $PATH_MOUNT/node_privkey.key $PATH_NODE_CONF/node_privkey.key
-	echo "[$(date +%Y%m%d-%HH%M)][INFO][LOAD]LOAD $PATH_MOUNT/node_privkey.key as ref"
+	green "INFO" "Load $PATH_MOUNT/node_privkey.key"
+
 fi
 # Wallet to use to stacke
 if [ -e $PATH_MOUNT/staking_wallet.dat ]
 then
 	cp $PATH_MOUNT/staking_wallet.dat $PATH_NODE_CONF/staking_wallet.dat
-	echo "[$(date +%Y%m%d-%HH%M)][INFO][LOAD]LOAD $PATH_MOUNT/staking_wallet.dat as ref"
+	green "INFO" "Load $PATH_MOUNT/staking_wallet.dat"
 fi

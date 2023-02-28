@@ -10,7 +10,6 @@ services:
       - DISCORD=${DISCORD}
       - DYNIP=0
       - WALLETPWD=${WALLETPWD}
-      # RAM max for node in percent - If RAM is over NODE_MAX_RAM value, node will restrat to purge RAM allocation
       - NODE_MAX_RAM=90
       # Set if node registered with massabot - Set with OK if node registrered with massabot or KO if you want to check and use registration process
       - NODE_TESTNET_REGISTRATION=KO

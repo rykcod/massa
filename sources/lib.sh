@@ -1,3 +1,9 @@
+
+
+green () { echo -e "Massa-Guard \033[01;32m$1\033[0m [$(date +%Y%m%d-%HH%M)] $2"; }
+
+warn () { echo -e "Massa-Guard \033[01;33mWARNING\033[0m [$(date +%Y%m%d-%HH%M)] $1"; }
+
 #############################################################
 # FONCTION = WaitBootstrap
 # DESCRIPTION = Wait node bootstrapping
@@ -11,8 +17,7 @@ WaitBootstrap() {
 		sleep 5s
 	done
 
-	echo "[$(date +%Y%m%d-%HH%M)][INFO][START]MASSA-NODE Successfully bootstraped"
-
+	green "INFO" "Successfully bootstraped"
 	return 0
 }
 
@@ -42,11 +47,13 @@ CheckOrCreateWalletAndNodeKey() {
 		# Generate wallet
 		cd $PATH_CLIENT
 		$PATH_TARGET/massa-client -p $WALLETPWD wallet_generate_secret_key > /dev/null
-		echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Generate wallet.dat"
+		green "INFO" "Generate wallet.dat"
+
 		# Backup wallet to the mount point as ref
 		cp $PATH_CLIENT/wallet.dat $PATH_MOUNT/wallet.dat
 
-		echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Backup wallet.dat"
+		green "INFO" "Backup wallet.dat"
+
 	fi
 
 	## Stacke if wallet not stacke
@@ -58,10 +65,12 @@ CheckOrCreateWalletAndNodeKey() {
 		walletAddress=$(GetWalletAddress)
 		# Stacke wallet
 		$PATH_TARGET/massa-client -p $WALLETPWD node_start_staking $walletAddress > /dev/null
-		echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Stake privKey"
+		green "INFO" "Stake privKey"
+
 		# Backup staking_wallet.dat to mount point as ref
 		cp $PATH_NODE_CONF/staking_wallet.dat $PATH_MOUNT/staking_wallet.dat
-		echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Backup staking_wallet.dat"
+		green "INFO" "Backup staking_wallet.dat"
+
 	fi
 
 	## Backup node_privkey if no ref in mount point
@@ -70,7 +79,8 @@ CheckOrCreateWalletAndNodeKey() {
 	then
 		# Copy node_privkey.key to mount point as ref
 		cp $PATH_NODE_CONF/node_privkey.key $PATH_MOUNT/node_privkey.key
-		echo "[$(date +%Y%m%d-%HH%M)][INFO][BACKUP]Backup $PATH_NODE_CONF/node_privkey.key to $PATH_MOUNT"
+		green "INFO" "Backup $PATH_NODE_CONF/node_privkey.key to $PATH_MOUNT"
+
 	fi
 	return 0
 }
@@ -116,7 +126,7 @@ BuyOrSellRoll() {
 	# Check candidate roll > 0 and Mas amount >= 100 to buy first roll
 	if ([ $1 -eq 0 ] && [ $2 -ge 100 ])
 	then
-		echo "[$(date +%Y%m%d-%HH%M)][KO][ROLL]BUY 1 ROLL"
+		green "INFO" "Buy 1 Roll"
 
 		# Buy roll amount
 		cd $PATH_CLIENT
@@ -125,13 +135,13 @@ BuyOrSellRoll() {
 	# If MAS amount < 100 MAS and Candidate roll = 0
 	elif ([ $1 -eq 0 ] && [ $2 -lt 100 ])
 	then
-		echo "[$(date +%Y%m%d-%HH%M)][KO][ROLL]Cannot buy first ROLL because MAS Amount less than 100. Please get 100 MAS on Discord or set your DISCORD ID"
-
+		warn "Cannot buy first ROLL because MAS Amount less than 100. Please get 100 MAS on Discord or set your DISCORD ID"
 	# If MAS amount > 200 MAS and no rolls limitation, buy ROLLs
 	elif ([ $2 -gt 200 ] && [ $TARGET_ROLL_AMOUNT == "NULL" ])
 	then
 		NbRollsToBuy=$((($2-100)/100))
-		echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOBUY $NbRollsToBuy ROLL because MAS amount equal to $2"
+		green "INFO" "Autobuy $NbRollsToBuy ROLL because MAS amount equal to $2"
+
 		# Buy roll amount
 		cd $PATH_CLIENT
 		$PATH_TARGET/massa-client -p $WALLETPWD buy_rolls $3 $NbRollsToBuy 0 > /dev/null
@@ -148,12 +158,12 @@ BuyOrSellRoll() {
 			if [ $NbRollsCanBuyWithMAS -le $NbRollsNeedToBuy ]
 			then
 				NbRollsToBuy=$NbRollsCanBuyWithMAS
-				echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOBUY $NbRollsToBuy ROLL because MAS amount equal to $2 and ROLL amount of $1 less than target amount of $TARGET_ROLL_AMOUNT"
 			# Else buy max amount you can buy
 			else
 				NbRollsToBuy=$NbRollsNeedToBuy
-				echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOBUY $NbRollsToBuy ROLL because MAS amount equal to $2 and ROLL amount of $1 less than target amount of $TARGET_ROLL_AMOUNT"
 			fi
+			green "INFO" "Autobuy $NbRollsToBuy ROLL because MAS amount equal to $2 and ROLL amount of $1 less than target amount of $TARGET_ROLL_AMOUNT"
+
 			# Buy roll amount
 			cd $PATH_CLIENT
 			$PATH_TARGET/massa-client -p $WALLETPWD buy_rolls $3 $NbRollsToBuy 0 > /dev/null
@@ -161,7 +171,8 @@ BuyOrSellRoll() {
 		elif [ $TARGET_ROLL_AMOUNT -lt $1 ]
 		then
 			NbRollsToSell=$(($1-$TARGET_ROLL_AMOUNT))
-			echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOSELL $NbRollsToSell ROLL because ROLL amount of $1 greater than target amount of $TARGET_ROLL_AMOUNT"
+			green "INFO" "Autosell $NbRollsToBuy ROLL because MAS amount equal to $2 and ROLL amount of $1 greater than target amount of $TARGET_ROLL_AMOUNT"
+
 			# Sell roll amount
 			cd $PATH_CLIENT
 			$PATH_TARGET/massa-client -p $WALLETPWD sell_rolls $3 $NbRollsToSell 0 > /dev/null
@@ -173,7 +184,8 @@ BuyOrSellRoll() {
 		if [ $TARGET_ROLL_AMOUNT -lt $1 ]
 		then
 			NbRollsToSell=$(($1-$TARGET_ROLL_AMOUNT))
-			echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOSELL $NbRollsToSell ROLL because ROLL amount of $1 greater than target amount of $TARGET_ROLL_AMOUNT"
+			green "INFO" "Autosell $NbRollsToBuy ROLL because ROLL amount of $1 greater than target amount of $TARGET_ROLL_AMOUNT"
+
 			# Sell roll amount
 			cd $PATH_CLIENT
 			$PATH_TARGET/massa-client -p $WALLETPWD sell_rolls $3 $NbRollsToSell 0 > /dev/null
@@ -201,7 +213,7 @@ CheckNodeRam() {
 	# If ram consumption is too high
 	if ([ ! -z $checkRam ] && [ $checkRam -gt $MAX_RAM ])
 	then
-		echo "[$(date +%Y%m%d-%HH%M)][KO][NODE]RAM EXCEED - NODE WILL RESTART"
+		warn "Max RAM usage treshold hit, restarting node"
 		return 1
 	fi
 }
@@ -292,12 +304,13 @@ RefreshPublicIP() {
 		# Check massabot return
 		if ($(cat $PATH_MASSABOT_REPLY | grep -q -e "IP address: $myIP"))
 		then
-			echo "[$(date +%Y%m%d-%HH%M)][INFO][IP]Dynamique public IP changed, updated for $1 in config.toml and with massabot"
+			green "INFO" "Dynamique public IP changed, updated for $1 in config.toml and with massabot"
 		elif ($(cat $PATH_MASSABOT_REPLY | grep -q -e "wait for announcements!"))
 		then
-			echo "[$(date +%Y%m%d-%HH%M)][WARN][IP]Unable to update registrered IP with massabot because testnet not start for now"
+			warn "Unable to update registrered IP with massabot because testnet not start for now"
+
 		else
-			echo "[$(date +%Y%m%d-%HH%M)][ERROR][IP]Unable to update registrered IP with massabot because massabot not or wrong responsive"
+			warn "Unable to update registrered IP with massabot because massabot not or wrong responsive"
 		fi
 
 		# Update IP in your ref config.toml and restart node
@@ -336,7 +349,7 @@ RegisterNodeWithMassabot() {
 
 	if cat $PATH_MASSABOT_REPLY | grep -q -E "Your discord account \`[0-9]{18}\` has been associated with this node ID"
 	then
-		echo "[$(date +%Y%m%d-%HH%M)][INFO][REGISTRATION]Node is now register with discord ID $2 and massabot"
+		green "INFO" "Node is now register with discord ID $2 and massabot"
 		export NODE_TESTNET_REGISTRATION=OK
 		return 0
 	else
@@ -371,7 +384,7 @@ CheckTestnetNodeRegistration() {
 			return 0
 		else
 			# Return bot registration OK
-			echo "[$(date +%Y%m%d-%HH%M)][INFO][REGISTRATION]Node already associated with and massabot or registration is not already open"
+			green "INFO" "Node already associated with and massabot or registration is not already open"
 			export NODE_TESTNET_REGISTRATION=OK
 			return 0
 		fi
