@@ -10,21 +10,12 @@
   Register your discord account to the testnet program:
   Go to Massa Discord channel https://discord.com/channels/828270821042159636/872395473493839913 and follow instructions.
 
-### Import existing wallet
-
-Create an empty folder to mount in our container /massa_mount path or store your wallet /nodekey/stacking_key/config.toml into this folder if you have it:
-- wallet.dat
-- config.toml
-- node_privkey.key
-- staking_keys.json
-
-/!\ If don't have this file, leave your folder empty, massa-guard will create a wallet and node key and automaticaly stake wallet for you. This files will be backup on your mount point by massa-guard.
-
 
 ## How to use
 
   * Install docker and docker-compose on your system
-  * Create a docker-compose.yml file and fill it with your environment variables
+  * Create a docker-compose.yml file and copy the following content and fill it with your environment variables.
+  * WALLETPWD is mandatory, DISCORD is optionnal. See Help section to find your Discord token
   
 
 ```bash
@@ -63,6 +54,7 @@ Available options:
  - ''DYNIP'' - Set with "0" if you host under static public IP or "1" if you host under dynimic public IP to enable update IP feature
  - ''WALLETPWD'' - Set with "YourCustomPassword" if you want to use a custom wallet password.
 
+Manage your node:
 
   * Start the container in detached mode:
 ```console
@@ -74,6 +66,11 @@ docker compose up -d
 docker compose logs
 ```
 
+  * Filter to get only Massa-guard logs:
+```console
+docker compose logs | grep Massa-Guard
+```
+
   * To enter your container:
 ```console
 docker exec -it massa-core /bin/bash
@@ -83,6 +80,16 @@ docker exec -it massa-core /bin/bash
 ```console
 docker exec massa-core massa-cli get_status
 ```
+
+### Import existing wallet
+
+Create an empty folder to mount in our container /massa_mount path or store your wallet /nodekey/stacking_key/config.toml into this folder if you have it:
+- wallet.dat
+- config.toml
+- node_privkey.key
+- staking_keys.json
+
+/!\ If don't have this file, leave your folder empty, massa-guard will create a wallet and node key and automaticaly stake wallet for you. This files will be backup on your mount point by massa-guard.
 
 ## [HELP] ##
 - To get your discord token, refer to https://www.androidauthority.com/get-discord-token-3149920/
