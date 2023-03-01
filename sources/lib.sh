@@ -515,7 +515,7 @@ CheckTestnetNodeRegistration() {
 		timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD_TOKEN "info" > $PATH_MASSABOT_REPLY
 
 		# Check massabot return
-		if cat $PATH_MASSABOT_REPLY | grep -q -E "Your discord user_id \`[0-9]{18}\` is not registered yet"\|"but not associated to any node ID and staking address"
+		if cat $PATH_MASSABOT_REPLY | grep -q -E "Your discord user_id \`[0-9]{18}\` is not registered yet"\|"You haven't registered your staking key and node ID"
 		then
 			# Get Massa Discord ID
 			massaDiscordID=$(cat $PATH_MASSABOT_REPLY | grep -o -E [0-9]{18})
