@@ -18,7 +18,6 @@ WaitBootstrap() {
 	done
 
 	green "INFO" "Successfully bootstraped"
-	return 0
 }
 
 #############################################################
@@ -30,7 +29,6 @@ GetWalletAddress() {
 	cd $PATH_CLIENT
 	WalletAddress=$($PATH_TARGET/massa-client -p $WALLETPWD wallet_info | grep "Address" | cut -d " " -f 2 | head -n 1)
 	echo "$WalletAddress"
-	return 0
 }
 
 #############################################################
@@ -82,7 +80,6 @@ CheckOrCreateWalletAndNodeKey() {
 		green "INFO" "Backup $PATH_NODE_CONF/node_privkey.key to $PATH_MOUNT"
 
 	fi
-	return 0
 }
 
 #############################################################
@@ -98,7 +95,6 @@ GetCandidateRoll() {
 	CandidateRolls=$(echo "$get_address" wallet_info | grep "Rolls" | cut -d "=" -f 4 | head -n 1)
 	# Return candidate roll amount
 	echo "$CandidateRolls"
-	return 0
 }
 
 #############################################################
@@ -114,7 +110,6 @@ GetMASAmount() {
 	MasAmount=$(echo "$get_address" | grep -E "Balance"." final" | cut -d "=" -f 2 | cut -d "," -f 1 | cut -d "." -f 1 | head -n 1)
 	# Return MAS amount
 	echo "$MasAmount"
-	return 0
 }
 
 #############################################################
@@ -330,7 +325,6 @@ GetPublicIP() {
 
 	# Return my public IP
 	echo $myIP
-	return 0
 }
 
 #############################################################
@@ -364,7 +358,7 @@ RegisterNodeWithMassabot() {
 # RETURN = 0 Registered 1 NotRegistered
 #############################################################
 CheckTestnetNodeRegistration() {
-	if [ $NODE_TESTNET_REGISTRATION == "KO" ]
+	if [ "$NODE_TESTNET_REGISTRATION" != "OK" ]
 	then
 		# Push new IP to massabot
 		cd $PATH_CLIENT
@@ -379,19 +373,9 @@ CheckTestnetNodeRegistration() {
 			# Register node with massaBot
 			sleep 5s
 			RegisterNodeWithMassabot $1 $massaDiscordID
-
-			# Return bot registration KO
-			return 0
 		else
-			# Return bot registration OK
-			green "INFO" "Node already associated with and massabot or registration is not already open"
+			green "INFO" "Discord user is already registered for tesnet rewards program"
 			export NODE_TESTNET_REGISTRATION=OK
-			return 0
 		fi
-	elif [ $NODE_TESTNET_REGISTRATION == "OK" ]
-	then
-		return 0
-	else
-		return 1
 	fi
 }
