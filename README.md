@@ -92,9 +92,38 @@ Create an empty folder to mount in our container /massa_mount path or store your
 /!\ If don't have this file, leave your folder empty, massa-guard will create a wallet and node key and automaticaly stake wallet for you. This files will be backup on your mount point by massa-guard.
 
 ## [HELP] ##
-- To get your discord token, refer to https://www.androidauthority.com/get-discord-token-3149920/
 
-### [HELP - Easy beginner way for IPV6 usage] ###
+### Get your Discord api token
+To get your discord token, refer to https://www.androidauthority.com/get-discord-token-3149920/
+
+### Log rotation
+  Logs from your running docker will accumulate with the time. To avoid the disk to be full, you can setup log rotation at Docker level.
+
+  Create or edit the file `/etc/docker/daemon.json`
+  ```json
+  {
+    "log-driver": "local",
+    "log-opts": {
+      "max-size": "15m"
+      "max-file": "5"
+    }
+  }
+```
+
+### Automated update
+We recommend the use of watchtower to automagically pull the latest version of the docker image when available. Just add it as new service to your docker-compose file: 
+```yaml
+...
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --stop-timeout 360s massa-core
+...
+```
+
+### IPV6
 - Create or edit your host /etc/docker/daemon.json to add:
 ```json
 {
@@ -151,10 +180,7 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
 - 20220909 - Testnet 14 - v14.0.0 - Testnet 14 Ready! **/!\ Discord features dont work in this version (Faucet spammer / Dyn IP / Resgistration)**
 
 
-For more informations and sources - https://github.com/rykcod/massa/
 
-### [VIDEO TUTORIAL][FR] ###
-https://youtu.be/IzeRq43DBSQ
 
 ## [THANKS] ##
 Thanks to **fsidhoum** for help
