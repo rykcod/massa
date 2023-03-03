@@ -14,25 +14,32 @@ CheckOrCreateWalletAndNodeKey
 # Get stacking address
 WalletAddress=$(GetWalletAddress)
 
-export NODE_TESTNET_REGISTRATION=KO
 
 if [ ! $DISCORD == "NULL" ]; then
 	# Check and get faucet of current day
 	PingFaucet
 fi
 
+IS_ACTIVATED="${MASSAGUARD:-"1"}"
+DYNIP="${DYNIP:-"0"}"
+NODE_TESTNET_REGISTRATION="${NODE_TESTNET_REGISTRATION:-"KO"}"
+TARGET_ROLL_AMOUNT="${TARGET_ROLL_AMOUNT:-"NULL"}"
+
 #==================== Massa-guard circle =========================# 
 # Infinite check
 while true
 do
 	# If massa-guard features enabled
-	if [ $MASSAGUARD -eq 1 ]
+	if [ "$IS_ACTIVATED" == "1" ]
 	then
+
 		# Check node status
 		CheckNodeResponsive
 		NodeResponsive=$?
+
 		# Check ram consumption percent in integer
 		CheckNodeRam
+
 		NodeRam=$?
 
 		# Restart node if issue
@@ -53,7 +60,7 @@ do
 				CheckTestnetNodeRegistration "$WalletAddress"
 
 				# If dynamical IP feature enable and public IP is new
-				if ([ $DYNIP == "1" ] && [ $(CheckPublicIP) -eq 1 ])
+				if ([ "$DYNIP" == "1" ] && [ $(CheckPublicIP) -eq 1 ])
 				then
 					# Refresh config.toml + restart node + push new IP to massabot
 					RefreshPublicIP

@@ -6,14 +6,9 @@ services:
     container_name: massa-core
     restart: always
     environment:
-      - MASSAGUARD=1
       - DISCORD=${DISCORD}
-      - DYNIP=0
       - WALLETPWD=${WALLETPWD}
       - NODE_MAX_RAM=90
-      # Set if node registered with massabot - Set with OK if node registrered with massabot or KO if you want to check and use registration process
-      - NODE_TESTNET_REGISTRATION=KO
-      - TARGET_ROLL_AMOUNT=NULL
 
     ports:
      - "31244:31244"
