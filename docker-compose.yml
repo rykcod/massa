@@ -8,8 +8,6 @@ services:
     environment:
       - DISCORD=${DISCORD}
       - WALLETPWD=${WALLETPWD}
-      - NODE_MAX_RAM=90
-
     ports:
      - "31244:31244"
      - "31245:31245"

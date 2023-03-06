@@ -28,11 +28,7 @@ services:
     restart: always
     environment:
       - DISCORD=
-      - DYNIP=0
       - WALLETPWD=
-      - NODE_MAX_RAM=90
-      - TARGET_ROLL_AMOUNT=NULL
-
     ports:
      - "31244:31244"
      - "31245:31245"
@@ -53,6 +49,7 @@ Available options:
  - ''DISCORD'' - Set with your discord token id (Refer to HELP section) - To enable discord feature (GetFaucet + NodeRegistration + DynamicalIP)
  - ''DYNIP'' - Set with "0" if you host under static public IP or "1" if you host under dynimic public IP to enable update IP feature
  - ''WALLETPWD'' - Set with "YourCustomPassword" if you want to use a custom wallet password.
+ - ''NODE_MAX_RAM'' - The app node will auto restart if RAM usage goes over this % treshold. Default to 99%.
 
 Manage your node:
 

@@ -203,7 +203,7 @@ CheckNodeRam() {
 	checkRam=$(ps -u | awk '/massa-node/ && !/awk/' | awk '{print $4}')
 	checkRam=${checkRam/.*}
 
-	MAX_RAM=${NODE_MAX_RAM:-90}
+	MAX_RAM=${NODE_MAX_RAM:-99}
 
 	# If ram consumption is too high
 	if ([ ! -z $checkRam ] && [ $checkRam -gt $MAX_RAM ])
