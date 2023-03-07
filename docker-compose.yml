@@ -8,6 +8,7 @@ services:
     environment:
       - DISCORD=${DISCORD}
       - WALLETPWD=${WALLETPWD}
+      - RUST_BACKTRACE=1
     ports:
      - "31244:31244"
      - "31245:31245"

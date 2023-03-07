@@ -266,7 +266,7 @@ CheckPublicIP() {
 	myIP=$(GetPublicIP)
 
 	# Get Public IP conf for node
-	confIP=$(cat $PATH_NODE_CONF/config.toml | grep "routable_ip" | egrep -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}|([0-9a-z]{4})(:[0-9a-z]{0,4}){1,7}')
+	CONF_IP=$(toml get --toml-path $PATH_NODE_CONF/config.toml network.routable_ip 2>/dev/null)
 
 	# Check if configured IP equal to real IP
 	if [ $myIP == $confIP ]
@@ -289,28 +289,25 @@ RefreshPublicIP() {
 	myIP=$(GetPublicIP)
 
 	# Check if get IP OK
-	if [ ! -z $myIP ]
-	then
+	if [ -n "$myIP" ]; then
 		# Get Public IP conf for node
-		confIP=$(cat $PATH_NODE_CONF/config.toml | grep "routable_ip" | egrep -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}|([0-9a-z]{4})(:[0-9a-z]{0,4}){1,7}')
+		CONF_IP=$(toml get --toml-path $PATH_NODE_CONF/config.toml network.routable_ip 2>/dev/null)
+		if [ "$myIP" != "$CONF_IP"]; then
+			# Push new IP to massabot
+			timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD $myIP > $PATH_MASSABOT_REPLY
+			# Check massabot return
+			if grep -q "IP address: $myIP" "$PATH_MASSABOT_REPLY"; then
+				green "INFO" "Dynamique public IP changed, updated for $1 in config.toml and with massabot"
+			elif grep -q "wait for announcements!" "$PATH_MASSABOT_REPLY"; then
+                warn "Unable to update registered IP with Massabot because the testnet has not started yet"
+			else
+                warn "Unable to update registered IP with Massabot because Massabot is not responsive or responding incorrectly"
+			fi
 
-		# Push new IP to massabot
-		timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD $myIP > $PATH_MASSABOT_REPLY
-		# Check massabot return
-		if ($(cat $PATH_MASSABOT_REPLY | grep -q -e "IP address: $myIP"))
-		then
-			green "INFO" "Dynamique public IP changed, updated for $1 in config.toml and with massabot"
-		elif ($(cat $PATH_MASSABOT_REPLY | grep -q -e "wait for announcements!"))
-		then
-			warn "Unable to update registrered IP with massabot because testnet not start for now"
-
-		else
-			warn "Unable to update registrered IP with massabot because massabot not or wrong responsive"
+			# Update IP in your ref config.toml and restart node
+			toml set --toml-path $PATH_MOUNT/config.toml network.routable_ip $myIP
+			CheckAndReloadNode 0 1
 		fi
-
-		# Update IP in your ref config.toml and restart node
-		cat $PATH_NODE_CONF/config.toml | sed 's/'$confIP'/'$myIP'/' > $PATH_MOUNT/config.toml
-		CheckAndReloadNode 0 1
 	fi
 }
 

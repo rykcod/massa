@@ -12,7 +12,7 @@ LABEL description="Massa node with massa-guard features"
 # Update and install packages dependencies
 RUN apt-get update \
 && apt install -y curl python3-pip \
-&& python3 -m pip install -U discord.py==1.7.3
+&& python3 -m pip install -U discord.py==1.7.3 toml-cli
 
 # Download the Massa package
 COPY download-massa.sh .

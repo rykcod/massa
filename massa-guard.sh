@@ -5,7 +5,6 @@
 # Import custom library
 . /massa-guard/sources/lib.sh
 
-# Wait node booststrap
 WaitBootstrap
 
 #====================== Check and load ==========================#
