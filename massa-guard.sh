@@ -10,9 +10,6 @@ WaitBootstrap
 #====================== Check and load ==========================#
 # Load Wallet and Node key or create it and stake wallet
 CheckOrCreateWalletAndNodeKey
-# Get stacking address
-WalletAddress=$(GetWalletAddress)
-
 
 if [ ! $DISCORD == "NULL" ]; then
 	# Check and get faucet of current day
@@ -45,18 +42,14 @@ do
 		CheckAndReloadNode "$NodeRam" "$NodeResponsive"
 		if [ $? -eq 0 ]
 		then
-			# Get candidate rolls
-			CandidateRolls=$(GetCandidateRoll "$WalletAddress")
-			# Get MAS amount
-			MasBalance=$(GetMASAmount "$WalletAddress")
 			# Buy max roll or 1 roll if possible when candidate roll amount = 0
-			BuyOrSellRoll "$CandidateRolls" "$MasBalance" "$WalletAddress"
+			BuyOrSellRoll
 
 			# If Discord feature enable
 			if [ ! $DISCORD == "NULL" ]
 			then
 				# Check and registrer node with massabot if necessary
-				CheckTestnetNodeRegistration "$WalletAddress"
+				CheckTestnetNodeRegistration
 
 				# If dynamical IP feature enable and public IP is new
 				if ([ "$DYNIP" == "1" ] && [ $(CheckPublicIP) -eq 1 ])
