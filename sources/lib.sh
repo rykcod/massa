@@ -218,7 +218,8 @@ CheckAndReloadNode() {
 # RETURN = 0 for ping done 1 for ping already got
 #############################################################
 PingFaucet() {
-	python3 $PATH_SOURCES/faucet_spammer.py $DISCORD $WALLETPWD &
+	WalletAddress=$(GetWalletAddress)
+	python3 $PATH_SOURCES/faucet_spammer.py $DISCORD $WalletAddress &
 }
 
 #############################################################
