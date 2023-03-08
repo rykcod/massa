@@ -121,6 +121,12 @@ We recommend the use of watchtower to automagically pull the latest version of t
 ```
 
 ### IPV6
+
+IPV6 is disabled by default.
+To enable it in massa node edit the `massa_mount/node_config.toml` file. Set the `bootstrap_protocol` field under bootstrap section to "Both"
+
+This part is higly experimental and has not been actively tested.
+
 - Create or edit your host /etc/docker/daemon.json to add:
 ```json
 {

@@ -39,6 +39,8 @@ then
 	cp $PATH_MOUNT/node_config.toml $PATH_NODE/base_config/config.toml
 	green "INFO" "Load $PATH_MOUNT/node_config.toml"
 else
+	# Set bootstrap mode to ipv4 only
+	toml set --toml-path $PATH_NODE/base_config/config.toml bootstrap.bootstrap_protocol "IPv4"
 	cp $PATH_NODE/base_config/config.toml $PATH_MOUNT/node_config.toml
 fi
 
