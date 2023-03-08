@@ -80,7 +80,6 @@ CheckOrCreateWalletAndNodeKey() {
 #############################################################
 # FONCTION = GetCandidateRoll
 # DESCRIPTION = Ckeck candidate roll on node
-# ARGUMENTS = WalletAddress
 # RETURN = Candidate rolls amount
 #############################################################
 GetCandidateRoll() {
@@ -88,9 +87,17 @@ GetCandidateRoll() {
 }
 
 #############################################################
+# FONCTION = GetRollBalance
+# DESCRIPTION = Ckeck final roll on node
+# RETURN = final rolls amount
+#############################################################
+GetRollBalance() {
+	massa-cli -j wallet_info | jq -r '.[].address_info.final_rolls'
+}
+
+#############################################################
 # FONCTION = GetMASAmount
 # DESCRIPTION = Check MAS amount on active wallet
-# ARGUMENTS = WalletAddress
 # RETURN = MAS amount
 #############################################################
 GetMASAmount() {
@@ -99,42 +106,44 @@ GetMASAmount() {
 
 #############################################################
 # FONCTION = BuyOrSellRoll
-# ARGUMENTS = CandidateRollAmount, MasAmount, WalletAddress
 # DESCRIPTION = Adujst roll amount with max roll settings and if MAS amount > 200 or if candidate roll < 1 and MAS amount >= 100
 #############################################################
 BuyOrSellRoll() {
 	WalletAddress=$(GetWalletAddress)
 	# Get candidate rolls
-	CandidateRolls=$(($(GetCandidateRoll "$WalletAddress")))
-	# Get MAS amount
-	echo $(GetMASAmount "$WalletAddress")
-	MasBalance=$(($(GetMASAmount "$WalletAddress")))
+	CandidateRolls=$(($(GetCandidateRoll $WalletAddress)))
+	# Get MAS amount and keep integer part
+	MasBalance=$(GetMASAmount $WalletAddress)
+	MasBalanceInt=$(echo $MasBalance | awk -F '.' '{print $1}')
 
+	RollBalance=$(($(GetRollBalance $WalletAddress)))
 	# Check candidate roll > 0 and Mas amount >= 100 to buy first roll
 	if (( $CandidateRolls == 0 )); then
-		if (( $MasBalance > 100 )); then
+		if (( $MasBalanceInt > 100 )); then
 			green "INFO" "Buy 1 Roll"
 
 			# Buy roll amount
 			massa-cli buy_rolls $WalletAddress 1 0 > /dev/null
 		else
-			green "INFO" "Cannot buy first ROLL because MAS Amount less than 100."
+			green "INFO" "Cannot buy first ROLL: insuficient MAS balance"
 		fi
 	 return 0
 	fi
 	if [ $TARGET_ROLL_AMOUNT == "NULL" ]; then
-		if (( $MasBalance > 200 )); then
-			NbRollsToBuy=$((($MasBalance-100)/100))
-			green "INFO" "Autobuy $NbRollsToBuy ROLL because MAS amount equal to $MasBalance"
+		if (( $MasBalanceInt > 200 )); then
+			NbRollsToBuy=$((($MasBalanceInt-100)/100))
+			green "INFO" "Current balance: $MasBalance, $RollBalance Rolls"
+			green "INFO" "Autobuy $NbRollsToBuy ROLL."
 
 			# Buy roll amount
 			massa-cli buy_rolls $WalletAddress $NbRollsToBuy 0 > /dev/null
 		fi
 	else
 		MAX_ROLL_AMOUNT=$(($TARGET_ROLL_AMOUNT))
-		if (($MAX_ROLL_AMOUNT > $CandidateRolls)) && (( $MasBalance > 200 )); then
+
+		if (($MAX_ROLL_AMOUNT > $CandidateRolls)) && (( $MasBalanceInt > 200 )); then
 			# Calculation of max rolls you can buy with all your MAS amount
-			NbRollsCanBuyWithMAS=$((($MasBalance-100)/100))
+			NbRollsCanBuyWithMAS=$((($MasBalanceInt-100)/100))
 			NbRollsNeedToBuy=$(($MAX_ROLL_AMOUNT-$CandidateRolls))
 			# If rolls amount you can buy less than max amount, buy all you can buy
 			if (($NbRollsCanBuyWithMAS <= $NbRollsNeedToBuy)); then
@@ -143,15 +152,17 @@ BuyOrSellRoll() {
 			else
 				NbRollsToBuy=$NbRollsNeedToBuy
 			fi
-			green "INFO" "Autobuy $NbRollsToBuy ROLL because MAS amount equal to $MasBalance and ROLL amount of $CandidateRolls less than target amount of $TARGET_ROLL_AMOUNT"
+			green "INFO" "Current balance: $MasBalance, $RollBalance Rolls"
+			green "INFO" "Autobuy $NbRollsToBuy Roll"
 
 			# Buy roll amount
 			massa-cli buy_rolls $WalletAddress $NbRollsToBuy 0 > /dev/null
 		fi
 		# If roll target amount less than active roll amount sell exceed rolls
-		if (($MAX_ROLL_AMOUNT < $CandidateRolls)); then
-			NbRollsToSell=$(($CandidateRolls-$TARGET_ROLL_AMOUNT))
-			green "INFO" "Autosell $NbRollsToSell ROLL because ROLL amount of $CandidateRolls greater than target amount of $TARGET_ROLL_AMOUNT"
+		if (($MAX_ROLL_AMOUNT < $RollBalance)); then
+			NbRollsToSell=$(($RollBalance-$TARGET_ROLL_AMOUNT))
+			green "INFO" "Current balance: $MasBalance, $RollBalance Rolls"
+			green "INFO" "Autosell $NbRollsToSell Roll"
 
 			# Sell roll amount
 			massa-cli sell_rolls $WalletAddress $NbRollsToSell 0 > /dev/null
