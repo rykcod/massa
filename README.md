@@ -108,7 +108,7 @@ To get your discord token, refer to https://www.androidauthority.com/get-discord
 ```
 
 ### Automated update
-We recommend the use of watchtower to automagically pull the latest version of the docker image when available. Just add it as new service to your docker-compose file: 
+We recommend the use of watchtower to automagically pull the latest version of the docker image when available. Just add the following lines to add a new service in your docker-compose file:
 ```yaml
 ...
   watchtower:
@@ -116,7 +116,7 @@ We recommend the use of watchtower to automagically pull the latest version of t
     container_name: watchtower
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    command: --stop-timeout 360s massa-core
+    command: --stop-timeout 360s --interval 300 massa-core
 ...
 ```
 
