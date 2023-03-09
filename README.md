@@ -1,5 +1,5 @@
 # Massa node + Massa-guard #
-**Last build for Massa testnet Episode 20 release 20.0.0**
+**Last build for Massa testnet Episode 20 release 20.1.0**
 
 ![alt text](https://d33wubrfki0l68.cloudfront.net/7df7d7a57a8dda3cc07aab16121b3e3990cf0893/16ccd/portfolio/massa.png)
 
@@ -30,7 +30,8 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Massa-guard auto get faucet to buy your first roll.
 
 ### [RELEASE NOTES] ###
-- 20230210 - Testnet 20 - v20.0.0 - Testnet 20 - v20.0 Ready! Please note you will need to create a new wallet for this Testnet.
+- 20230309 - Testnet 20 - v20.1.0 - Testnet 20 - v20.1 Ready!
+- 20230304 - Testnet 20 - v20.0.0 - Testnet 20 - v20.0 Ready! Please note you will need to create a new wallet for this Testnet.
 - 20230210 - Testnet 19 - v19.3.0 - Testnet 19 - v19.3 Ready!
 - 20230209 - Testnet 19 - v19.2.0 - Testnet 19 - v19.2 Ready!
 - 20230201 - Testnet 19 - v19.0.0 - Testnet 19 - v19.0 Ready! Somes modications after massa testnet 19.0 cmd updates.
