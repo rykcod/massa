@@ -96,6 +96,15 @@ GetRollBalance() {
 }
 
 #############################################################
+# FONCTION = GetActiveRolls
+# DESCRIPTION = Ckeck active roll on node
+# RETURN = active rolls amount
+#############################################################
+GetActiveRolls() {
+	massa-cli -j wallet_info | jq -r '.[].address_info.active_rolls'
+}
+
+#############################################################
 # FONCTION = GetMASAmount
 # DESCRIPTION = Check MAS amount on active wallet
 # RETURN = MAS amount
@@ -112,6 +121,8 @@ BuyOrSellRoll() {
 	WalletAddress=$(GetWalletAddress)
 	# Get rolls
 	CandidateRolls=$(($(GetCandidateRoll $WalletAddress)))
+	ActiveRolls=$(($(GetActiveRolls $WalletAddress)))
+	Rolls=$(($(GetRollBalance $WalletAddress)))
 
 	# Get MAS amount and keep integer part
 	MasBalance=$(GetMASAmount $WalletAddress)
@@ -143,7 +154,7 @@ BuyOrSellRoll() {
 			rolls_to_buy=$(($MasBalanceInt / $ROLL_COST))
 			buy_rolls $rolls_to_buy
 		else
-			if (( $CandidateRolls == 0 )); then
+			if (( $CandidateRolls == 0 )) && (( $ActiveRolls == 0 )); then
 				warn "Insuficient MAS balance to buy first ROLL. (current balance is $MasBalance MAS)"
 			fi
 		fi
