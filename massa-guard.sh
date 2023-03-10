@@ -11,7 +11,7 @@ WaitBootstrap
 # Load Wallet and Node key or create it and stake wallet
 CheckOrCreateWalletAndNodeKey
 
-if [ ! $DISCORD == "NULL" ]; then
+if [ -n "$DISCORD" ]; then
 	# Check and get faucet of current day
 	PingFaucet
 fi
@@ -46,7 +46,7 @@ do
 			BuyOrSellRoll
 
 			# If Discord feature enable
-			if [ ! "$DISCORD" == "NULL" ]
+			if [ -n "$DISCORD" ]
 			then
 				# Check and registrer node with massabot if necessary
 				CheckTestnetNodeRegistration
