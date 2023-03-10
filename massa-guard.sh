@@ -16,11 +16,11 @@ if [ ! $DISCORD == "NULL" ]; then
 	PingFaucet
 fi
 
-IS_ACTIVATED="${MASSAGUARD:-"1"}"
-DYNIP="${DYNIP:-"0"}"
-NODE_TESTNET_REGISTRATION="${NODE_TESTNET_REGISTRATION:-"KO"}"
-TARGET_ROLL_AMOUNT="${TARGET_ROLL_AMOUNT:-"NULL"}"
-
+IS_ACTIVATED="${MASSAGUARD:-1}"
+DYNIP="${DYNIP:-0}"
+NODE_TESTNET_REGISTRATION="${NODE_TESTNET_REGISTRATION:-KO}"
+TARGET_ROLL_AMOUNT="${TARGET_ROLL_AMOUNT:-NULL}"
+		
 #==================== Massa-guard circle =========================# 
 # Infinite check
 while true
@@ -46,7 +46,7 @@ do
 			BuyOrSellRoll
 
 			# If Discord feature enable
-			if [ ! $DISCORD == "NULL" ]
+			if [ ! "$DISCORD" == "NULL" ]
 			then
 				# Check and registrer node with massabot if necessary
 				CheckTestnetNodeRegistration
