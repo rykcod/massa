@@ -50,6 +50,7 @@ Available options:
  - ''DYNIP'' - Set with "0" if you host under static public IP or "1" if you host under dynimic public IP to enable update IP feature
  - ''WALLETPWD'' - Set with "YourCustomPassword" if you want to use a custom wallet password.
  - ''NODE_MAX_RAM'' - The app node will auto restart if RAM usage goes over this % treshold. Default to 99%.
+ - ''TARGET_ROLL_AMOUNT'' - The max number of rolls you want to hold. It will buy or sell rolls accordind your MAS balance and the targeted amount. Default value to 2. set to 0 to disable.
 
 Manage your node:
 

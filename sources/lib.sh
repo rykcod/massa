@@ -110,62 +110,56 @@ GetMASAmount() {
 #############################################################
 BuyOrSellRoll() {
 	WalletAddress=$(GetWalletAddress)
-	# Get candidate rolls
+	# Get rolls
 	CandidateRolls=$(($(GetCandidateRoll $WalletAddress)))
+
 	# Get MAS amount and keep integer part
 	MasBalance=$(GetMASAmount $WalletAddress)
 	MasBalanceInt=$(echo $MasBalance | awk -F '.' '{print $1}')
 
-	RollBalance=$(($(GetRollBalance $WalletAddress)))
-	# Check candidate roll > 0 and Mas amount >= 100 to buy first roll
-	if (( $CandidateRolls == 0 )); then
-		if (( $MasBalanceInt > 100 )); then
-			green "INFO" "Buy 1 Roll"
+	targetRollAmount=$(($TARGET_ROLL_AMOUNT))
 
-			# Buy roll amount
-			massa-cli buy_rolls $WalletAddress 1 0 > /dev/null
+	# Constants
+	ROLL_COST=100
+
+	# Functions
+	function buy_rolls {
+		local rolls_to_buy=$1
+		green "INFO" "Buying $rolls_to_buy roll(s)..."
+		# Call massa-cli command to buy rolls
+		massa-cli buy_rolls $WalletAddress $rolls_to_buy 0 > /dev/null
+	}
+
+	function sell_rolls {
+		local rolls_to_sell=$1
+		green "INFO"  "Selling $rolls_to_sell roll(s)..."
+		# Call massa-cli command to sell rolls
+		massa-cli sell_rolls $WalletAddress $rolls_to_sell 0 > /dev/null
+	}
+
+	if (( $targetRollAmount == 0 )); then
+		# Buy as many rolls as possible with available balance
+		if (( $MasBalanceInt >= $ROLL_COST )); then
+			rolls_to_buy=$(($MasBalanceInt / $ROLL_COST))
+			buy_rolls $rolls_to_buy
 		else
-			green "INFO" "Cannot buy first ROLL: insuficient MAS balance"
-		fi
-	 return 0
-	fi
-	if [ $TARGET_ROLL_AMOUNT == "NULL" ]; then
-		if (( $MasBalanceInt > 200 )); then
-			NbRollsToBuy=$((($MasBalanceInt-100)/100))
-			green "INFO" "Current balance: $MasBalance, $RollBalance Rolls"
-			green "INFO" "Autobuy $NbRollsToBuy ROLL."
-
-			# Buy roll amount
-			massa-cli buy_rolls $WalletAddress $NbRollsToBuy 0 > /dev/null
+			if (( $CandidateRolls == 0 )); then
+				warn "Insuficient MAS balance to buy first ROLL. (current balance is $MasBalance MAS)"
+			fi
 		fi
 	else
-		MAX_ROLL_AMOUNT=$(($TARGET_ROLL_AMOUNT))
+		# Calculate number of rolls needed to reach target
+		rolls_needed=$(($targetRollAmount - $CandidateRolls))
 
-		if (($MAX_ROLL_AMOUNT > $CandidateRolls)) && (( $MasBalanceInt > 200 )); then
-			# Calculation of max rolls you can buy with all your MAS amount
-			NbRollsCanBuyWithMAS=$((($MasBalanceInt-100)/100))
-			NbRollsNeedToBuy=$(($MAX_ROLL_AMOUNT-$CandidateRolls))
-			# If rolls amount you can buy less than max amount, buy all you can buy
-			if (($NbRollsCanBuyWithMAS <= $NbRollsNeedToBuy)); then
-				NbRollsToBuy=$NbRollsCanBuyWithMAS
-			# Else buy max amount you can buy
-			else
-				NbRollsToBuy=$NbRollsNeedToBuy
-			fi
-			green "INFO" "Current balance: $MasBalance, $RollBalance Rolls"
-			green "INFO" "Autobuy $NbRollsToBuy Roll"
-
-			# Buy roll amount
-			massa-cli buy_rolls $WalletAddress $NbRollsToBuy 0 > /dev/null
-		fi
-		# If roll target amount less than active roll amount sell exceed rolls
-		if (($MAX_ROLL_AMOUNT < $RollBalance)); then
-			NbRollsToSell=$(($RollBalance-$TARGET_ROLL_AMOUNT))
-			green "INFO" "Current balance: $MasBalance, $RollBalance Rolls"
-			green "INFO" "Autosell $NbRollsToSell Roll"
-
-			# Sell roll amount
-			massa-cli sell_rolls $WalletAddress $NbRollsToSell 0 > /dev/null
+		if (( $rolls_needed > 0 )); then
+			# Buy rolls to reach target
+			max_rolls_to_buy=$(($MasBalanceInt / $ROLL_COST))
+			rolls_to_buy=$(($rolls_needed > $max_rolls_to_buy ? $max_rolls_to_buy : $rolls_needed))
+			buy_rolls $rolls_to_buy
+		elif (( $rolls_needed < 0 )); then
+			# Sell rolls to reach target
+			rolls_to_sell=$(($rolls_needed * -1))
+			sell_rolls $rolls_to_sell
 		fi
 	fi
 }
