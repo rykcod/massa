@@ -160,7 +160,7 @@ BuyOrSellRoll() {
 		fi
 	else
 		# Calculate number of rolls needed to reach target
-		rolls_needed=$(($targetRollAmount - $CandidateRolls))
+		rolls_needed=$(($targetRollAmount - $ActiveRolls - $CandidateRolls))
 
 		if (( $rolls_needed > 0 )); then
 			# Buy rolls to reach target
