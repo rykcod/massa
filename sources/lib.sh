@@ -279,9 +279,9 @@ RefreshPublicIP() {
 			# Push new IP to massabot
 			timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD $myIP > $PATH_MASSABOT_REPLY
 			# Check massabot return
-			if grep -q "IP address: $myIP" "$PATH_MASSABOT_REPLY"; then
+			if grep -q "IP address: $myIP" $PATH_MASSABOT_REPLY; then
 				green "INFO" "Dynamique public IP changed, updated for $1 in config.toml and with massabot"
-			elif grep -q "wait for announcements!" "$PATH_MASSABOT_REPLY"; then
+			elif grep -q "wait for announcements!" $PATH_MASSABOT_REPLY; then
                 warn "Unable to update registered IP with Massabot because the testnet has not started yet"
 			else
                 warn "Unable to update registered IP with Massabot because Massabot is not responsive or responding incorrectly"
