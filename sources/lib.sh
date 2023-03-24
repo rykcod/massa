@@ -160,7 +160,7 @@ BuyOrSellRoll() {
 		fi
 	else
 		# Calculate number of rolls needed to reach target
-		rolls_needed=$(($targetRollAmount - $ActiveRolls - $CandidateRolls))
+		rolls_needed=$(($targetRollAmount - $CandidateRolls))
 
 		if (( $rolls_needed > 0 )); then
 			# Buy rolls to reach target
@@ -352,7 +352,7 @@ CheckTestnetNodeRegistration() {
 			sleep 5s
 			RegisterNodeWithMassabot $WalletAddress $massaDiscordID
 		else
-			green "INFO" "Discord user is already registered for tesnet rewards program"
+			green "INFO" "Discord user is already registered for testnet rewards program"
 			export NODE_TESTNET_REGISTRATION=OK
 		fi
 	fi
