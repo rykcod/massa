@@ -1,7 +1,7 @@
 FROM ubuntu:20.04
 
 # Build Arguments
-ARG ARM
+ARG TARGETARCH
 ARG VERSION
 
 # LABEL about the custom image

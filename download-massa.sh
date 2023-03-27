@@ -4,10 +4,10 @@ MASSA_PACKAGE="massa_${VERSION}_release_linux.tar.gz"
 MASSA_PACKAGE_ARM64="massa_${VERSION}_release_linux_arm64.tar.gz"
 MASSA_PACKAGE_LOCATION="https://github.com/massalabs/massa/releases/download/$VERSION/"
 
-if [ -n "$ARM" ]; then
-	TARBALL=$MASSA_PACKAGE_ARM64
-else
+if [ "$TARGETARCH" == "amd64" ]; then
 	TARBALL=$MASSA_PACKAGE
+else
+	TARBALL=$MASSA_PACKAGE_ARM64
 fi
 
 # Download the package
