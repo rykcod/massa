@@ -127,8 +127,12 @@ BuyOrSellRoll() {
 	# Get MAS amount and keep integer part
 	MasBalance=$(GetMASAmount $WalletAddress)
 	MasBalanceInt=$(echo $MasBalance | awk -F '.' '{print $1}')
+	MasBalanceInt="${MasBalanceInt:-0}"
 
 	targetRollAmount=$(($TARGET_ROLL_AMOUNT))
+
+	green "DEBUG" "MAS Balance = $MasBalance"
+	green "DEBUG" "Rolls: Candidate: $CandidateRolls, Final: $Rolls, Active: $ActiveRolls, Target: $targetRollAmount"
 
 	# Constants
 	ROLL_COST=100
@@ -190,7 +194,7 @@ CheckNodeRam() {
 	# If ram consumption is too high
 	if ([ ! -z $checkRam ] && [ $checkRam -gt $MAX_RAM ])
 	then
-		warn "Max RAM usage treshold hit, restarting node"
+		warn "Max RAM usage treshold hit, restarting..."
 		return 1
 	fi
 }
@@ -212,20 +216,12 @@ CheckNodeResponsive() {
 }
 
 #############################################################
-# FONCTION = CheckAndReloadNode
-# DESCRIPTION = Check node vitality parameters and restart if necessary
-# ARGUMENTS = NodeRamStatus, NodeStatus
-# RETURN = 0 for OK Continu 1 for KO Restart
-#############################################################
-CheckAndReloadNode() {
-	if( [ $1 -eq 1 ] || [ $2 -eq 1 ] )
-	then
-			# This will stop the whole container the container
-		pkill massa-node
+# FONCTION = RestartNode
+# DESCRIPTION = restartNode
 
-		# Return restart operation
-		return 1
-	fi
+#############################################################
+RestartNode() {
+	pkill massa-node
 }
 
 #############################################################
@@ -251,13 +247,9 @@ CheckPublicIP() {
 	CONF_IP=$(toml get --toml-path $PATH_NODE_CONF/config.toml network.routable_ip 2>/dev/null)
 
 	# Check if configured IP equal to real IP
-	if [ "$myIP" == "$confIP" ]
-	then
+	if [ "$myIP" != "$confIP" ]; then
 		# Return no change
-		echo 0
-	else
-		# Return IP change
-		echo 1
+		return 1
 	fi
 }
 
@@ -269,28 +261,23 @@ CheckPublicIP() {
 RefreshPublicIP() {
 	# Get Public IP of node
 	myIP=$(GetPublicIP)
-	echo Check if get IP OK myIP=$myIP
 
 	# Check if get IP OK
 	if [ -n "$myIP" ]; then
-		# Get Public IP conf for node
-		CONF_IP=$(toml get --toml-path $PATH_NODE_CONF/config.toml network.routable_ip 2>/dev/null)
-		if [ "$myIP" != "$CONF_IP" ]; then
-			# Push new IP to massabot
-			timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD $myIP > $PATH_MASSABOT_REPLY
-			# Check massabot return
-			if grep -q "IP address: $myIP" $PATH_MASSABOT_REPLY; then
-				green "INFO" "Dynamique public IP changed, updated for $1 in config.toml and with massabot"
-			elif grep -q "wait for announcements!" $PATH_MASSABOT_REPLY; then
-                warn "Unable to update registered IP with Massabot because the testnet has not started yet"
-			else
-                warn "Unable to update registered IP with Massabot because Massabot is not responsive or responding incorrectly"
-			fi
-
-			# Update IP in your ref config.toml and restart node
-			toml set --toml-path $PATH_MOUNT/config.toml network.routable_ip $myIP
-			CheckAndReloadNode 0 1
+		# Push new IP to massabot
+		timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD $myIP > $PATH_MASSABOT_REPLY
+		# Check massabot return
+		if grep -q "IP address: $myIP" $PATH_MASSABOT_REPLY; then
+			green "INFO" "Public IP changed, updated for $myIP in config.toml and with massabot"
+		elif grep -q "wait for announcements!" $PATH_MASSABOT_REPLY; then
+			warn "Unable to update registered IP with Massabot because the testnet has not started yet"
+		else
+			warn "Unable to update registered IP with Massabot because Massabot is not responsive or responding incorrectly"
 		fi
+
+		# Update IP in your ref config.toml and restart node
+		toml set --toml-path $PATH_MOUNT/config.toml network.routable_ip $myIP
+		RestartNode
 	fi
 }
 
@@ -322,6 +309,8 @@ RegisterNodeWithMassabot() {
 	if cat $PATH_MASSABOT_REPLY | grep -q -E "Your discord account \`[0-9]{18}\` has been associated with this node ID"
 	then
 		green "INFO" "Node is now register with discord ID $2 and massabot"
+		sleep 1
+		timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD $myIP > $PATH_MASSABOT_REPLY
 		export NODE_TESTNET_REGISTRATION=OK
 		return 0
 	else

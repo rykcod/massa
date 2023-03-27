@@ -35,30 +35,32 @@ do
 
 		# Check ram consumption percent in integer
 		CheckNodeRam
-
-		NodeRam=$?
+		ramCheck=$?
 
 		# Restart node if issue
-		CheckAndReloadNode "$NodeRam" "$NodeResponsive"
-		if [ $? -eq 0 ]
-		then
-			# Buy max roll or 1 roll if possible when candidate roll amount = 0
-			BuyOrSellRoll
+		if [[ $NodeResponsive -eq 1 || $ramCheck -eq 1 ]]; then
+			RestartNode
+			return
+		fi
 
-			# If Discord feature enable
-			if [ -n "$DISCORD" ]
-			then
-				# Check and registrer node with massabot if necessary
-				CheckTestnetNodeRegistration
+		# Buy max roll or 1 roll if possible when candidate roll amount = 0
+		BuyOrSellRoll
 
-				# If dynamical IP feature enable and public IP is new
-				if ([ "$DYNIP" == "1" ] && [ $(CheckPublicIP) -eq 1 ])
-				then
-					# Refresh config.toml + restart node + push new IP to massabot
-					RefreshPublicIP
-				fi
+		# If Discord feature enable
+		if [ -n "$DISCORD" ]; then
+			# Check and registrer node with massabot if necessary
+			CheckTestnetNodeRegistration
+
+			CheckPublicIP
+			publicIpChanged=$?
+
+			# If dynamical IP feature enable and public IP is new
+			if [[ "$DYNIP" == "1" && $publicIpChanged -eq 1 ]]; then
+				# Refresh config.toml + restart node + push new IP to massabot
+				RefreshPublicIP
 			fi
 		fi
+		
 	fi
 	# Wait before next loop
 	sleep 2m
