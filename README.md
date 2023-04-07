@@ -169,6 +169,7 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Massa-guard auto get faucet to buy your first roll.
 
 ### [RELEASE NOTES] ###
+- 20230322 - Testnet 20 - v21.0.0 - Testnet 21 - v21.0 Ready!
 - 20230322 - Testnet 20 - v20.2.0 - Testnet 20 - v20.2 Ready!
 - 20230210 - Testnet 20 - v20.1.0 - Testnet 20 - v20.1 Ready!
 - 20230210 - Testnet 20 - v20.0.0 - Testnet 20 - v20.0 Ready!
