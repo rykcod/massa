@@ -318,20 +318,27 @@ CheckAndReloadNode() {
 # RETURN = 0 for ping done 1 for ping already got
 #############################################################
 PingFaucet() {
-	# Check faucet
-	checkFaucet=$(cat $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | grep "faucet" | wc -l)
-	# Get faucet
-	if ([ $checkFaucet -eq 0 ] && [ $(date +%H) -gt 2 ])
+	if [ -e $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt ]
 	then
-		# Call python ping faucet script with token discord
-		cd $PATH_CLIENT
-		python3 $PATH_SOURCES/faucet_spammer.py $DISCORD_TOKEN $WALLET_PWD |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		# Check faucet
+		checkFaucet=$(cat $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | grep "faucet" | wc -l)
+		# Get faucet
+		if ([ $checkFaucet -eq 0 ] && [ $(date +%H) -gt 2 ])
+		then
+			# Call python ping faucet script with token discord
+			cd $PATH_CLIENT
+			python3 $PATH_SOURCES/faucet_spammer.py $DISCORD_TOKEN $WALLET_PWD |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 
-		# Return ping done
-		return 0
+			# Return ping done
+			return 0
+		else
+			# Already done today
+			return 1
+		fi
+	else
+		# No log file yet today
+		return 1
 	fi
-	# Return ping already done today
-	return 1
 }
 
 #############################################################
@@ -491,9 +498,10 @@ RegisterNodeWithMassabot() {
 	# Push defaut request to massabot
 	timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD_TOKEN $registrationHash > $PATH_MASSABOT_REPLY
 
+	# Check reply of Massabot
 	if cat $PATH_MASSABOT_REPLY | grep -q -E "Your discord account \`[0-9]{18}\` has been associated with this node ID"
 	then
-		echo "[$(date +%Y%m%d-%HH%M)][INFO][REGISTRATION]Node is now register with discord ID $2 and massabot" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		echo "[$(date +%Y%m%d-%HH%M)][INFO][REGISTRATION]Address $1 is now register with discord ID $2 and massabot" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 		python3 $PATH_SOURCES/set_config.py "NODE_TESTNET_REGISTRATION" \"OK\" $PATH_CONF_MASSAGUARD/config.ini
 		return 0
 	else
@@ -508,28 +516,61 @@ RegisterNodeWithMassabot() {
 # RETURN = 0 Registered 1 NotRegistered
 #############################################################
 CheckTestnetNodeRegistration() {
-	if [ $NODE_TESTNET_REGISTRATION == "KO" ]
+	# Check if registration test done today
+	checkRegistration=$(cat $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | grep "Next registration try planned for tomorrow" | wc -l)
+
+	if ([ $NODE_TESTNET_REGISTRATION == "OK" ] && [ $checkRegistration -eq 0 ])
 	then
+		# Get current TESTNET Version
+		testnetVersion=$(ls / | grep massa-TEST | cut -d "." -f2)
+
 		# Push new IP to massabot
 		cd $PATH_CLIENT
 		timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD_TOKEN "info" > $PATH_MASSABOT_REPLY
 
-		# Check massabot return
-		if cat $PATH_MASSABOT_REPLY | grep -q -E "Your discord user_id \`[0-9]{18}\` is not registered yet"\|"You haven't registered your staking key and node ID"
+		# Get the Massa Bot version
+		massabotTestnetVersion=$(cat $PATH_MASSABOT_REPLY | grep -E "Your current score for episode [0-9]{2}" | grep -o -E "episode [0-9]{2}" | cut -d " " -f2)
+
+		# Check if current testnet is open for registration
+		if [ $testnetVersion == $massabotTestnetVersion ]
 		then
-			# Get Massa Discord ID
-			massaDiscordID=$(cat $PATH_MASSABOT_REPLY | grep -o -E [0-9]{18})
+			# If node not registrered
+			if cat $PATH_MASSABOT_REPLY | grep -q -E "Your discord user_id \`[0-9]{18}\` is not registered yet"\|"You haven't registered your staking key and node ID"
+			then
+				# Get Massa Discord ID
+				massaDiscordID=$(cat $PATH_MASSABOT_REPLY | grep -o -E [0-9]{18})
 
-			# Register node with massaBot
-			sleep 5s
-			RegisterNodeWithMassabot $1 $massaDiscordID
+				# Register node with massaBot
+				sleep 5s
+				RegisterNodeWithMassabot $1 $massaDiscordID
 
-			# Return bot registration KO
+			# If node already registrered
+			elif cat $PATH_MASSABOT_REPLY | grep -q -E "Your discord user_id \`[0-9]{18}\` is registered for the testnet reward program"
+			then
+				# Get Massa Discord ID
+				massaDiscordID=$(cat $PATH_MASSABOT_REPLY | grep -o -E [0-9]{18})
+
+				# Get Massa Node Key
+				massaNodeID=$(cat $PATH_MASSABOT_REPLY | grep "\- Node ID:" | grep -o -E '[0-9a-zA-Z]{50,53}')
+
+				# Get Massa Public Address
+				massaPublicAddress=$(cat $PATH_MASSABOT_REPLY | grep "\- Staking Address:" | grep -o -E '[0-9a-zA-Z]{50,53}')
+
+				# Return bot registration OK
+				echo "[$(date +%Y%m%d-%HH%M)][INFO][REGISTRATION]Discord ID $massaDiscordID already associated with Node $massaNodedID and Address $massaPublicAddress" |& tee -a $PATH_LOGS_>
+				python3 $PATH_SOURCES/set_config.py "NODE_TESTNET_REGISTRATION" \"OK\" $PATH_CONF_MASSAGUARD/config.ini
+			fi
+			# Check massabot IP and push routable IP to massabot if necessary
+			myIP=$(curl -s ifconfig.co)
+			massabotIP=$(cat $PATH_MASSABOT_REPLY | grep -e "\- IP address:" | cut -d "\`" -f2)
+			if [ ! -z $massabotIP ] && [ $massabotIP != $myIP ]
+			then
+				RefreshPublicIP
+			fi
 			return 0
 		else
 			# Return bot registration OK
-			echo "[$(date +%Y%m%d-%HH%M)][INFO][REGISTRATION]Node already associated with and massabot or registration is not already open" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
-			python3 $PATH_SOURCES/set_config.py "NODE_TESTNET_REGISTRATION" \"OK\" $PATH_CONF_MASSAGUARD/config.ini
+			echo "[$(date +%Y%m%d-%HH%M)][INFO][REGISTRATION]Testnet $testnetVersion registration not open for now - Next registration try planned for tomorrow"
 			return 0
 		fi
 	# If node set as registrered in config.ini
