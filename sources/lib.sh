@@ -271,8 +271,10 @@ RefreshPublicIP() {
 			green "INFO" "Public IP changed, updated for $myIP in config.toml and with massabot"
 		elif grep -q "wait for announcements!" $PATH_MASSABOT_REPLY; then
 			warn "Unable to update registered IP with Massabot because the testnet has not started yet"
+			return
 		else
 			warn "Unable to update registered IP with Massabot because Massabot is not responsive or responding incorrectly"
+			return
 		fi
 
 		# Update IP in your ref config.toml and restart node
