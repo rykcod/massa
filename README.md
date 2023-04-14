@@ -31,21 +31,10 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
 
 ### [RELEASE NOTES] ###
 - 20230309 - Testnet 21 - v21.0.0 - Testnet 21 - v21.0 Ready!
-- 20230309 - Testnet 20 - v20.2.0 - Testnet 20 - v20.2 Ready!
-- 20230309 - Testnet 20 - v20.1.0 - Testnet 20 - v20.1 Ready!
-- 20230304 - Testnet 20 - v20.0.0 - Testnet 20 - v20.0 Ready! Please note you will need to create a new wallet for this Testnet.
-- 20230210 - Testnet 19 - v19.3.0 - Testnet 19 - v19.3 Ready!
-- 20230209 - Testnet 19 - v19.2.0 - Testnet 19 - v19.2 Ready!
-- 20230201 - Testnet 19 - v19.0.0 - Testnet 19 - v19.0 Ready! Somes modications after massa testnet 19.0 cmd updates.
+- 20230309 - Testnet 20 - v20.2.0 - Testnet 20 - v20.2 Ready! Please note you will need to create a new wallet for this Testnet.
+- 20230210 - Testnet 19 - v19.3.0 - Testnet 19 - v19.3 Ready! Somes modications after massa testnet 19.0 cmd updates.
 - 20230103 - Testnet 18 - v18.0.0 - Testnet 18 - v18.0 Ready!
-- 20221207 - Testnet 17 - v17.2.0 - Testnet 17 - v17.2 Ready!
-- 20221202 - Testnet 17 - v17.1.0 - Testnet 17 - v17.1 Ready!
 - 20221123 - Testnet 16 - v16.1.0 - Testnet 16 - v16.1 Ready! Remove deprecated [BOOTSTRAPFINDER] features
-- 20221010 - Testnet 15 - v15.1.0 - Testnet 15 - v15.1 Ready!
-- 20220921 - Testnet 14 - v14.7.0 - Testnet 14 - v14.7 Ready! Solve MAS amount calculation issue
-- 20220919 - Testnet 14 - v14.5.0 - Testnet 14 - v14.5 Ready! + Add MASSAGUARD setting in config.ini to switch on/off massa-guard
-- 20220909 - Testnet 14 - v14.0.1 - Solve discord feature issues
-- 20220909 - Testnet 14 - v14.0.0 - Testnet 14 Ready! **/!\ Discord features dont work in this version (Faucet spammer / Dyn IP / Resgistration)**
 
 ## [HOWTO] ##
 ### [SETUP] ###
@@ -62,8 +51,6 @@ Create an empty folder to mount in our container /massa_mount path or store your
 - staking_keys.json
 
 /!\ If don't have this file, leave your folder empty, massa-guard will create a wallet and node key and automaticaly stake wallet for you. This files will be backup on your mount point by massa-guard.
-
-/!\ __User of one of previous release?__ Please update your /massa_mount/config/config.ini to check if all entries exist. Check template last here https://github.com/rykcod/massa/blob/main/config/default_config_template.ini
 
 #### [RUN] Usecase Example ####
 /!\ You can define ENV values when you create your container:
@@ -83,6 +70,8 @@ docker run -d -v /%MY_PATH%/massa_mount:/massa_mount -p 31244-31245:31244-31245 
 ```console
 docker run -d -v /%MY_PATH%/massa_mount:/massa_mount -p 31244-31245:31244-31245 -p 33035:33035 -e "DISCORD=OTc2MDkyTgP0OTU4NCXsNTIy.G5jqAc.b+rV4MgEnMvo48ICeGg6E_QPg4dHjlSBJA06CA" -e "MASSAGUARD=0" --name massa-node rykcod/massa
 ```
+
+#### [INTERACTION] To manually use massa-client of your container ####
   * To connect into your container:
 ```console
 docker exec -it massa-node /bin/bash
@@ -103,16 +92,16 @@ __[OPTION] To enable or update features after container creation just edit /mass
   * Set your ''NODE_TESTNET_REGISTRATION'' value to enable node registration with massabot (KO=Enable OK=AlreadyDone)
   * Set your ''MASSAGUARD'' value to enable or disable massa-guard features 0=Disable 1=Enable (Enable by default)
 
-## [HELP] ##
+### [HELP] ###
 - Massa client is running over a "screen" named "massa-client"
 - Massa node is running over a "screen" named "massa-node"
 - To get your discord token, refer to https://shufflegazine.com/get-discord-token/
 
-### [LOGS PATH] ###
+#### [LOGS PATH] ####
 - Massa-guard actions and events are logs into %MountPoint%/logs/massa-guard/%DATE%-massa_guard.txt
 - Massa-node events are archived after every restart into %MountPoint%/logs/massa-guard/%DATE%-logs.txt
 
-### [HELP - Easy beginner way for IPV6 usage] ###
+#### [HELP - Easy beginner way for IPV6 usage] ####
 - Create or edit your host /etc/docker/daemon.json to add:
 ```json
 {
@@ -132,7 +121,7 @@ docker run -d --restart=always -v /var/run/docker.sock:/var/run/docker.sock:ro -
 
 For more informations and sources - https://github.com/rykcod/massa/
 
-### [VIDEO TUTORIAL][FR] ###
+#### [VIDEO TUTORIAL][FR] ####
 https://youtu.be/IzeRq43DBSQ
 
 ## [THANKS] ##
