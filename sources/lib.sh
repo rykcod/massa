@@ -519,7 +519,7 @@ CheckTestnetNodeRegistration() {
 	# Check if registration test done today
 	checkRegistration=$(cat $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | grep "Next registration try planned for tomorrow" | wc -l)
 
-	if ([ $NODE_TESTNET_REGISTRATION == "OK" ] && [ $checkRegistration -eq 0 ])
+	if ([ $NODE_TESTNET_REGISTRATION == "KO" ] && [ $checkRegistration -eq 0 ])
 	then
 		# Get current TESTNET Version
 		testnetVersion=$(ls / | grep massa-TEST | cut -d "." -f2)
