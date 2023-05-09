@@ -20,7 +20,7 @@ then
 # If ref config.toml dont exist in massa_mount
 else
 
-	echo "[network]" > $PATH_MOUNT/config.toml
+	echo "[protocol]" > $PATH_MOUNT/config.toml
 	echo "routable_ip = \"$myIP\"" >> $PATH_MOUNT/config.toml
 	cp $PATH_MOUNT/config.toml $PATH_NODE_CONF/config.toml
 
