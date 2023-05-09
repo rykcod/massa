@@ -517,7 +517,12 @@ RegisterNodeWithMassabot() {
 #############################################################
 CheckTestnetNodeRegistration() {
 	# Check if registration test done today
-	checkRegistration=$(cat $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | grep "Next registration try planned for tomorrow" | wc -l)
+	if [ -e $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt ]
+	then
+		checkRegistration=$(cat $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | grep "Next registration try planned for tomorrow" | wc -l)
+	else
+		checkRegistration=0
+	fi
 
 	if ([ $NODE_TESTNET_REGISTRATION == "KO" ] && [ $checkRegistration -eq 0 ])
 	then
