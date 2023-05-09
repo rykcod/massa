@@ -527,43 +527,44 @@ CheckTestnetNodeRegistration() {
 	if ([ $NODE_TESTNET_REGISTRATION == "KO" ] && [ $checkRegistration -eq 0 ])
 	then
 		# Get current TESTNET Version
-		testnetVersion=$(ls / | grep massa-TEST | cut -d "." -f2)
+        testnetVersion=$(ls / | grep massa-TEST | cut -d "." -f2)
 
-		# Push new IP to massabot
-		cd $PATH_CLIENT
-		timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD_TOKEN "info" > $PATH_MASSABOT_REPLY
+        # Push new IP to massabot
+        cd $PATH_CLIENT
+        timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD_TOKEN "info" > $PATH_MASSABOT_REPLY
 
-		# Get the Massa Bot version
-		massabotTestnetVersion=$(cat $PATH_MASSABOT_REPLY | grep -E "Your current score for episode [0-9]{2}" | grep -o -E "episode [0-9]{2}" | cut -d " " -f2)
+        # Get the Massa Bot version
+        massabotTestnetVersion=$(cat $PATH_MASSABOT_REPLY | grep -E "Your current score for episode [0-9]{2}" | grep -o -E "episode [0-9]{2}" | cut -d " " -f2)
 
-		# Check if current testnet is open for registration
-		if [ $testnetVersion == $massabotTestnetVersion ]
-		then
-			# If node not registrered
-			if cat $PATH_MASSABOT_REPLY | grep -q -E "Your discord user_id \`[0-9]{18}\` is not registered yet"\|"You haven't registered your staking key and node ID"
-			then
-				# Get Massa Discord ID
-				massaDiscordID=$(cat $PATH_MASSABOT_REPLY | grep -o -E [0-9]{18})
+        # Check if current testnet is open for registration
+        # Check if current testnet is open for registration
+        if [ $testnetVersion -eq $massabotTestnetVersion ]
+        then
+            # If node not registrered
+            if cat $PATH_MASSABOT_REPLY | grep -q -E "Your Discord user_id \`[0-9]{18}\` is not registered yet"\|"You haven't registered your staking key and node ID"
+            then
+                # Get Massa Discord ID
+                massaDiscordID=$(cat $PATH_MASSABOT_REPLY | grep -o -E [0-9]{18})
 
 				# Register node with massaBot
 				sleep 5s
 				RegisterNodeWithMassabot $1 $massaDiscordID
 
 			# If node already registrered
-			elif cat $PATH_MASSABOT_REPLY | grep -q -E "Your discord user_id \`[0-9]{18}\` is registered for the testnet reward program"
+			elif cat $PATH_MASSABOT_REPLY | grep -q -E "Your Discord user_id \`[0-9]{18}\` is registered for the testnet reward program"
 			then
-				# Get Massa Discord ID
-				massaDiscordID=$(cat $PATH_MASSABOT_REPLY | grep -o -E [0-9]{18})
+					# Get Massa Discord ID
+					massaDiscordID=$(cat $PATH_MASSABOT_REPLY | grep -o -E [0-9]{18})
 
-				# Get Massa Node Key
-				massaNodeID=$(cat $PATH_MASSABOT_REPLY | grep "\- Node ID:" | grep -o -E '[0-9a-zA-Z]{50,53}')
+					# Get Massa Node Key
+					massaNodeID=$(cat $PATH_MASSABOT_REPLY | grep "\- Node ID:" | grep -o -E '[0-9a-zA-Z]{50,53}')
 
-				# Get Massa Public Address
-				massaPublicAddress=$(cat $PATH_MASSABOT_REPLY | grep "\- Staking Address:" | grep -o -E '[0-9a-zA-Z]{50,53}')
+					# Get Massa Public Address
+					massaPublicAddress=$(cat $PATH_MASSABOT_REPLY | grep "\- Staking Address:" | grep -o -E '[0-9a-zA-Z]{50,53}')
 
-				# Return bot registration OK
-				echo "[$(date +%Y%m%d-%HH%M)][INFO][REGISTRATION]Discord ID $massaDiscordID already associated with Node $massaNodedID and Address $massaPublicAddress" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
-				python3 $PATH_SOURCES/set_config.py "NODE_TESTNET_REGISTRATION" \"OK\" $PATH_CONF_MASSAGUARD/config.ini
+					# Return bot registration OK
+					echo "[$(date +%Y%m%d-%HH%M)][INFO][REGISTRATION]Discord ID $massaDiscordID already associated with Node $massaNodeID and Address $massaPublicAddress" |& tee -a $PA>
+					python3 $PATH_SOURCES/set_config.py "NODE_TESTNET_REGISTRATION" \"OK\" $PATH_CONF_MASSAGUARD/config.ini
 			fi
 			# Check massabot IP and push routable IP to massabot if necessary
 			myIP=$(curl -s ifconfig.co)
@@ -575,7 +576,7 @@ CheckTestnetNodeRegistration() {
 			return 0
 		else
 			# Return bot registration OK
-			echo "[$(date +%Y%m%d-%HH%M)][INFO][REGISTRATION]Testnet $testnetVersion registration not open for now - Next registration try planned for tomorrow" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+			echo "[$(date +%Y%m%d-%HH%M)][INFO][REGISTRATION]Testnet $testnetVersion registration not open for now - Next registration try planned for tomorrow" |& tee -a $PATH_LOGS_MA>
 			return 0
 		fi
 	# If node set as registrered in config.ini
