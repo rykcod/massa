@@ -306,14 +306,14 @@ RegisterNodeWithMassabot() {
 	WalletAddress=$(GetWalletAddress)
 
 	# Get registration hash
-	registrationHash=$(massa-cli -j node_testnet_rewards_program_ownership_proof $WalletAddress $2 | jq -r)
+	registrationHash=$(massa-cli -j node_testnet_rewards_program_ownership_proof $WalletAddress $1 | jq -r)
 
 	# Push defaut request to massabot
 	timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD $registrationHash > $PATH_MASSABOT_REPLY
 
 	if cat $PATH_MASSABOT_REPLY | grep -q -E "Your discord account \`[0-9]{18}\` has been associated with this node ID"
 	then
-		green "INFO" "Node is now register with discord ID $2 and massabot"
+		green "INFO" "Node is now register with discord ID $1 and massabot"
 		sleep 1
 		timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD $myIP > $PATH_MASSABOT_REPLY
 		export NODE_TESTNET_REGISTRATION=OK
@@ -336,7 +336,7 @@ CheckTestnetNodeRegistration() {
 		timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD "info" > $PATH_MASSABOT_REPLY
 
 		# Check massabot return
-		if cat $PATH_MASSABOT_REPLY | grep -q -E "Your discord user_id \`[0-9]{18}\` is not registered yet"\|"You haven't registered your staking key and node ID"
+		if cat $PATH_MASSABOT_REPLY | grep -q -E "Your discord user_id \`[0-9]{18}\` is not registered yet"\|"You haven't registered your staking key and node ID"\|"You aren't registered yet"
 		then
 			# Get Massa Discord ID
 			massaDiscordID=$(cat $PATH_MASSABOT_REPLY | grep -o -E [0-9]{18})
