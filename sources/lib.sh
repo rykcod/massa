@@ -563,7 +563,7 @@ CheckTestnetNodeRegistration() {
 					massaPublicAddress=$(cat $PATH_MASSABOT_REPLY | grep "\- Staking Address:" | grep -o -E '[0-9a-zA-Z]{50,53}')
 
 					# Return bot registration OK
-					echo "[$(date +%Y%m%d-%HH%M)][INFO][REGISTRATION]Discord ID $massaDiscordID already associated with Node $massaNodeID and Address $massaPublicAddress" |& tee -a $PA>
+					echo "[$(date +%Y%m%d-%HH%M)][INFO][REGISTRATION]Discord ID $massaDiscordID already associated with Node $massaNodeID and Address $massaPublicAddress" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 					python3 $PATH_SOURCES/set_config.py "NODE_TESTNET_REGISTRATION" \"OK\" $PATH_CONF_MASSAGUARD/config.ini
 			fi
 			# Check massabot IP and push routable IP to massabot if necessary
@@ -576,7 +576,7 @@ CheckTestnetNodeRegistration() {
 			return 0
 		else
 			# Return bot registration OK
-			echo "[$(date +%Y%m%d-%HH%M)][INFO][REGISTRATION]Testnet $testnetVersion registration not open for now - Next registration try planned for tomorrow" |& tee -a $PATH_LOGS_MA>
+			echo "[$(date +%Y%m%d-%HH%M)][INFO][REGISTRATION]Testnet $testnetVersion registration not open for now - Next registration try planned for tomorrow" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 			return 0
 		fi
 	# If node set as registrered in config.ini
