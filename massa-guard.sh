@@ -51,8 +51,8 @@ do
 				# Check and get faucet of current day
 				PingFaucet
 
-				# Temporary pause to debug # Check and registrer node with massabot if necessary
-				# CheckTestnetNodeRegistration "$WalletAddress"
+				# Check and registrer node with massabot if necessary
+				CheckTestnetNodeRegistration "$WalletAddress"
 
 				# If dynamical IP feature enable and public IP is new
 				if ([ $DYN_PUB_IP -eq 1 ] && [ $(CheckPublicIP) -eq 1 ])
