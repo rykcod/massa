@@ -477,7 +477,7 @@ RefreshPublicIP() {
 #############################################################
 GetPublicIP() {
 	# Get mon IP
-	myIP=$(curl -s ifconfig.co)
+	myIP=$(curl -s ident.me)
 
 	# Return my public IP
 	echo $myIP
@@ -567,7 +567,7 @@ CheckTestnetNodeRegistration() {
 					python3 $PATH_SOURCES/set_config.py "NODE_TESTNET_REGISTRATION" \"OK\" $PATH_CONF_MASSAGUARD/config.ini
 			fi
 			# Check massabot IP and push routable IP to massabot if necessary
-			myIP=$(curl -s ifconfig.co)
+			myIP=$(curl -s ident.me)
 			massabotIP=$(cat $PATH_MASSABOT_REPLY | grep -e "\- IP address:" | cut -d "\`" -f2)
 			if [ ! -z $massabotIP ] && [ $massabotIP != $myIP ]
 			then
