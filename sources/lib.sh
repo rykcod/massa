@@ -248,21 +248,17 @@ BackupLogsNode() {
 	if [ -e $PATH_LOGS_MASSANODE/$(date +%Y%m%d)-logs.txt ]
 	then
 		# If node logs file exist
-		if [ -e $PATH_NODE/logs.txt ]
+		if [ -e $PATH_LOGS_MASSANODE/current.txt ]
 		then
 			# Add node logs to backup logs of the current day
-			cat $PATH_NODE/logs.txt >> $PATH_LOGS_MASSANODE/$(date +%Y%m%d)-logs.txt
+			cat $PATH_LOGS_MASSANODE/current.txt >> $PATH_LOGS_MASSANODE/$(date +%Y%m%d)-logs.txt
 			rm $PATH_NODE/logs.txt
+			rm $PATH_LOGS_MASSANODE/current.txt
 		fi
 	# If node backup log dont exist, create new node backup logs
 	else
 		# Create node backup logs of the day
-		if [ -e $PATH_NODE/logs.txt ]; then mv $PATH_NODE/logs.txt $PATH_LOGS_MASSANODE/$(date +%Y%m%d)-logs.txt; else touch $PATH_LOGS_MASSANODE/$(date +%Y%m%d)-logs.txt; fi
-	fi
-	# Purge last current node log file in mount point
-	if [ -e $PATH_LOGS_MASSANODE/current.txt ]
-	then
-		if [ -e $PATH_LOGS_MASSANODE/current.txt ]; then rm $PATH_LOGS_MASSANODE/current.txt; fi
+		if [ -e $PATH_LOGS_MASSANODE/current.txt ]; then mv $PATH_LOGS_MASSANODE/current.txt $PATH_LOGS_MASSANODE/$(date +%Y%m%d)-logs.txt; else touch $PATH_LOGS_MASSANODE/$(date +%Y%m%d)-logs.txt; fi
 	fi
 	# Create clean node logs file
 	if [ ! -e $PATH_NODE/logs.txt ]
