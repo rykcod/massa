@@ -4,6 +4,8 @@ FROM ubuntu:20.04
 ARG TARGETARCH
 ARG VERSION
 
+ENV VERSION=$VERSION
+
 # LABEL about the custom image
 LABEL maintainers="benoit@alphatux.fr, ps@massa.org"
 LABEL version=$VERSION
