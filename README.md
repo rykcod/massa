@@ -30,6 +30,7 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Massa-guard auto get faucet to buy your first roll.
 
 ### [RELEASE NOTES] ###
+- 20230612 - Testnet 23 - v23.2.0 - Testnet 23 - Add disable logs Feature with NODE_LOGS settings.
 - 20230609 - Testnet 23 - v23.1.0 - Testnet 23 - v23.1 Ready!
 - 20230509 - Testnet 22 - v22.2.0 - Testnet 22 - v22.2 Ready!
 - 20230309 - Testnet 21 - v21.0.0 - Testnet 21 - v21.0 Ready!
@@ -93,6 +94,7 @@ __[OPTION] To enable or update features after container creation just edit /mass
   * Set your ''TARGET_ROLL_AMOUNT'' value to enable roll amount target to stake for your node (Integer value)
   * Set your ''NODE_TESTNET_REGISTRATION'' value to enable node registration with massabot (KO=Enable OK=AlreadyDone)
   * Set your ''MASSAGUARD'' value to enable or disable massa-guard features 0=Disable 1=Enable (Enable by default)
+  * Set your ''NODE_LOGS'' value to disable logs files (0=Disable 1=Enable). Default value 1.
 
 ### [HELP] ###
 - Massa client is running over a "screen" named "massa-client"

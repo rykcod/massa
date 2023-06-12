@@ -45,6 +45,13 @@ do
 			# [Depracated since testnet 16.0] Refresh bootstrap node with community connected and routable nodes
 			# RefreshBootstrapNode
 
+			# If logs are disable
+			if [ $NODE_LOGS -eq 0 ]
+			then
+				# Delete logs file during container execution
+				rm $PATH_LOGS_MASSANODE/current.txt $PATH_NODE/logs.txt
+			fi
+
 			# If Discord feature enable
 			if [ ! $DISCORD_TOKEN == "NULL" ]
 			then

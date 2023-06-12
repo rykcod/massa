@@ -533,7 +533,6 @@ CheckTestnetNodeRegistration() {
         massabotTestnetVersion=$(cat $PATH_MASSABOT_REPLY | grep -E "Your current score for episode [0-9]{2}" | grep -o -E "episode [0-9]{2}" | cut -d " " -f2)
 
         # Check if current testnet is open for registration
-        # Check if current testnet is open for registration
         if [ $testnetVersion -eq $massabotTestnetVersion ]
         then
             # If node not registrered
