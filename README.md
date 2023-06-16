@@ -1,5 +1,5 @@
 # Massa node + Massa-guard #
-**Last build for Massa testnet Episode 23 release 23.1.0**
+**Last build for Massa testnet Episode 23 release 23.2.0**
 
 ![alt text](https://d33wubrfki0l68.cloudfront.net/7df7d7a57a8dda3cc07aab16121b3e3990cf0893/16ccd/portfolio/massa.png)
 
@@ -30,7 +30,7 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Massa-guard auto get faucet to buy your first roll.
 
 ### [RELEASE NOTES] ###
-- 20230612 - Testnet 23 - v23.2.0 - Testnet 23 - Add disable logs Feature with NODE_LOGS settings.
+- 20230616 - Testnet 23 - v23.2.0 - Testnet 23 - Add disable logs Feature with NODE_LOGS settings.
 - 20230609 - Testnet 23 - v23.1.0 - Testnet 23 - v23.1 Ready!
 - 20230509 - Testnet 22 - v22.2.0 - Testnet 22 - v22.2 Ready!
 - 20230309 - Testnet 21 - v21.0.0 - Testnet 21 - v21.0 Ready!
