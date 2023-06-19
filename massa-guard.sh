@@ -46,10 +46,10 @@ do
 			# RefreshBootstrapNode
 
 			# If logs are disable
-			if [ $NODE_LOGS -eq 0 ]
+			if ([ $NODE_LOGS -eq 0 ] && [ -e $PATH_LOGS_MASSANODE/current.txt ])
 			then
 				# Delete logs file during container execution
-				rm $PATH_LOGS_MASSANODE/current.txt $PATH_NODE/logs.txt
+				rm $PATH_LOGS_MASSANODE/current.txt $PATH_NODE/logs.txt > /dev/null
 			fi
 
 			# If Discord feature enable
