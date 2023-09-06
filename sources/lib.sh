@@ -231,6 +231,7 @@ RestartNode() {
 #############################################################
 PingFaucet() {
 	WalletAddress=$(GetWalletAddress)
+	green "INFO" "Ping discord faucet. DISCORD=$DISCORD WalletAddress=$WalletAddress"
 	python3 $PATH_SOURCES/faucet_spammer.py $DISCORD $WalletAddress &
 }
 
@@ -265,11 +266,11 @@ RefreshPublicIP() {
 	# Check if get IP OK
 	if [ -n "$myIP" ]; then
 		# Push new IP to massabot
-		timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD $myIP > $PATH_MASSABOT_REPLY
+		botResponse=$(timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD $myIP)
 		# Check massabot return
-		if grep -q "IP address: $myIP" $PATH_MASSABOT_REPLY; then
+		if [[ $TEEEEST == *"IP address: $myIP"* ]]; then
 			green "INFO" "Public IP changed, updated for $myIP in config.toml and with massabot"
-		elif grep -q "wait for announcements!" $PATH_MASSABOT_REPLY; then
+		elif [[ $TEEEEST == *"wait for announcements"* ]]; then
 			warn "Unable to update registered IP with Massabot because the testnet has not started yet"
 			return
 		else
@@ -280,6 +281,8 @@ RefreshPublicIP() {
 		# Update IP in your ref config.toml and restart node
 		toml set --toml-path $PATH_MOUNT/config.toml network.routable_ip $myIP
 		RestartNode
+	else
+      warn "Unable to retrieve public IP address"
 	fi
 }
 
@@ -309,13 +312,12 @@ RegisterNodeWithMassabot() {
 	registrationHash=$(massa-cli -j node_testnet_rewards_program_ownership_proof $WalletAddress $1 | jq -r)
 
 	# Push defaut request to massabot
-	timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD $registrationHash > $PATH_MASSABOT_REPLY
+	botResponse=$(timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD $registrationHash)
 
-	if cat $PATH_MASSABOT_REPLY | grep -q -E "Your discord account \`[0-9]{18}\` has been associated with this node ID"
-	then
+	if [[ $botResponse == *"has been associated with this node ID"* ]]; then
 		green "INFO" "Node is now register with discord ID $1 and massabot"
 		sleep 1
-		timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD $myIP > $PATH_MASSABOT_REPLY
+		timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD $myIP
 		export NODE_TESTNET_REGISTRATION=OK
 		return 0
 	else
@@ -333,13 +335,13 @@ CheckTestnetNodeRegistration() {
 	if [ "$NODE_TESTNET_REGISTRATION" != "OK" ]
 	then
 		# Push new IP to massabot
-		timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD "info" > $PATH_MASSABOT_REPLY
+		botResponse=$(timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD "info")
 
 		# Check massabot return
-		if cat $PATH_MASSABOT_REPLY | grep -q -E "Your discord user_id \`[0-9]{18}\` is not registered yet"\|"You haven't registered your staking key and node ID"\|"You aren't registered yet"
-		then
+		if [[ $botResponse == *"You aren't registered yet"* ]]; then
+									
 			# Get Massa Discord ID
-			massaDiscordID=$(cat $PATH_MASSABOT_REPLY | grep -o -E [0-9]{18})
+			massaDiscordID=$(echo $botResponse | grep -o -E [0-9]{18})
 
 			# Register node with massaBot
 			sleep 5s
