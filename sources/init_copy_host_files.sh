@@ -66,10 +66,10 @@ else
 	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Create your default config.toml with $myIP as routable IP" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 fi
 # Wallet to use
-if [ -e $PATH_MOUNT/wallet.dat ]
+if [ -e $PATH_MOUNT/wallet_* ]
 then
-	cp $PATH_MOUNT/wallet.dat $PATH_CLIENT/wallet.dat
-	echo "[$(date +%Y%m%d-%HH%M)][INFO][LOAD]LOAD $PATH_MOUNT/wallet.dat as ref" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+	cp $PATH_MOUNT/wallet_* $PATH_CLIENT/wallets/
+	echo "[$(date +%Y%m%d-%HH%M)][INFO][LOAD]LOAD MOUNTED WALLET as ref" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 fi
 # Node private key to use
 if [ -e $PATH_MOUNT/node_privkey.key ]
@@ -80,10 +80,10 @@ then
 	echo "[$(date +%Y%m%d-%HH%M)][INFO][LOAD]LOAD $PATH_MOUNT/node_privkey.key as ref" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 fi
 # Wallet to use to stacke
-if [ -e $PATH_MOUNT/staking_wallet.dat ]
+if [ -e $PATH_MOUNT/wallet_* ]
 then
-	cp $PATH_MOUNT/staking_wallet.dat $PATH_NODE_CONF/staking_wallet.dat
-	echo "[$(date +%Y%m%d-%HH%M)][INFO][LOAD]LOAD $PATH_MOUNT/staking_wallet.dat as ref" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+	cp $PATH_MOUNT/wallet_* $PATH_NODE_CONF/staking_wallets/
+	echo "[$(date +%Y%m%d-%HH%M)][INFO][LOAD]LOAD MOUNTED WALLET as ref to stacke" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 fi
 # If unreachable node file dont exist
 if [ ! -e $PATH_CONF_MASSAGUARD/bootstrappers_unreachable.txt ]

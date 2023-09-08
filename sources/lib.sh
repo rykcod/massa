@@ -34,14 +34,14 @@ CheckOrCreateWalletAndNodeKey() {
 	# If wallet don't exist
 	cd $PATH_CLIENT
 	checkWallet=`$PATH_TARGET/massa-client -p $WALLET_PWD wallet_info | grep -c "Address"`
-	if ([ ! -e $PATH_CLIENT/wallet.dat ] || [ $checkWallet -lt 1 ])
+	if ([ ! -e $PATH_CLIENT/wallets/wallet_* ] || [ $checkWallet -lt 1 ])
 	then
 		# Generate wallet
 		cd $PATH_CLIENT
 		$PATH_TARGET/massa-client -p $WALLET_PWD wallet_generate_secret_key > /dev/null
 		echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Generate wallet.dat" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 		# Backup wallet to the mount point as ref
-		cp $PATH_CLIENT/wallet.dat $PATH_MOUNT/wallet.dat
+		cp $PATH_CLIENT/wallets/wallet_* $PATH_MOUNT/
 
 		clientPID=$(ps -ax | grep massa-client | grep SCREEN | awk '{print $1}')
 		# Kill client SCREEN
@@ -56,16 +56,13 @@ CheckOrCreateWalletAndNodeKey() {
 	## Stacke if wallet not stacke
 	# If staking_keys don't exist
 	checkStackingKey=`$PATH_TARGET/massa-client -p $WALLET_PWD node_get_staking_addresses | grep -c -E "[0-z]{51}"`
-	if ([ ! -e $PATH_NODE_CONF/staking_wallet.dat ] || [ $checkStackingKey -lt 1 ])
+	if ([ ! -e $PATH_NODE_CONF/staking_wallets/wallet_* ] || [ $checkStackingKey -lt 1 ])
 	then
 		# Get first wallet Address
 		walletAddress=$(GetWalletAddress)
 		# Stacke wallet
 		$PATH_TARGET/massa-client -p $WALLET_PWD node_start_staking $walletAddress > /dev/null
 		echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Stake privKey" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
-		# Backup staking_wallet.dat to mount point as ref
-		cp $PATH_NODE_CONF/staking_wallet.dat $PATH_MOUNT/staking_wallet.dat
-		echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Backup staking_wallet.dat" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 	fi
 
 	## Backup node_privkey if no ref in mount point
