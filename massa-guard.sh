@@ -49,7 +49,7 @@ do
 			if ([ $NODE_LOGS -eq 0 ] && [ -e $PATH_LOGS_MASSANODE/current.txt ])
 			then
 				# Delete logs file during container execution
-				rm $PATH_LOGS_MASSANODE/current.txt $PATH_NODE/logs.txt > /dev/null
+				rm $PATH_LOGS_MASSANODE/current.txt $PATH_NODE/logs.txt > /dev/null 2&>1
 			fi
 
 			# If Discord feature enable

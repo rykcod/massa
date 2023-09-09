@@ -68,7 +68,8 @@ fi
 # Wallet to use
 if [ -e $PATH_MOUNT/wallet_* ]
 then
-	mkdir $PATH_CLIENT/wallets
+	mkdir $PATH_CLIENT/wallets > /dev/null 2&>1
+	rm $PATH_CLIENT/wallets/wallet_* > /dev/null 2&>1
 	cp $PATH_MOUNT/wallet_* $PATH_CLIENT/wallets/
 	echo "[$(date +%Y%m%d-%HH%M)][INFO][LOAD]LOAD MOUNTED WALLET as ref" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 fi
@@ -83,7 +84,8 @@ fi
 # Wallet to use to stacke
 if [ -e $PATH_MOUNT/wallet_* ]
 then
-	mkdir $PATH_NODE_CONF/staking_wallets
+	mkdir $PATH_NODE_CONF/staking_wallets > /dev/null 2&>1
+	rm $PATH_NODE_CONF/staking_wallets/wallet_* > /dev/null 2&>1
 	cp $PATH_MOUNT/wallet_* $PATH_NODE_CONF/staking_wallets/
 	echo "[$(date +%Y%m%d-%HH%M)][INFO][LOAD]LOAD MOUNTED WALLET as ref to stacke" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 fi
