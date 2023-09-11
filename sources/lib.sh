@@ -329,7 +329,8 @@ PingFaucet() {
 			return 1
 		fi
 	else
-		# No log file yet today
+		# No log file yet today create it
+		touch $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 		return 1
 	fi
 }
