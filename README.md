@@ -72,9 +72,9 @@ Create an empty folder to mount in our container /massa_mount path or store your
  - ''IP'' - Set with "YourIPAddress" if your node have differents publics IPs and you want to set your custom selection.
 /!\ Please note, this ENV variables have a low priority if a previous config.ini exist in your mount point.
 
-  * __Example N°1:__ Container creation example with ENV variables to define Dicord token :
+  * __Example N°1:__ Container creation example with ENV variables to define Dicord token and docker argument to restart container with host:
 ```console
-docker run -d -v /%MY_PATH%/massa_mount:/massa_mount -p 31244-31245:31244-31245 -p 33035:33035 -e "DISCORD=OTc2MDkyTgP0OTU4NCXsNTIy.G5jqAc.b+rV4MgEnMvo48ICeGg6E_QPg4dHjlSBJA06CA" --name massa-node rykcod/massa
+docker run -d -v /%MY_PATH%/massa_mount:/massa_mount -p 31244-31245:31244-31245 -p 33035:33035 -e "DISCORD=OTc2MDkyTgP0OTU4NCXsNTIy.G5jqAc.b+rV4MgEnMvo48ICeGg6E_QPg4dHjlSBJA06CA" --restart unless-stopped --name massa-node rykcod/massa
 ```
   * __Example N°2:__ Container creation example with ENV variables to define Dicord token and run a basical container without massa-guard automation :
 ```console
