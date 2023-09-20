@@ -66,7 +66,7 @@ else
 	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Create your default config.toml with $myIP as routable IP" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 fi
 # Wallet to use
-if [ -e $PATH_MOUNT/wallet_* ]
+if [  $(ls $PATH_MOUNT/wallet_* 2>/dev/null | wc -l) -gt 0 ]
 then
 	mkdir $PATH_CLIENT/wallets > /dev/null 2&>1
 	rm $PATH_CLIENT/wallets/wallet_* > /dev/null 2&>1
@@ -82,7 +82,7 @@ then
 	echo "[$(date +%Y%m%d-%HH%M)][INFO][LOAD]LOAD $PATH_MOUNT/node_privkey.key as ref" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 fi
 # Wallet to use to stacke
-if [ -e $PATH_MOUNT/wallet_* ]
+if [  $(ls $PATH_MOUNT/wallet_* 2>/dev/null | wc -l) -gt 0 ]
 then
 	mkdir $PATH_NODE_CONF/staking_wallets > /dev/null 2&>1
 	rm $PATH_NODE_CONF/staking_wallets/wallet_* > /dev/null 2&>1
