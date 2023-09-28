@@ -245,7 +245,7 @@ CheckPublicIP() {
 	myIP=$(GetPublicIP)
 
 	# Get Public IP conf for node
-	CONF_IP=$(toml get --toml-path $PATH_NODE_CONF/config.toml network.routable_ip 2>/dev/null)
+	CONF_IP=$(toml get --toml-path $PATH_NODE_CONF/config.toml protocol.routable_ip 2>/dev/null)
 
 	# Check if configured IP equal to real IP
 	if [ "$myIP" != "$confIP" ]; then
@@ -268,9 +268,9 @@ RefreshPublicIP() {
 		# Push new IP to massabot
 		botResponse=$(timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD $myIP)
 		# Check massabot return
-		if [[ $TEEEEST == *"IP address: $myIP"* ]]; then
+		if [[ $botResponse == *"IP address: $myIP"* ]]; then
 			green "INFO" "Public IP changed, updated for $myIP in config.toml and with massabot"
-		elif [[ $TEEEEST == *"wait for announcements"* ]]; then
+		elif [[ $botResponse == *"wait for announcements"* ]]; then
 			warn "Unable to update registered IP with Massabot because the testnet has not started yet"
 			return
 		else
@@ -279,7 +279,7 @@ RefreshPublicIP() {
 		fi
 
 		# Update IP in your ref config.toml and restart node
-		toml set --toml-path $PATH_MOUNT/config.toml network.routable_ip $myIP
+		toml set --toml-path $PATH_MOUNT/config.toml protocol.routable_ip $myIP
 		RestartNode
 	else
       warn "Unable to retrieve public IP address"
