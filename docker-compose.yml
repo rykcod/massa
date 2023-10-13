@@ -6,7 +6,6 @@ services:
     container_name: massa-core
     restart: always
     environment:
-      - DISCORD=${DISCORD}
       - WALLETPWD=${WALLETPWD}
     ports:
      - "31244:31244"

@@ -11,11 +11,6 @@ WaitBootstrap
 # Load Wallet and Node key or create it and stake wallet
 CheckOrCreateWalletAndNodeKey
 
-if [ -n "$DISCORD" ]; then
-	# Check and get faucet of current day
-	PingFaucet
-fi
-
 IS_ACTIVATED="${MASSAGUARD:-1}"
 DYNIP="${DYNIP:-0}"
 NODE_TESTNET_REGISTRATION="${NODE_TESTNET_REGISTRATION:-KO}"
@@ -46,20 +41,17 @@ do
 		# Buy max roll or 1 roll if possible when candidate roll amount = 0
 		BuyOrSellRoll
 
-		# If Discord feature enable
-		if [ -n "$DISCORD" ]; then
-			# Check and registrer node with massabot if necessary
-			CheckTestnetNodeRegistration
+		# If dynamical IP feature enable and public IP is new
+		if [[ "$DYNIP" == "1" ]]; then
 
 			CheckPublicIP
 			publicIpChanged=$?
-
-			# If dynamical IP feature enable and public IP is new
-			if [[ "$DYNIP" == "1" && $publicIpChanged -eq 1 ]]; then
+			if [[ $publicIpChanged -eq 1 ]]; then
 				# Refresh config.toml + restart node + push new IP to massabot
 				RefreshPublicIP
 			fi
 		fi
+		
 		
 	fi
 	# Wait before next loop

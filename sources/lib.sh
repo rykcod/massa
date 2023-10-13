@@ -40,30 +40,26 @@ CheckOrCreateWalletAndNodeKey() {
 	then
 		# Generate wallet
 		massa-cli wallet_generate_secret_key > /dev/null
-		green "INFO" "Generate wallet.dat"
+		walletAddress=$(GetWalletAddress)
+		walletFile=wallet_$walletAddress.yaml
+		green "INFO" "Wallet $walletAddress created"
 
 		# Backup wallet to the mount point as ref
-		cp $PATH_CLIENT/wallet.dat $PATH_MOUNT/wallet.dat
+		cp $PATH_CLIENT/wallets/$walletFile $PATH_MOUNT/$walletFile
 
-		green "INFO" "Backup wallet.dat"
-
+		green "INFO" "Backup $walletFile"
 	fi
 
 	## Stacke if wallet not stack or staking_keys don't exist
 	checkStackingKey=$(massa-cli -j node_get_staking_addresses | jq -r '.[]')
 
-	if ([ ! -e $PATH_NODE_CONF/staking_wallet.dat ] || [ -z "$checkStackingKey" ])
+	if ([ ! -e $PATH_NODE_CONF/staking_wallets/wallet_*.yaml ] || [ -z "$checkStackingKey" ])
 	then
 		# Get first wallet Address
 		walletAddress=$(GetWalletAddress)
 		# Stacke wallet
 		massa-cli node_start_staking $walletAddress > /dev/null
-		green "INFO" "Stake privKey"
-
-		# Backup staking_wallet.dat to mount point as ref
-		cp $PATH_NODE_CONF/staking_wallet.dat $PATH_MOUNT/staking_wallet.dat
-		green "INFO" "Backup staking_wallet.dat"
-
+		green "INFO" "Start staking for $walletAddress"
 	fi
 
 	## Backup node_privkey if no ref in mount point
@@ -225,17 +221,6 @@ RestartNode() {
 }
 
 #############################################################
-# FONCTION = PingFaucet
-# DESCRIPTION = Ping faucet one time per day
-# RETURN = 0 for ping done 1 for ping already got
-#############################################################
-PingFaucet() {
-	WalletAddress=$(GetWalletAddress)
-	green "INFO" "Ping discord faucet. DISCORD=$DISCORD WalletAddress=$WalletAddress"
-	python3 $PATH_SOURCES/faucet_spammer.py $DISCORD $WalletAddress &
-}
-
-#############################################################
 # FONCTION = CheckPublicIP
 # DESCRIPTION = Check if public IP is change and set it into config.toml
 # RETURN = 0 for no change 1 for IP change
@@ -256,7 +241,7 @@ CheckPublicIP() {
 
 #############################################################
 # FONCTION = RefreshPublicIP
-# DESCRIPTION = Change Public IP into config.toml + push it to massabot if TOKEN Discord is set
+# DESCRIPTION = Change Public IP into config.toml
 # RETURN = 0 for ping done 1 for ping already got
 #############################################################
 RefreshPublicIP() {
@@ -265,19 +250,6 @@ RefreshPublicIP() {
 
 	# Check if get IP OK
 	if [ -n "$myIP" ]; then
-		# Push new IP to massabot
-		botResponse=$(timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD $myIP)
-		# Check massabot return
-		if [[ $botResponse == *"IP address: $myIP"* ]]; then
-			green "INFO" "Public IP changed, updated for $myIP in config.toml and with massabot"
-		elif [[ $botResponse == *"wait for announcements"* ]]; then
-			warn "Unable to update registered IP with Massabot because the testnet has not started yet"
-			return
-		else
-			warn "Unable to update registered IP with Massabot because Massabot is not responsive or responding incorrectly"
-			return
-		fi
-
 		# Update IP in your ref config.toml and restart node
 		toml set --toml-path $PATH_MOUNT/config.toml protocol.routable_ip $myIP
 		RestartNode
@@ -297,58 +269,4 @@ GetPublicIP() {
 
 	# Return my public IP
 	echo $myIP
-}
-
-#############################################################
-# FONCTION = RegisterNodeWithMassabot
-# DESCRIPTION = Register node with massabot
-# ARGUMENTS = Address, Massa Discord ID
-#############################################################
-RegisterNodeWithMassabot() {
-
-	WalletAddress=$(GetWalletAddress)
-
-	# Get registration hash
-	registrationHash=$(massa-cli -j node_testnet_rewards_program_ownership_proof $WalletAddress $1 | jq -r)
-
-	# Push defaut request to massabot
-	botResponse=$(timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD $registrationHash)
-
-	if [[ $botResponse == *"has been associated with this node ID"* ]]; then
-		green "INFO" "Node is now register with discord ID $1 and massabot"
-		sleep 1
-		timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD $myIP
-		export NODE_TESTNET_REGISTRATION=OK
-		return 0
-	else
-		return 1
-	fi
-}
-
-#############################################################
-# FONCTION = CheckTestnetNodeRegistration
-# DESCRIPTION = Check if node registrered with massabot
-# ARGUMENTS = Address
-# RETURN = 0 Registered 1 NotRegistered
-#############################################################
-CheckTestnetNodeRegistration() {
-	if [ "$NODE_TESTNET_REGISTRATION" != "OK" ]
-	then
-		# Push new IP to massabot
-		botResponse=$(timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD "info")
-
-		# Check massabot return
-		if [[ $botResponse == *"You aren't registered yet"* ]]; then
-									
-			# Get Massa Discord ID
-			massaDiscordID=$(echo $botResponse | grep -o -E [0-9]{18})
-
-			# Register node with massaBot
-			sleep 5s
-			RegisterNodeWithMassabot $massaDiscordID
-		else
-			green "INFO" "Discord user is already registered for testnet rewards program"
-			export NODE_TESTNET_REGISTRATION=OK
-		fi
-	fi
 }

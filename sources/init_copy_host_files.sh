@@ -27,13 +27,6 @@ else
 	green "INFO" "Create your default config.toml with $myIP as routable IP"
 fi
 
-if [ ! $DISCORD == "NULL" ]
-then
-	# Push IP to massabot
-	green "INFO" "Push IP to massabot:"
-	timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD $myIP
-fi
-
 # Custom node config
 if [ -e $PATH_MOUNT/node_config_$VERSION.toml ]
 then
@@ -46,23 +39,17 @@ else
 fi
 
 # Wallet to use
-if [ -e $PATH_MOUNT/wallet.dat ]
+if [ -e $PATH_MOUNT/wallet_*.yaml ]
 then
-	cp $PATH_MOUNT/wallet.dat $PATH_CLIENT/wallet.dat
-	green "INFO" "Load $PATH_MOUNT/wallet.dat"
+	cp $PATH_MOUNT/wallet_*.yaml $PATH_CLIENT/wallets/
+	cp $PATH_MOUNT/wallet_*.yaml $PATH_NODE_CONF/staking_wallets/
+	green "INFO" "Load $PATH_MOUNT/wallet_*.yaml"
 fi
+
 # Node private key to use
 if [ -e $PATH_MOUNT/node_privkey.key ]
 then
-	# Delete default node_privkey and load ref node_privkey
-	if [ -e $PATH_NODE_CONF/node_privkey.key ]; then rm $PATH_NODE_CONF/node_privkey.key; fi
 	cp $PATH_MOUNT/node_privkey.key $PATH_NODE_CONF/node_privkey.key
 	green "INFO" "Load $PATH_MOUNT/node_privkey.key"
 
-fi
-# Wallet to use to stacke
-if [ -e $PATH_MOUNT/staking_wallet.dat ]
-then
-	cp $PATH_MOUNT/staking_wallet.dat $PATH_NODE_CONF/staking_wallet.dat
-	green "INFO" "Load $PATH_MOUNT/staking_wallet.dat"
 fi
