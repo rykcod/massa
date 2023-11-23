@@ -1,5 +1,5 @@
 # Massa node + Massa-guard #
-**Last build for Massa testnet Episode 26 release 26.1.1**
+**Last build for Massa testnet 27.0**
 
 ![alt text](https://d33wubrfki0l68.cloudfront.net/7df7d7a57a8dda3cc07aab16121b3e3990cf0893/16ccd/portfolio/massa.png)
 
@@ -30,6 +30,7 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Massa-guard auto get faucet to buy your first roll.
 
 ### [RELEASE NOTES] ###
+- 20231123 - Testnet 27 - v27.0.0 - Testnet 27 - From 
 - 20230908 - Testnet 26 - v26.1.1 - Testnet 26 - Solve backup/Restore new wallet format
 - 20230908 - Testnet 26 - v26.1.0 - Testnet 26 - v26.1 Ready
 - 20230907 - Testnet 26 - v26.0.0 - Testnet 26 - v26.0 Ready
