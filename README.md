@@ -30,7 +30,7 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Massa-guard auto get faucet to buy your first roll.
 
 ### [RELEASE NOTES] ###
-- 20231123 - Testnet 27 - v27.0.0 - Testnet 27 - From 
+- 20231123 - Testnet 27 - v27.0.0 - Testnet 27 - To create wallet for instace - From Ubuntu 22.04
 - 20230908 - Testnet 26 - v26.1.1 - Testnet 26 - Solve backup/Restore new wallet format
 - 20230908 - Testnet 26 - v26.1.0 - Testnet 26 - v26.1 Ready
 - 20230907 - Testnet 26 - v26.0.0 - Testnet 26 - v26.0 Ready
