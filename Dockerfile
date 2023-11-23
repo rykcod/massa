@@ -1,5 +1,5 @@
 # Download custom base
-FROM debian:stable-slim
+FROM ubuntu:22.04
 
 # Build Arguments
 ARG TARGETPLATFORM
