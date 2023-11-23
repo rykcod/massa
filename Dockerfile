@@ -1,5 +1,5 @@
 # Download custom base
-FROM ubuntu:20.04
+FROM debian:stable-slim
 
 # Build Arguments
 ARG TARGETPLATFORM
