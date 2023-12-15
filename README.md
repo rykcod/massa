@@ -1,5 +1,5 @@
 # Massa node + Massa-guard #
-**Last build for Massa testnet 27.4**
+**Last build for Massa testnet 27.6**
 
 ![alt text](https://d33wubrfki0l68.cloudfront.net/7df7d7a57a8dda3cc07aab16121b3e3990cf0893/16ccd/portfolio/massa.png)
 
@@ -30,22 +30,13 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Massa-guard auto get faucet to buy your first roll.
 
 ### [RELEASE NOTES] ###
+- 20231202 - Testnet 27 - v27.4.0 - Testnet 27 - v27.6 Ready
 - 20231202 - Testnet 27 - v27.4.0 - Testnet 27 - v27.4 Ready
 - 20231123 - Testnet 27 - v27.0.0 - Testnet 27 - To create wallet for instace - From Ubuntu 22.04
 - 20230908 - Testnet 26 - v26.1.1 - Testnet 26 - Solve backup/Restore new wallet format
-- 20230908 - Testnet 26 - v26.1.0 - Testnet 26 - v26.1 Ready
-- 20230907 - Testnet 26 - v26.0.0 - Testnet 26 - v26.0 Ready
-- 20230804 - Testnet 25 - v25.2.0 - Testnet 25 - v25.2 Ready
-- 20230803 - Testnet 25 - v25.1.0 - Testnet 25 - v25.1 Ready
-- 20230802 - Testnet 25 - v25.0.0 - Testnet 25 - v25.0 Ready
-- 20230705 - Testnet 24 - v24.1.0 - Testnet 24 - v24.1 Ready
 - 20230616 - Testnet 23 - v23.2.0 - Testnet 23 - Add disable logs Feature with NODE_LOGS settings.
-- 20230609 - Testnet 23 - v23.1.0 - Testnet 23 - v23.1 Ready!
-- 20230509 - Testnet 22 - v22.2.0 - Testnet 22 - v22.2 Ready!
-- 20230309 - Testnet 21 - v21.0.0 - Testnet 21 - v21.0 Ready!
 - 20230309 - Testnet 20 - v20.2.0 - Testnet 20 - v20.2 Ready! Please note you will need to create a new wallet for this Testnet.
 - 20230210 - Testnet 19 - v19.3.0 - Testnet 19 - v19.3 Ready! Somes modications after massa testnet 19.0 cmd updates.
-- 20230103 - Testnet 18 - v18.0.0 - Testnet 18 - v18.0 Ready!
 - 20221123 - Testnet 16 - v16.1.0 - Testnet 16 - v16.1 Ready! Remove deprecated [BOOTSTRAPFINDER] features
 
 ## [HOWTO] ##
