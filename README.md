@@ -1,22 +1,17 @@
 # Massa node + Massa-guard #
-**Last build for Massa testnet Episode 26 release 26.1.0**
+**Last build for Massa testnet Episode 27 release 27.6.0**
 
 ![alt text](https://d33wubrfki0l68.cloudfront.net/7df7d7a57a8dda3cc07aab16121b3e3990cf0893/16ccd/portfolio/massa.png)
 
 ## Requirements
-
-### Testnet reward program registration
-
-  Register your discord account to the testnet program:
-  Go to Massa Discord channel https://discord.com/channels/828270821042159636/872395473493839913 and follow instructions.
 
 
 ## How to use
 
   * Install docker and docker-compose on your system
   * Create a docker-compose.yml file and copy the following content and fill it with your environment variables.
-  * WALLETPWD is mandatory, DISCORD is optionnal. See Help section to find your Discord token
-  
+  * WALLETPWD is mandatory. It is the password to unlock your wallet. If you are importing wallet from private key, this password will be used to encrypt wallet backup file
+    * WALLET_PRIVATE_KEY is mandatory. It is the private key of the wallet you want to use. It will be loaded at node startup.
 
 ```bash
 version: '3'
@@ -27,8 +22,8 @@ services:
     container_name: massa-core
     restart: always
     environment:
-      - DISCORD=
       - WALLETPWD=
+      - WALLET_PRIVATE_KEY=
     ports:
      - "31244:31244"
      - "31245:31245"
@@ -46,11 +41,10 @@ volumes:
 ```
 Available options:
 
- - ''DISCORD'' - Set with your discord token id (Refer to HELP section) - To enable discord feature (GetFaucet + NodeRegistration + DynamicalIP)
  - ''DYNIP'' - Set with "0" if you host under static public IP or "1" if you host under dynimic public IP to enable update IP feature
- - ''WALLETPWD'' - Set with "YourCustomPassword" if you want to use a custom wallet password.
- - ''NODE_MAX_RAM'' - The app node will auto restart if RAM usage goes over this % treshold. Default to 99%.
- - ''TARGET_ROLL_AMOUNT'' - The max number of rolls you want to hold. It will buy or sell rolls accordind your MAS balance and the targeted amount. Default value to 2. set to 0 to disable.
+ - ''WALLETPWD'' - Password used to encrypt wallet yaml file.
+ - ''NODE_MAX_RAM'' - The app node will auto restart if RAM usage goes over this % threshold. Default to 99%.
+ - ''TARGET_ROLL_AMOUNT'' - The max number of rolls you want to hold. It will buy or sell rolls according your MAS balance and the targeted amount. Disabled by default.
 
 Manage your node:
 
@@ -79,20 +73,7 @@ docker exec -it massa-core /bin/bash
 docker exec massa-core massa-cli get_status
 ```
 
-### Import existing wallet
-
-Create an empty folder to mount in our container /massa_mount path or store your wallet /nodekey/stacking_key/config.toml into this folder if you have it:
-- wallet.dat
-- config.toml
-- node_privkey.key
-- staking_keys.json
-
-/!\ If don't have this file, leave your folder empty, massa-guard will create a wallet and node key and automaticaly stake wallet for you. This files will be backup on your mount point by massa-guard.
-
 ## [HELP] ##
-
-### Get your Discord api token
-To get your discord token, refer to https://www.androidauthority.com/get-discord-token-3149920/
 
 ### Log rotation
   Logs from your running docker will accumulate with the time. To avoid the disk to be full, you can setup log rotation at Docker level.
@@ -159,14 +140,10 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
 - [WATCHDOG]
   - Restart node when hang or when ram consumption exceed 90% (Value can be adjust)
   - You host your node under a dynamical IP? massa-guard will watch IP change and update your config.toml and push IP updates to massabot.
-  - Push public IP or public IP change to massabot (Need to set discord token in /massa_mount/config/config.ini)
-  - Logs his actions over /massa_mount/logs/ and backup node logs before restart if necessary.
-  - Autoget MAS faucet on Discord 1 time by day (Need to set discord token in /massa_mount/config/config.ini)
+  - Set your local ip in config
 - [STARTING]
-  - Massa-guard will auto register your node with massabot.
-  - Massa-guard will auto create wallet + nodekey + stacke privkey; all with default password "**MassaToTheMoon2022**".
+  - Massa-guard will load your wallet from provided private key.
   - Massa-guard auto create your config.toml with your public IP.
-  - Massa-guard auto get faucet to buy your first roll.
 
 ## [THANKS] ##
 Thanks to **fsidhoum** for help
