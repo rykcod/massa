@@ -34,9 +34,12 @@ GetWalletAddress() {
 # DESCRIPTION = Load Wallet and Node key or create it and stake wallet
 #############################################################
 CheckOrCreateWalletAndNodeKey() {
+
+	walletAddress=$(GetWalletAddress)
+
 	## Create a wallet, stacke and backup
 	# If wallet don't exist
-	if [ ! -e $PATH_CLIENT/wallet.dat ]
+	if [ -z "$walletAddress" ]
 	then
 		# Generate wallet
 		massa-cli wallet_generate_secret_key > /dev/null
@@ -53,10 +56,8 @@ CheckOrCreateWalletAndNodeKey() {
 	## Stacke if wallet not stack or staking_keys don't exist
 	checkStackingKey=$(massa-cli -j node_get_staking_addresses | jq -r '.[]')
 
-	if ([ ! -e $PATH_NODE_CONF/staking_wallets/wallet_*.yaml ] || [ -z "$checkStackingKey" ])
+	if  [ "$checkStackingKey" != "$walletAddress" ]
 	then
-		# Get first wallet Address
-		walletAddress=$(GetWalletAddress)
 		# Stacke wallet
 		massa-cli node_start_staking $walletAddress > /dev/null
 		green "INFO" "Start staking for $walletAddress"
