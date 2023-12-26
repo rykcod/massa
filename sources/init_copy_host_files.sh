@@ -39,17 +39,10 @@ else
 fi
 
 # Wallet to use
-if [ -e $PATH_MOUNT/wallet_*.yaml ]
+if [ -z $WALLET_PRIVATE_KEY ]
 then
-	cp $PATH_MOUNT/wallet_*.yaml $PATH_CLIENT/wallets/
-	cp $PATH_MOUNT/wallet_*.yaml $PATH_NODE_CONF/staking_wallets/
-	green "INFO" "Load $PATH_MOUNT/wallet_*.yaml"
-fi
-
-# Node private key to use
-if [ -e $PATH_MOUNT/node_privkey.key ]
-then
-	cp $PATH_MOUNT/node_privkey.key $PATH_NODE_CONF/node_privkey.key
-	green "INFO" "Load $PATH_MOUNT/node_privkey.key"
-
+	warn "ERROR" "Secret key is not set, please set WALLET_PRIVATE_KEY in your docker-compose.yml. A new wallet will be created"
+else
+	green "INFO" "Loading wallet from private key"
+	massa-cli -j wallet_add_secret_keys $WALLET_PRIVATE_KEY
 fi

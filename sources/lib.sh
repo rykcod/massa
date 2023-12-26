@@ -2,7 +2,7 @@
 
 green () { echo -e "Massa-Guard \033[01;32m$1\033[0m [$(date +%Y%m%d-%HH%M)] $2"; }
 
-warn () { echo -e "Massa-Guard \033[01;33mWARNING\033[0m [$(date +%Y%m%d-%HH%M)] $1"; }
+warn () { echo -e "Massa-Guard \033[01;33m$1\033[0m [$(date +%Y%m%d-%HH%M)] $2"; }
 
 #############################################################
 # FONCTION = WaitBootstrap
