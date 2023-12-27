@@ -4,11 +4,10 @@
 ![alt text](https://d33wubrfki0l68.cloudfront.net/7df7d7a57a8dda3cc07aab16121b3e3990cf0893/16ccd/portfolio/massa.png)
 
 ## Requirements
-
+  * Install docker and docker-compose on your system
 
 ## How to use
 
-  * Install docker and docker-compose on your system
   * Create a docker-compose.yml file and copy the following content and fill it with your environment variables.
   * WALLETPWD is mandatory. It is the password to unlock your wallet. If you are importing wallet from private key, this password will be used to encrypt wallet backup file
     * WALLET_PRIVATE_KEY is mandatory. It is the private key of the wallet you want to use. It will be loaded at node startup.
@@ -134,9 +133,8 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
 - [GENERAL]
   - Enable/Disable all massa-guard features (Except keys creations) with the "MASSAGUARD" setting in config.ini
 - [AUTOBUY/AUTOSELL]
-  - Autobuy 1 roll when your node failed and lost his "Active rolls".
-  - Autobuy X rolls when your MAS amount greater than 200 MAS and if "Active rolls" dont exceed "TARGET_ROLL_AMOUNT" set in /massa_mount/config/config.ini (If set).
-  - Autosell X rolls when "Active rolls" exceed "TARGET_ROLL_AMOUNT" set in /massa_mount/config/config.ini (If set).
+  - Trade roll to maintain your target balance
+  - Autocompound staking rewards to buy new rolls (set target to 0).
 - [WATCHDOG]
   - Restart node when hang or when ram consumption exceed 90% (Value can be adjust)
   - You host your node under a dynamical IP? massa-guard will watch IP change and update your config.toml and push IP updates to massabot.
