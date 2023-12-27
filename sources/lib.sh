@@ -46,28 +46,29 @@ CheckOrCreateWalletAndNodeKey() {
 		walletAddress=$(GetWalletAddress)
 		walletFile=wallet_$walletAddress.yaml
 		green "INFO" "Wallet $walletAddress created"
+	fi
 
-		# Backup wallet to the mount point as ref
+	# Backup wallet to the mount point
+	if [ ! -e $PATH_MOUNT/$walletFile ]
+	then
+		walletFile=wallet_$walletAddress.yaml
 		cp $PATH_CLIENT/wallets/$walletFile $PATH_MOUNT/$walletFile
-
 		green "INFO" "Backup $walletFile"
 	fi
 
-	## Stacke if wallet not stack or staking_keys don't exist
+	## Check if wallet is staked
 	checkStackingKey=$(massa-cli -j node_get_staking_addresses | jq -r '.[]')
 
 	if  [ "$checkStackingKey" != "$walletAddress" ]
 	then
-		# Stacke wallet
+		# Stack wallet
 		massa-cli node_start_staking $walletAddress > /dev/null
 		green "INFO" "Start staking for $walletAddress"
 	fi
 
-	## Backup node_privkey if no ref in mount point
-	# If node_privkey.key don't exist
+	## Backup node_privkey
 	if [ ! -e $PATH_MOUNT/node_privkey.key ]
 	then
-		# Copy node_privkey.key to mount point as ref
 		cp $PATH_NODE_CONF/node_privkey.key $PATH_MOUNT/node_privkey.key
 		green "INFO" "Backup $PATH_NODE_CONF/node_privkey.key to $PATH_MOUNT"
 
