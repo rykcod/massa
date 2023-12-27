@@ -48,6 +48,8 @@ CheckOrCreateWalletAndNodeKey() {
 		green "INFO" "Wallet $walletAddress created"
 	fi
 
+	walletAddress=$(GetWalletAddress)
+
 	# Backup wallet to the mount point
 	if [ ! -e $PATH_MOUNT/$walletFile ]
 	then
