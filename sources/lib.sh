@@ -157,7 +157,7 @@ BuyOrSellRoll() {
 			buy_rolls $rolls_to_buy
 		else
 			if (( $CandidateRolls == 0 )) && (( $ActiveRolls == 0 )); then
-				warn "Insuficient MAS balance to buy first ROLL. (current balance is $MasBalance MAS)"
+				warn "WARN" "Insuficient MAS balance to buy first ROLL. (current balance is $MasBalance MAS)"
 			fi
 		fi
 	else
@@ -192,7 +192,7 @@ CheckNodeRam() {
 	# If ram consumption is too high
 	if ([ ! -z $checkRam ] && [ $checkRam -gt $MAX_RAM ])
 	then
-		warn "Max RAM usage treshold hit, restarting..."
+		warn "ERROR" "Max RAM usage treshold hit, restarting..."
 		return 1
 	fi
 }
@@ -256,7 +256,7 @@ RefreshPublicIP() {
 		toml set --toml-path $PATH_MOUNT/config.toml protocol.routable_ip $myIP
 		RestartNode
 	else
-      warn "Unable to retrieve public IP address"
+      warn "WARN" "Unable to retrieve public IP address"
 	fi
 }
 
