@@ -38,6 +38,11 @@ then
 else
 	# Set bootstrap mode to ipv4 only
 	toml set --toml-path $PATH_NODE/base_config/config.toml bootstrap.bootstrap_protocol "IPv4"
+
+	# Set storage path to massa_mount
+	toml set --toml-path $PATH_NODE/base_config/config.toml execution.hd_cache_path "/massa_mount/storage/cache/rocks_db"
+	toml set --toml-path $PATH_NODE/base_config/config.toml ledger.disk_ledger_path "/massa_mount/storage/ledger/rocks_db"
+
 	cp $PATH_NODE/base_config/config.toml node_config_$VERSION.toml
 fi
 
