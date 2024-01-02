@@ -18,8 +18,7 @@ ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/Paris"
 RUN apt-get update \
 && apt-get upgrade -y \
 && apt install -y curl wget screen procps python3-pip netcat \
-&& apt autoclean -y \
-&& python3 -m pip install -U discord.py==1.7.3
+&& apt autoclean -y
 
 # Download the Massa package
 COPY download-massa.sh .

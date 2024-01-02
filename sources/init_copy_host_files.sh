@@ -25,7 +25,6 @@ then
 	mkdir -p /massa_mount/config
 	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]CREATE /massa_mount/config folder" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 	cp /massa-guard/config/default_config_template.ini $PATH_CONF_MASSAGUARD/config.ini
-	if [ $DISCORD ]; then python3 $PATH_SOURCES/set_config.py "DISCORD_TOKEN" \"$DISCORD\" $PATH_CONF_MASSAGUARD/config.ini ; fi
 	if [ $DYNIP ]; then python3 $PATH_SOURCES/set_config.py "DYN_PUB_IP" "$DYNIP" $PATH_CONF_MASSAGUARD/config.ini ; fi
 	if [ $NODEPWD ]; then python3 $PATH_SOURCES/set_config.py "NODE_PWD" \"$NODEPWD\" $PATH_CONF_MASSAGUARD/config.ini ; fi
 	if [ $WALLETPWD ]; then python3 $PATH_SOURCES/set_config.py "WALLET_PWD" \"$WALLETPWD\" $PATH_CONF_MASSAGUARD/config.ini ; fi
@@ -57,12 +56,6 @@ else
 	echo "routable_ip = \"$myIP\"" >> $PATH_MOUNT/config.toml
 	cp $PATH_MOUNT/config.toml $PATH_NODE_CONF/config.toml
 
-	if [ ! $DISCORD_TOKEN == "NULL" ]
-	then
-		# Push IP to massabot
-		timeout 2 python3 $PATH_SOURCES/push_command_to_discord.py $DISCORD_TOKEN $myIP > $PATH_MASSABOT_REPLY
-	fi
-
 	echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Create your default config.toml with $myIP as routable IP" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 fi
 # Wallet to use
@@ -88,10 +81,4 @@ then
 	rm $PATH_NODE_CONF/staking_wallets/wallet_* > /dev/null 2&>1
 	cp $PATH_MOUNT/wallet_* $PATH_NODE_CONF/staking_wallets/
 	echo "[$(date +%Y%m%d-%HH%M)][INFO][LOAD]LOAD MOUNTED WALLET as ref to stacke" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
-fi
-# If unreachable node file dont exist
-if [ ! -e $PATH_CONF_MASSAGUARD/bootstrappers_unreachable.txt ]
-then
-	# Create bootstrappers_unreachable.txt
-	touch $PATH_CONF_MASSAGUARD/bootstrappers_unreachable.txt
 fi

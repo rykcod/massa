@@ -42,8 +42,6 @@ do
 			MasBalance=$(GetMASAmount "$WalletAddress")
 			# Buy max roll or 1 roll if possible when candidate roll amount = 0
 			BuyOrSellRoll "$CandidateRolls" "$MasBalance" "$WalletAddress"
-			# [Depracated since testnet 16.0] Refresh bootstrap node with community connected and routable nodes
-			# RefreshBootstrapNode
 
 			# If logs are disable
 			if ([ $NODE_LOGS -eq 0 ] && [ -e $PATH_LOGS_MASSANODE/current.txt ])
@@ -52,21 +50,11 @@ do
 				rm $PATH_LOGS_MASSANODE/current.txt $PATH_NODE/logs.txt > /dev/null 2&>1
 			fi
 
-			# If Discord feature enable
-			if [ ! $DISCORD_TOKEN == "NULL" ]
+			# If dynamical IP feature enable and public IP is new
+			if ([ $DYN_PUB_IP -eq 1 ] && [ $(CheckPublicIP) -eq 1 ])
 			then
-				# Check and get faucet of current day
-				PingFaucet
-
-				# Check and registrer node with massabot if necessary
-				CheckTestnetNodeRegistration "$WalletAddress"
-
-				# If dynamical IP feature enable and public IP is new
-				if ([ $DYN_PUB_IP -eq 1 ] && [ $(CheckPublicIP) -eq 1 ])
-				then
-					# Refresh config.toml + restart node + push new IP to massabot
-					RefreshPublicIP
-				fi
+				# Refresh config.toml + restart node + [Depracated since Mainnet] push new IP to massabot
+				RefreshPublicIP
 			fi
 		fi
 
