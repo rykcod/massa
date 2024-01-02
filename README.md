@@ -1,5 +1,5 @@
 # Massa node + Massa-guard #
-**Last build for Massa testnet 27.6**
+**Last build for Massa Securenet 27.6**
 
 ![alt text](https://d33wubrfki0l68.cloudfront.net/7df7d7a57a8dda3cc07aab16121b3e3990cf0893/16ccd/portfolio/massa.png)
 
@@ -14,25 +14,17 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Autobuy 1 roll when your node failed and lost his "Active rolls".
   - Autobuy X rolls when your MAS amount greater than 200 MAS and if "Active rolls" dont exceed "TARGET_ROLL_AMOUNT" set in /massa_mount/config/config.ini (If set).
   - Autosell X rolls when "Active rolls" exceed "TARGET_ROLL_AMOUNT" set in /massa_mount/config/config.ini (If set).
-- [BOOTSTRAPFINDER] **Deprecated since testnet 16**. From now and by default comminity node unable to bootstrap on other community nodes.
-  - Auto refresh massa online bootstrap list with connected node.
-  - Filter to only add node which have TCP port 31244 & 31245 reachable.
 - [WATCHDOG]
   - Restart node when hang or when ram consumption exceed 90% (Value can be adjust)
   - You host your node under a dynamical IP? massa-guard will watch IP change and update your config.toml and push IP updates to massabot.
-  - Push public IP or public IP change to massabot (Need to set discord token in /massa_mount/config/config.ini)
   - Logs his actions over /massa_mount/logs/ and backup node logs before restart if necessary.
-  - Autoget MAS faucet on Discord 1 time by day (Need to set discord token in /massa_mount/config/config.ini)
 - [STARTING]
-  - Massa-guard will auto register your node with massabot.
   - Massa-guard will auto create wallet + nodekey + stacke privkey; all with default password "**MassaToTheMoon2022**".
   - Massa-guard auto create your config.toml with your public IP.
-  - Massa-guard auto get faucet to buy your first roll.
 
 ### [RELEASE NOTES] ###
+- 20240102 - Securenet  - v27.6.0 - Securenet  - v27.6 + Cleanup deprecated feature.
 - 20231202 - Testnet 27 - v27.4.0 - Testnet 27 - v27.6 Ready
-- 20231202 - Testnet 27 - v27.4.0 - Testnet 27 - v27.4 Ready
-- 20231123 - Testnet 27 - v27.0.0 - Testnet 27 - To create wallet for instace - From Ubuntu 22.04
 - 20230908 - Testnet 26 - v26.1.1 - Testnet 26 - Solve backup/Restore new wallet format
 - 20230616 - Testnet 23 - v23.2.0 - Testnet 23 - Add disable logs Feature with NODE_LOGS settings.
 - 20230309 - Testnet 20 - v20.2.0 - Testnet 20 - v20.2 Ready! Please note you will need to create a new wallet for this Testnet.
@@ -42,36 +34,29 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
 ## [HOWTO] ##
 ### [SETUP] ###
 #### [PREPARE] ####
-__STEP 1:__
-/!\ Register your discord account to the testnet program
-  * Go to Massa Discord channel https://discord.com/channels/828270821042159636/872395473493839913 and follow inscructions.
-
-__STEP 2:__
 Create an empty folder to mount in our container /massa_mount path or store your wallet /nodekey/stacking_key/config.toml into this folder if you have it:
-- wallet.dat
+- wallet_%%%.dat
 - config.toml
 - node_privkey.key
-- staking_keys.json
 
 /!\ If don't have this file, leave your folder empty, massa-guard will create a wallet and node key and automaticaly stake wallet for you. This files will be backup on your mount point by massa-guard.
 
 #### [RUN] Usecase Example ####
 /!\ You can define ENV values when you create your container:
  - ''MASSAGUARD'' - Set with 1 to enable all massa-guard features or with 0 to disable all features except keys creations (Enable by default without ENV value)
- - ''DISCORD'' - Set with your discord token id (Refer to HELP section) - To enable discord feature (GetFaucet + NodeRegistration + DynamicalIP)
  - ''DYNIP'' - Set with "0" if you host under static public IP or "1" if you host under dynimic public IP to enable update IP feature
  - ''WALLETPWD'' - Set with "YourCustomPassword" if you want to use a custom wallet password.
  - ''NODEPWD'' - Set with "YourCustomPassword" if you want to use a custom node password.
  - ''IP'' - Set with "YourIPAddress" if your node have differents publics IPs and you want to set your custom selection.
 /!\ Please note, this ENV variables have a low priority if a previous config.ini exist in your mount point.
 
-  * __Example N°1:__ Container creation example with ENV variables to define Dicord token and docker argument to restart container with host:
+  * __Example N°1:__ Container creation example with ENV variables docker argument to restart container with host:
 ```console
-docker run -d -v /%MY_PATH%/massa_mount:/massa_mount -p 31244-31245:31244-31245 -p 33035:33035 -e "DISCORD=OTc2MDkyTgP0OTU4NCXsNTIy.G5jqAc.b+rV4MgEnMvo48ICeGg6E_QPg4dHjlSBJA06CA" --restart unless-stopped --name massa-node rykcod/massa
+docker run -d -v /%MY_PATH%/massa_mount:/massa_mount -p 31244-31245:31244-31245 -p 33035:33035 --restart unless-stopped --name massa-node rykcod/massa
 ```
-  * __Example N°2:__ Container creation example with ENV variables to define Dicord token and run a basical container without massa-guard automation :
+  * __Example N°2:__ Container creation example with ENV variables to run a basical container without massa-guard automation :
 ```console
-docker run -d -v /%MY_PATH%/massa_mount:/massa_mount -p 31244-31245:31244-31245 -p 33035:33035 -e "DISCORD=OTc2MDkyTgP0OTU4NCXsNTIy.G5jqAc.b+rV4MgEnMvo48ICeGg6E_QPg4dHjlSBJA06CA" -e "MASSAGUARD=0" --name massa-node rykcod/massa
+docker run -d -v /%MY_PATH%/massa_mount:/massa_mount -p 31244-31245:31244-31245 -p 33035:33035 -e "MASSAGUARD=0" --name massa-node rykcod/massa
 ```
 
 #### [INTERACTION] To manually use massa-client of your container ####
@@ -89,10 +74,8 @@ ctrl+a+d
 ```
 #### [MAINTENANCE] After container creation ####
 __[OPTION] To enable or update features after container creation just edit /massa_mount/config/config.ini and set__
-  * Set your ''DISCORD_TOKEN'' value to enable "Autoget MAS faucet" feature and autoregistration node and IP to massabot (Refer to HELP section)
   * Set your ''DYN_PUB_IP'' value to enable dynamical IP management (0=Disable 1=Enable)
   * Set your ''TARGET_ROLL_AMOUNT'' value to enable roll amount target to stake for your node (Integer value)
-  * Set your ''NODE_TESTNET_REGISTRATION'' value to enable node registration with massabot (KO=Enable OK=AlreadyDone)
   * Set your ''MASSAGUARD'' value to enable or disable massa-guard features 0=Disable 1=Enable (Enable by default)
   * Set your ''NODE_LOGS'' value to disable logs files (0=Disable 1=Enable). Default value 1.
 
