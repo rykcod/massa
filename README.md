@@ -1,5 +1,5 @@
 # Massa node + Massa-guard #
-**Last build for Massa Securenet 27.6**
+**Last build for Massa Devnet 28.1**
 
 ![alt text](https://d33wubrfki0l68.cloudfront.net/7df7d7a57a8dda3cc07aab16121b3e3990cf0893/16ccd/portfolio/massa.png)
 
@@ -23,6 +23,7 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Massa-guard auto create your config.toml with your public IP.
 
 ### [RELEASE NOTES] ###
+- 20240103 - Devnet     - v28.1.0 - Devnet     - v28.1 Ready
 - 20240102 - Securenet  - v27.6.0 - Securenet  - v27.6 + Cleanup deprecated feature.
 - 20231202 - Testnet 27 - v27.4.0 - Testnet 27 - v27.6 Ready
 - 20230908 - Testnet 26 - v26.1.1 - Testnet 26 - Solve backup/Restore new wallet format
@@ -110,6 +111,3 @@ For more informations and sources - https://github.com/rykcod/massa/
 
 #### [VIDEO TUTORIAL][FR] ####
 https://youtu.be/IzeRq43DBSQ
-
-## [THANKS] ##
-Thanks to **fsidhoum** for help
