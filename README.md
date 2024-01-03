@@ -24,7 +24,7 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
 
 ### [RELEASE NOTES] ###
 - 20240103 - Devnet     - v28.1.0 - Devnet     - v28.1 Ready
-- 20240102 - Securenet  - v27.6.0 - Securenet  - v27.6 + Cleanup deprecated feature.
+- 20240102 - Securenet  - v27.6.0 - Securenet  - v27.6 + Cleanup deprecated features.
 - 20231202 - Testnet 27 - v27.4.0 - Testnet 27 - v27.6 Ready
 - 20230908 - Testnet 26 - v26.1.1 - Testnet 26 - Solve backup/Restore new wallet format
 - 20230616 - Testnet 23 - v23.2.0 - Testnet 23 - Add disable logs Feature with NODE_LOGS settings.
