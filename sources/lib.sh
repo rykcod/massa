@@ -114,6 +114,12 @@ GetMASAmount() {
 # DESCRIPTION = Adujst roll amount with max roll settings and if MAS amount > 200 or if candidate roll < 1 and MAS amount >= 100
 #############################################################
 BuyOrSellRoll() {
+	# Check if RESCUE_MAS_AMOUNT is set into config.ini or set it to 0
+	if [ ! -v RESCUE_MAS_AMOUNT ];
+	then
+		RESCUE_MAS_AMOUNT=0
+	fi
+
 	# Check candidate roll > 0 and Mas amount >= 100 to buy first roll
 	if ([ $1 -eq 0 ] && [ $2 -ge 100 ])
 	then
@@ -128,23 +134,23 @@ BuyOrSellRoll() {
 	then
 		echo "[$(date +%Y%m%d-%HH%M)][KO][ROLL]Cannot buy first ROLL because MAS Amount less than 100. Please get 100 MAS" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 
-	# If MAS amount > 200 MAS and no rolls limitation, buy ROLLs
-	elif ([ $2 -gt 200 ] && [ $TARGET_ROLL_AMOUNT == "NULL" ])
+	# If MAS amount > $RESCUE_MAS_AMOUNT MAS and no rolls limitation, buy ROLLs
+	elif ([ $2 -gt ($RESCUE_MAS_AMOUNT+100) ] && [ $TARGET_ROLL_AMOUNT == "NULL" ])
 	then
-		NbRollsToBuy=$((($2-100)/100))
+		NbRollsToBuy=$((($2-$RESCUE_MAS_AMOUNT)/100))
 		echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOBUY $NbRollsToBuy ROLL because MAS amount equal to $2" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 		# Buy roll amount
 		cd $PATH_CLIENT
 		$PATH_TARGET/massa-client -p $WALLET_PWD buy_rolls $3 $NbRollsToBuy 0 > /dev/null
 
-	# If MAS amount > 200 MAS and rolls limitation is set
-	elif ([ $2 -gt 200 ] && [ ! $TARGET_ROLL_AMOUNT == "NULL" ])
+	# If MAS amount > $RESCUE_MAS_AMOUNT MAS and rolls limitation is set
+	elif ([ $2 -gt ($RESCUE_MAS_AMOUNT+100) ] && [ ! $TARGET_ROLL_AMOUNT == "NULL" ])
 	then
 		# If max roll limit set in /massa_mount/config/config.ini greater than candidate roll
 		if [ $TARGET_ROLL_AMOUNT -gt $1 ]
 		then
 			# Calculation of max rolls you can buy with all your MAS amount
-			NbRollsCanBuyWithMAS=$((($2-100)/100))
+			NbRollsCanBuyWithMAS=$((($2-$RESCUE_MAS_AMOUNT)/100))
 			# Calculation of max rolls you can buy by looking max amount set in /massa_mount/config/config.ini
 			NbRollsNeedToBuy=$(($TARGET_ROLL_AMOUNT-$1))
 			# If rolls amount you can buy less than max amount, buy all you can buy
