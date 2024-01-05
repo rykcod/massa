@@ -23,7 +23,7 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Massa-guard auto create your config.toml with your public IP.
 
 ### [RELEASE NOTES] ###
-- 20240105 - Mainnet    - v1.0.0 - Devnet      - v1.0 Ready !!! + Change [network] label to [protocol] into new config.toml
+- 20240105 - Mainnet    - v1.0.0 - Devnet      - v1.0 Ready !!! + Change [network] label to [protocol] into new config.toml + ADD RESCUE_MAS_AMOUNT setting into config.ini
 - 20240103 - Devnet     - v28.2.0 - Devnet     - v28.2 Ready
 - 20240103 - Devnet     - v28.1.0 - Devnet     - v28.1 Ready
 - 20240102 - Securenet  - v27.6.0 - Securenet  - v27.6 + Cleanup deprecated features.
@@ -81,6 +81,7 @@ __[OPTION] To enable or update features after container creation just edit /mass
   * Set your ''TARGET_ROLL_AMOUNT'' value to enable roll amount target to stake for your node (Integer value)
   * Set your ''MASSAGUARD'' value to enable or disable massa-guard features 0=Disable 1=Enable (Enable by default)
   * Set your ''NODE_LOGS'' value to disable logs files (0=Disable 1=Enable). Default value 1.
+  * Set your ''RESCUE_MAS_AMOUNT'' value to save capacity to buy a roll if your node going to disqualify. Default value 0.
 
 ### [HELP] ###
 - Massa client is running over a "screen" named "massa-client"
