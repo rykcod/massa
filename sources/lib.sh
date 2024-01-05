@@ -135,7 +135,7 @@ BuyOrSellRoll() {
 		echo "[$(date +%Y%m%d-%HH%M)][KO][ROLL]Cannot buy first ROLL because MAS Amount less than 100. Please get 100 MAS" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 
 	# If MAS amount > $RESCUE_MAS_AMOUNT MAS and no rolls limitation, buy ROLLs
-	elif ([ $2 -gt ($RESCUE_MAS_AMOUNT+100) ] && [ $TARGET_ROLL_AMOUNT == "NULL" ])
+	elif ([ $2 -gt $(($RESCUE_MAS_AMOUNT+100)) ] && [ $TARGET_ROLL_AMOUNT == "NULL" ])
 	then
 		NbRollsToBuy=$((($2-$RESCUE_MAS_AMOUNT)/100))
 		echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOBUY $NbRollsToBuy ROLL because MAS amount equal to $2" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
@@ -144,7 +144,7 @@ BuyOrSellRoll() {
 		$PATH_TARGET/massa-client -p $WALLET_PWD buy_rolls $3 $NbRollsToBuy 0 > /dev/null
 
 	# If MAS amount > $RESCUE_MAS_AMOUNT MAS and rolls limitation is set
-	elif ([ $2 -gt ($RESCUE_MAS_AMOUNT+100) ] && [ ! $TARGET_ROLL_AMOUNT == "NULL" ])
+	elif ([ $2 -gt $(($RESCUE_MAS_AMOUNT+100)) ] && [ ! $TARGET_ROLL_AMOUNT == "NULL" ])
 	then
 		# If max roll limit set in /massa_mount/config/config.ini greater than candidate roll
 		if [ $TARGET_ROLL_AMOUNT -gt $1 ]
