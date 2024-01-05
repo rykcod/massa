@@ -3,8 +3,6 @@ name: Massa
 on:
   push:
     tags:
-      - TEST.*
-      - DEVN.*
       - MAIN.*
 
 jobs:
