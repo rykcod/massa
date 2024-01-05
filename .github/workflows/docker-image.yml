@@ -5,6 +5,7 @@ on:
     tags:
       - TEST.*
       - DEVN.*
+      - MAIN.*
 
 jobs:
 
