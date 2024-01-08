@@ -3,8 +3,7 @@ name: Massa
 on:
   push:
     tags:
-      - DEVN.*
-      - TEST.*
+      - MAIN.*
 
 jobs:
 
@@ -37,4 +36,4 @@ jobs:
           build-args: VERSION=${{ env.VERSION }}
           platforms: linux/amd64, linux/arm64
           push: true
-          tags: ${{ github.repository }}:${{ env.VERSION }}
+          tags: ${{ github.repository }}:${{ env.VERSION }}, ${{ github.repository }}:latest
