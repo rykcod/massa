@@ -34,7 +34,7 @@ CheckOrCreateWalletAndNodeKey() {
 	# If wallet don't exist
 	cd $PATH_CLIENT
 	checkWallet=`$PATH_TARGET/massa-client -p $WALLET_PWD wallet_info | grep -c "Address"`
-	if ([ ! -e $PATH_CLIENT/wallets/wallet_* ] || [ $checkWallet -lt 1 ])
+	if ([ $(ls $PATH_CLIENT/wallets/wallet_* 2> /dev/null | wc -l) -eq 0 ] || [ $checkWallet -lt 1 ])
 	then
 		# Generate wallet
 		cd $PATH_CLIENT
@@ -56,7 +56,7 @@ CheckOrCreateWalletAndNodeKey() {
 	## Stacke if wallet not stacke
 	# If staking_keys don't exist
 	checkStackingKey=`$PATH_TARGET/massa-client -p $WALLET_PWD node_get_staking_addresses | grep -c -E "[0-z]{51}"`
-	if ([ ! -e $PATH_NODE_CONF/staking_wallets/wallet_* ] || [ $checkStackingKey -lt 1 ])
+	if ([ $(ls $PATH_NODE_CONF/staking_wallets/wallet_* 2> /dev/null | wc -l) -eq 0 ] || [ $checkStackingKey -lt 1 ])
 	then
 		# Get first wallet Address
 		walletAddress=$(GetWalletAddress)
@@ -367,6 +367,21 @@ GetPublicIP() {
 
 	# Return my public IP
 	echo $myIP
+	return 0
+}
+
+#############################################################
+# FONCTION = BackupNewWallets
+# DESCRIPTION = Backup new wallets if exist
+# RETURN = 0 NoUpdate 1 UpdateDone
+#############################################################
+BackupNewWallets () {
+	# Backup new wallets if new exist
+	if [ $(cp -nv $PATH_CLIENT/wallets/wallet_* $PATH_MOUNT/ | wc -l) -gt 0 ]
+	then
+		echo "[$(date +%Y%m%d-%HH%M)][INFO][SAVE]Save your new wallet file to massa_mount" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+	fi
+
 	return 0
 }
 
