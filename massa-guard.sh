@@ -65,8 +65,7 @@ do
 		fi
 
 		# Backup new wallet if new exist
-		cp -n $PATH_CLIENT/wallets/wallet_* $PATH_MOUNT/
-
+		BackupNewWallets
 	fi
 	# Wait before next loop
 	sleep 2m
