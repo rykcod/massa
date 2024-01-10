@@ -1,5 +1,5 @@
 # Massa node + Massa-guard #
-**Last build for Massa Mainnet 1.0**
+**Last build for Massa Mainnet 2.0**
 
 ![alt text](https://d33wubrfki0l68.cloudfront.net/7df7d7a57a8dda3cc07aab16121b3e3990cf0893/16ccd/portfolio/massa.png)
 
