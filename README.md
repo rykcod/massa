@@ -23,6 +23,7 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Massa-guard auto create your config.toml with your public IP.
 
 ### [RELEASE NOTES] ###
+- 20240110 - Mainnet    - v2.0.0 - Devnet      - v2.0 Ready
 - 20240105 - Mainnet    - v1.0.0 - Devnet      - v1.0 Ready !!! + Change [network] label to [protocol] into new config.toml + ADD RESCUE_MAS_AMOUNT setting into config.ini
 - 20240103 - Devnet     - v28.2.0 - Devnet     - v28.2 Ready
 - 20240103 - Devnet     - v28.1.0 - Devnet     - v28.1 Ready
@@ -37,7 +38,7 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
 ## [HOWTO] ##
 ### [SETUP] ###
 #### [PREPARE] ####
-Create an empty folder to mount in our container /massa_mount path or store your wallet /nodekey/stacking_key/config.toml into this folder if you have it:
+Create an empty folder to mount into our container /massa_mount path or restore your wallet and/or nodekey and/or config.toml into this folder if you have it:
 - wallet_%%%.dat
 - config.toml
 - node_privkey.key
