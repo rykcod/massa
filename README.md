@@ -23,7 +23,7 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Massa-guard auto create your config.toml with your public IP.
 
 ### [RELEASE NOTES] ###
-- 20240110 - Mainnet    - v2.0.0 - Devnet      - v2.0 Ready
+- 20240110 - Mainnet    - v2.0.0 - Devnet      - v2.0 Ready + Remove useless dependencies
 - 20240105 - Mainnet    - v1.0.0 - Devnet      - v1.0 Ready !!! + Change [network] label to [protocol] into new config.toml + ADD RESCUE_MAS_AMOUNT setting into config.ini
 - 20240103 - Devnet     - v28.2.0 - Devnet     - v28.2 Ready
 - 20240103 - Devnet     - v28.1.0 - Devnet     - v28.1 Ready
