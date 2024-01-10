@@ -17,7 +17,7 @@ ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/Paris"
 # Update and install packages dependencies
 RUN apt-get update \
 && apt-get upgrade -y \
-&& apt install -y curl wget screen procps python3-pip netcat \
+&& apt install -y curl wget screen procps python3 \
 && apt autoclean -y
 
 # Download the Massa package
