@@ -18,7 +18,7 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Restart node when hang or when ram consumption exceed 90% (Value can be adjust)
   - You host your node under a dynamical IP? massa-guard will watch IP change and update your config.toml and push IP updates to massabot.
   - Logs his actions over /massa_mount/logs/ and backup node logs before restart if necessary.
-- [STARTING]
+- [STARTING FROM SCRATCH]
   - Massa-guard will auto create wallet + nodekey + stacke privkey; all with default password "**MassaToTheMoon2022**".
   - Massa-guard auto create your config.toml with your public IP.
 
