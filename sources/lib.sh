@@ -14,14 +14,14 @@ WaitBootstrap() {
 }
 
 #############################################################
-# FUNCTION = GetWalletAddress
-# DESCRIPTION = Get wallet public address
-# RETURN = Wallet address
+# FUNCTION = GetWalletAddresses
+# DESCRIPTION = Get wallet public addresses
+# RETURN = Wallet addresses
 #############################################################
-GetWalletAddress() {
+GetWalletAddresses() {
 	cd $PATH_CLIENT
-	WalletAddress=$($PATH_TARGET/massa-client -p $WALLET_PWD wallet_info | grep "Address" | cut -d " " -f 2 | head -n 1)
-	echo "$WalletAddress"
+	WalletAddresses=($($PATH_TARGET/massa-client -p $WALLET_PWD wallet_info | sed '/^$/d'))
+	echo "${WalletAddresses[@]}"
 	return 0
 }
 
