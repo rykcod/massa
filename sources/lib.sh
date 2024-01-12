@@ -18,10 +18,10 @@ WaitBootstrap() {
 # DESCRIPTION = Get wallet public address
 # RETURN = Wallet address
 #############################################################
-GetWalletAddress() {
+GetWalletAddresses() {
 	cd $PATH_CLIENT
-	WalletAddress=$($PATH_TARGET/massa-client -p $WALLET_PWD wallet_info | grep "Address" | cut -d " " -f 2 | head -n 1)
-	echo "$WalletAddress"
+	WalletAddresses=($($PATH_TARGET/massa-client -p $WALLET_PWD wallet_info | grep "Address" | cut -d " " -f 2))
+	echo "${WalletAddresses[@]}"
 	return 0
 }
 
@@ -84,9 +84,9 @@ CheckOrCreateWalletAndNodeKey() {
 #############################################################
 GetCandidateRoll() {
 	# Get address info
-	get_address=$(cd $PATH_CLIENT;$PATH_TARGET/massa-client -p $WALLET_PWD wallet_info)
+	WalletsInfos=$(cd $PATH_CLIENT;$PATH_TARGET/massa-client -p $WALLET_PWD wallet_info)
 	# Get candidate roll amount for first Address
-	CandidateRolls=$(echo "$get_address" wallet_info | grep "Rolls" | cut -d "=" -f 4 | head -n 1)
+	CandidateRolls=$(echo "$WalletsInfos" | grep -A 2 $1 | grep "Rolls" | cut -d "=" -f 4)
 	# Return candidate roll amount
 	echo "$CandidateRolls"
 	return 0
@@ -100,9 +100,9 @@ GetCandidateRoll() {
 #############################################################
 GetMASAmount() {
 	# Get address info
-	get_address=$(cd $PATH_CLIENT;$PATH_TARGET/massa-client -p $WALLET_PWD wallet_info)
+	WalletsInfos=$(cd $PATH_CLIENT;$PATH_TARGET/massa-client -p $WALLET_PWD wallet_info)
 	# Get MAS amount for first Address
-	MasAmount=$(echo "$get_address" | grep -E "Balance"." final" | cut -d "=" -f 2 | cut -d "," -f 1 | cut -d "." -f 1 | head -n 1)
+	MasAmount=$(echo "$WalletsInfos" | grep -A 1 $1 | grep -E "Balance"." final" | cut -d "=" -f 2 | cut -d "," -f 1 | cut -d "." -f 1)
 	# Return MAS amount
 	echo "$MasAmount"
 	return 0
@@ -123,7 +123,7 @@ BuyOrSellRoll() {
 	# Check candidate roll > 0 and Mas amount >= 100 to buy first roll
 	if ([ $1 -eq 0 ] && [ $2 -ge 100 ])
 	then
-		echo "[$(date +%Y%m%d-%HH%M)][KO][ROLL]BUY 1 ROLL" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		echo "[$(date +%Y%m%d-%HH%M)][KO][ROLL]BUY 1 ROLL on stacked wallet $3" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 
 		# Buy roll amount
 		cd $PATH_CLIENT
@@ -132,13 +132,13 @@ BuyOrSellRoll() {
 	# If MAS amount < 100 MAS and Candidate roll = 0
 	elif ([ $1 -eq 0 ] && [ $2 -lt 100 ])
 	then
-		echo "[$(date +%Y%m%d-%HH%M)][KO][ROLL]Cannot buy first ROLL because MAS Amount less than 100. Please get 100 MAS" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		echo "[$(date +%Y%m%d-%HH%M)][KO][ROLL]Cannot buy first ROLLon $3 because MAS Amount less than 100. Please get 100 MAS" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 
 	# If MAS amount > $RESCUE_MAS_AMOUNT MAS and no rolls limitation, buy ROLLs
 	elif ([ $2 -gt $(($RESCUE_MAS_AMOUNT+100)) ] && [ $TARGET_ROLL_AMOUNT == "NULL" ])
 	then
 		NbRollsToBuy=$((($2-$RESCUE_MAS_AMOUNT)/100))
-		echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOBUY $NbRollsToBuy ROLL because MAS amount equal to $2" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOBUY $NbRollsToBuy ROLL because MAS amount equal to $2 for stacked wallet $3" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 		# Buy roll amount
 		cd $PATH_CLIENT
 		$PATH_TARGET/massa-client -p $WALLET_PWD buy_rolls $3 $NbRollsToBuy 0 > /dev/null
@@ -157,11 +157,11 @@ BuyOrSellRoll() {
 			if [ $NbRollsCanBuyWithMAS -le $NbRollsNeedToBuy ]
 			then
 				NbRollsToBuy=$NbRollsCanBuyWithMAS
-				echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOBUY $NbRollsToBuy ROLL because MAS amount equal to $2 and ROLL amount of $1 less than target amount of $TARGET_ROLL_AMOUNT" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+				echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOBUY $NbRollsToBuy ROLL because $3 MAS amount equal to $2 and ROLL amount of $1 less than target amount of $TARGET_ROLL_AMOUNT" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 			# Else buy max amount you can buy
 			else
 				NbRollsToBuy=$NbRollsNeedToBuy
-				echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOBUY $NbRollsToBuy ROLL because MAS amount equal to $2 and ROLL amount of $1 less than target amount of $TARGET_ROLL_AMOUNT" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+				echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOBUY $NbRollsToBuy ROLL because $3 MAS amount equal to $2 and ROLL amount of $1 less than target amount of $TARGET_ROLL_AMOUNT" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 			fi
 			# Buy roll amount
 			cd $PATH_CLIENT
@@ -170,7 +170,7 @@ BuyOrSellRoll() {
 		elif [ $TARGET_ROLL_AMOUNT -lt $1 ]
 		then
 			NbRollsToSell=$(($1-$TARGET_ROLL_AMOUNT))
-			echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOSELL $NbRollsToSell ROLL because ROLL amount of $1 greater than target amount of $TARGET_ROLL_AMOUNT" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+			echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOSELL $NbRollsToSell ROLL on $3 because ROLL amount of $1 greater than target amount of $TARGET_ROLL_AMOUNT" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 			# Sell roll amount
 			cd $PATH_CLIENT
 			$PATH_TARGET/massa-client -p $WALLET_PWD sell_rolls $3 $NbRollsToSell 0 > /dev/null
@@ -182,7 +182,7 @@ BuyOrSellRoll() {
 		if [ $TARGET_ROLL_AMOUNT -lt $1 ]
 		then
 			NbRollsToSell=$(($1-$TARGET_ROLL_AMOUNT))
-			echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOSELL $NbRollsToSell ROLL because ROLL amount of $1 greater than target amount of $TARGET_ROLL_AMOUNT" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+			echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOSELL $NbRollsToSell ROLL because $3 ROLL amount of $1 greater than target amount of $TARGET_ROLL_AMOUNT" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 			# Sell roll amount
 			cd $PATH_CLIENT
 			$PATH_TARGET/massa-client -p $WALLET_PWD sell_rolls $3 $NbRollsToSell 0 > /dev/null

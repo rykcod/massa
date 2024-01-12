@@ -15,8 +15,8 @@ WaitBootstrap
 #====================== Check and load ==========================#
 # Load Wallet and Node key or create it and stake wallet
 CheckOrCreateWalletAndNodeKey
-# Get stacking address
-WalletAddress=$(GetWalletAddress)
+# Get stacking addresses
+WalletAddresses=($(GetWalletAddresses))
 
 #==================== Massa-guard circle =========================# 
 # Infinite check
@@ -36,12 +36,15 @@ do
 		CheckAndReloadNode "$NodeRam" "$NodeResponsive"
 		if [ $? -eq 0 ]
 		then
-			# Get candidate rolls
-			CandidateRolls=$(GetCandidateRoll "$WalletAddress")
-			# Get MAS amount
-			MasBalance=$(GetMASAmount "$WalletAddress")
-			# Buy max roll or 1 roll if possible when candidate roll amount = 0
-			BuyOrSellRoll "$CandidateRolls" "$MasBalance" "$WalletAddress"
+			# For each wallet addresses
+			for WalletAddress in "${WalletAddresses[@]}"; do
+				# Get candidate rolls
+				CandidateRolls=$(GetCandidateRoll "$WalletAddress")
+				# Get MAS amount
+				MasBalance=$(GetMASAmount "$WalletAddress")
+				# Buy max roll or 1 roll if possible when candidate roll amount = 0
+				BuyOrSellRoll "$CandidateRolls" "$MasBalance" "$WalletAddress"
+			done
 
 			# If logs are disable
 			if ([ $NODE_LOGS -eq 0 ] && [ -e $PATH_LOGS_MASSANODE/current.txt ])
