@@ -111,7 +111,7 @@ GetMASAmount() {
 #############################################################
 # FONCTION = BuyOrSellRoll
 # ARGUMENTS = CandidateRollAmount, MasAmount, WalletAddress
-# DESCRIPTION = Adujst roll amount with max roll settings and if MAS amount > 200 or if candidate roll < 1 and MAS amount >= 100
+# DESCRIPTION = Adjust rolls amount with max rolls settings and if MAS amount > 200 or if candidate roll < 1 and MAS amount >= 100
 #############################################################
 BuyOrSellRoll() {
 	# Check if RESCUE_MAS_AMOUNT is set into config.ini or set it to 0
@@ -123,25 +123,30 @@ BuyOrSellRoll() {
 	# Check candidate roll > 0 and Mas amount >= 100 to buy first roll
 	if ([ $1 -eq 0 ] && [ $2 -ge 100 ])
 	then
-		echo "[$(date +%Y%m%d-%HH%M)][KO][ROLL]BUY 1 ROLL on stacked wallet $3" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
-
-		# Buy roll amount
-		cd $PATH_CLIENT
-		$PATH_TARGET/massa-client -p $WALLET_PWD buy_rolls $3 1 0 > /dev/null
+		LogEvent="[$(date +%Y%m%d-%HH%M)][KO][ROLL]BUY 1 ROLL on stacked wallet $3"
+		if [$(tail -n 5 $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | fgrep "${LogEvent:16}" | wc -l) -lt 2 ]
+		then
+			# Buy roll amount
+			cd $PATH_CLIENT
+			$PATH_TARGET/massa-client -p $WALLET_PWD buy_rolls $3 1 0 > /dev/null
+		fi
 
 	# If MAS amount < 100 MAS and Candidate roll = 0
 	elif ([ $1 -eq 0 ] && [ $2 -lt 100 ])
 	then
-		echo "[$(date +%Y%m%d-%HH%M)][KO][ROLL]Cannot buy first ROLL on $3 because MAS Amount less than 100. Please get 100 MAS" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		LogEvent="[$(date +%Y%m%d-%HH%M)][KO][ROLL]Cannot buy first ROLL on $3 because MAS Amount less than 100. Please get 100 MAS"
 
 	# If MAS amount > $RESCUE_MAS_AMOUNT MAS and no rolls limitation, buy ROLLs
 	elif ([ $2 -gt $(($RESCUE_MAS_AMOUNT+100)) ] && [ $TARGET_ROLL_AMOUNT == "NULL" ])
 	then
 		NbRollsToBuy=$((($2-$RESCUE_MAS_AMOUNT)/100))
-		echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOBUY $NbRollsToBuy ROLL because MAS amount equal to $2 for stacked wallet $3" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
-		# Buy roll amount
-		cd $PATH_CLIENT
-		$PATH_TARGET/massa-client -p $WALLET_PWD buy_rolls $3 $NbRollsToBuy 0 > /dev/null
+		LogEvent="[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOBUY $NbRollsToBuy ROLL because MAS amount equal to $2 for stacked wallet $3"
+		if [$(tail -n 5 $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | fgrep "${LogEvent:16}" | wc -l) -lt 2 ]
+		then
+			# Buy roll amount
+			cd $PATH_CLIENT
+			$PATH_TARGET/massa-client -p $WALLET_PWD buy_rolls $3 $NbRollsToBuy 0 > /dev/null
+		fi
 
 	# If MAS amount > $RESCUE_MAS_AMOUNT MAS and rolls limitation is set
 	elif ([ $2 -gt $(($RESCUE_MAS_AMOUNT+100)) ] && [ ! $TARGET_ROLL_AMOUNT == "NULL" ])
@@ -157,23 +162,28 @@ BuyOrSellRoll() {
 			if [ $NbRollsCanBuyWithMAS -le $NbRollsNeedToBuy ]
 			then
 				NbRollsToBuy=$NbRollsCanBuyWithMAS
-				echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOBUY $NbRollsToBuy ROLL because $3 MAS amount equal to $2 and ROLL amount of $1 less than target amount of $TARGET_ROLL_AMOUNT" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 			# Else buy max amount you can buy
 			else
 				NbRollsToBuy=$NbRollsNeedToBuy
-				echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOBUY $NbRollsToBuy ROLL because $3 MAS amount equal to $2 and ROLL amount of $1 less than target amount of $TARGET_ROLL_AMOUNT" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 			fi
 			# Buy roll amount
-			cd $PATH_CLIENT
-			$PATH_TARGET/massa-client -p $WALLET_PWD buy_rolls $3 $NbRollsToBuy 0 > /dev/null
+			LogEvent="[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOBUY $NbRollsToBuy ROLL because $3 MAS amount equal to $2 and ROLL amount of $1 less than target amount of $TARGET_ROLL_AMOUNT"
+			if [$(tail -n 5 $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | fgrep "${LogEvent:16}" | wc -l) -lt 2 ]
+			then
+				cd $PATH_CLIENT
+				$PATH_TARGET/massa-client -p $WALLET_PWD buy_rolls $3 $NbRollsToBuy 0 > /dev/null
+			fi
 		# If roll target amount less than active roll amount sell exceed rolls
 		elif [ $TARGET_ROLL_AMOUNT -lt $1 ]
 		then
 			NbRollsToSell=$(($1-$TARGET_ROLL_AMOUNT))
-			echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOSELL $NbRollsToSell ROLL on $3 because ROLL amount of $1 greater than target amount of $TARGET_ROLL_AMOUNT" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
-			# Sell roll amount
-			cd $PATH_CLIENT
-			$PATH_TARGET/massa-client -p $WALLET_PWD sell_rolls $3 $NbRollsToSell 0 > /dev/null
+			LogEvent="[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOSELL $NbRollsToSell ROLL on $3 because ROLL amount of $1 greater than target amount of $TARGET_ROLL_AMOUNT"
+			if [$(tail -n 5 $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | fgrep "${LogEvent:16}" | wc -l) -lt 2 ]
+			then
+				# Sell roll amount
+				cd $PATH_CLIENT
+				$PATH_TARGET/massa-client -p $WALLET_PWD sell_rolls $3 $NbRollsToSell 0 > /dev/null
+			fi
 		fi
 	# If rolls limitation is set
 	elif [ ! $TARGET_ROLL_AMOUNT == "NULL" ]
@@ -182,10 +192,13 @@ BuyOrSellRoll() {
 		if [ $TARGET_ROLL_AMOUNT -lt $1 ]
 		then
 			NbRollsToSell=$(($1-$TARGET_ROLL_AMOUNT))
-			echo "[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOSELL $NbRollsToSell ROLL because $3 ROLL amount of $1 greater than target amount of $TARGET_ROLL_AMOUNT" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
-			# Sell roll amount
-			cd $PATH_CLIENT
-			$PATH_TARGET/massa-client -p $WALLET_PWD sell_rolls $3 $NbRollsToSell 0 > /dev/null
+			LogEvent="[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOSELL $NbRollsToSell ROLL because $3 ROLL amount of $1 greater than target amount of $TARGET_ROLL_AMOUNT"
+			if [$(tail -n 5 $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | fgrep "${LogEvent:16}" | wc -l) -lt 2 ]
+			then
+				# Sell roll amount
+				cd $PATH_CLIENT
+				$PATH_TARGET/massa-client -p $WALLET_PWD sell_rolls $3 $NbRollsToSell 0 > /dev/null
+			fi
 		# Else, if max roll target is OK, do nothing
 		else
 			# Do nothing
@@ -194,8 +207,11 @@ BuyOrSellRoll() {
 	# Else, if MAS amount less to buy 1 roll or if max roll target is OK, do nothing
 	else
 		# Do nothing
+		LogEvent=0
 		return 0
 	fi
+	# Log cycle event
+	if ([ ! -z "$LogEvent" ] && [ $(tail -n 5 /massa_mount/logs/massa-guard/$(date +%Y%m%d)-massa_guard.txt | fgrep "${LogEvent:16}" | wc -l) -eq 0 ]) ; then echo $LogEvent |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt ; fi
 }
 
 #############################################################
