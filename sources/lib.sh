@@ -15,8 +15,8 @@ WaitBootstrap() {
 
 #############################################################
 # FUNCTION = GetWalletAddress
-# DESCRIPTION = Get wallet public address
-# RETURN = Wallet address
+# DESCRIPTION = Get wallets public addresses
+# RETURN = Wallets addresses
 #############################################################
 GetWalletAddresses() {
 	cd $PATH_CLIENT
@@ -132,7 +132,7 @@ BuyOrSellRoll() {
 	# If MAS amount < 100 MAS and Candidate roll = 0
 	elif ([ $1 -eq 0 ] && [ $2 -lt 100 ])
 	then
-		echo "[$(date +%Y%m%d-%HH%M)][KO][ROLL]Cannot buy first ROLLon $3 because MAS Amount less than 100. Please get 100 MAS" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		echo "[$(date +%Y%m%d-%HH%M)][KO][ROLL]Cannot buy first ROLL on $3 because MAS Amount less than 100. Please get 100 MAS" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
 
 	# If MAS amount > $RESCUE_MAS_AMOUNT MAS and no rolls limitation, buy ROLLs
 	elif ([ $2 -gt $(($RESCUE_MAS_AMOUNT+100)) ] && [ $TARGET_ROLL_AMOUNT == "NULL" ])
