@@ -124,7 +124,7 @@ BuyOrSellRoll() {
 	if ([ $1 -eq 0 ] && [ $2 -ge 100 ])
 	then
 		LogEvent="[$(date +%Y%m%d-%HH%M)][KO][ROLL]BUY 1 ROLL on stacked wallet $3"
-		if [$(tail -n 5 $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | fgrep "${LogEvent:16}" | wc -l) -lt 2 ]
+		if [ $(tail -n 5 $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | fgrep "${LogEvent:16}" | wc -l) -lt 2 ]
 		then
 			# Buy roll amount
 			cd $PATH_CLIENT
@@ -141,7 +141,7 @@ BuyOrSellRoll() {
 	then
 		NbRollsToBuy=$((($2-$RESCUE_MAS_AMOUNT)/100))
 		LogEvent="[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOBUY $NbRollsToBuy ROLL because MAS amount equal to $2 for stacked wallet $3"
-		if [$(tail -n 5 $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | fgrep "${LogEvent:16}" | wc -l) -lt 2 ]
+		if [ $(tail -n 5 $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | fgrep "${LogEvent:16}" | wc -l) -lt 2 ]
 		then
 			# Buy roll amount
 			cd $PATH_CLIENT
@@ -168,7 +168,7 @@ BuyOrSellRoll() {
 			fi
 			# Buy roll amount
 			LogEvent="[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOBUY $NbRollsToBuy ROLL because $3 MAS amount equal to $2 and ROLL amount of $1 less than target amount of $TARGET_ROLL_AMOUNT"
-			if [$(tail -n 5 $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | fgrep "${LogEvent:16}" | wc -l) -lt 2 ]
+			if [ $(tail -n 5 $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | fgrep "${LogEvent:16}" | wc -l) -lt 2 ]
 			then
 				cd $PATH_CLIENT
 				$PATH_TARGET/massa-client -p $WALLET_PWD buy_rolls $3 $NbRollsToBuy 0 > /dev/null
@@ -178,7 +178,7 @@ BuyOrSellRoll() {
 		then
 			NbRollsToSell=$(($1-$TARGET_ROLL_AMOUNT))
 			LogEvent="[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOSELL $NbRollsToSell ROLL on $3 because ROLL amount of $1 greater than target amount of $TARGET_ROLL_AMOUNT"
-			if [$(tail -n 5 $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | fgrep "${LogEvent:16}" | wc -l) -lt 2 ]
+			if [ $(tail -n 5 $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | fgrep "${LogEvent:16}" | wc -l) -lt 2 ]
 			then
 				# Sell roll amount
 				cd $PATH_CLIENT
@@ -193,7 +193,7 @@ BuyOrSellRoll() {
 		then
 			NbRollsToSell=$(($1-$TARGET_ROLL_AMOUNT))
 			LogEvent="[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOSELL $NbRollsToSell ROLL because $3 ROLL amount of $1 greater than target amount of $TARGET_ROLL_AMOUNT"
-			if [$(tail -n 5 $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | fgrep "${LogEvent:16}" | wc -l) -lt 2 ]
+			if [ $(tail -n 5 $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | fgrep "${LogEvent:16}" | wc -l) -lt 2 ]
 			then
 				# Sell roll amount
 				cd $PATH_CLIENT
