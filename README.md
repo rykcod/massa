@@ -12,18 +12,18 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Enable/Disable all massa-guard features (Except keys creations) with the "MASSAGUARD" setting in config.ini
 - [AUTOBUY/AUTOSELL]
   - Autobuy 1 roll when your node failed and lost his "Active rolls".
-  - Autobuy X rolls when your MAS amount greater than 200 MAS and if "Active rolls" dont exceed "TARGET_ROLL_AMOUNT" set in /massa_mount/config/config.ini (If set).
-  - Autosell X rolls when "Active rolls" exceed "TARGET_ROLL_AMOUNT" set in /massa_mount/config/config.ini (If set).
+  - Autobuy X rolls when your MAS amount greater than 100 MAS and if "Active rolls" dont exceed "TARGET_ROLL_AMOUNT", if value set in /massa_mount/config/config.ini.
+  - Autosell X rolls when "Active rolls" exceed "TARGET_ROLL_AMOUNT", if value set in /massa_mount/config/config.ini.
 - [WATCHDOG]
   - Restart node when hang or when ram consumption exceed 90% (Value can be adjust)
   - You host your node under a dynamical IP? massa-guard will watch IP change and update your config.toml and push IP updates to massabot.
-  - Logs his actions over /massa_mount/logs/ and backup node logs before restart if necessary.
+  - Logs actions over /massa_mount/logs/ and backup node logs before restart if necessary.
 - [STARTING FROM SCRATCH]
   - Massa-guard will auto create wallet + nodekey + stacke privkey; all with default password "**MassaToTheMoon2022**".
   - Massa-guard auto create your config.toml with your public IP.
 
 ### [RELEASE NOTES] ###
-- 20240110 - Mainnet    - v2.0.0 - Devnet      - v2.0 Ready + Remove useless dependencies
+- 20240110 - Mainnet    - v2.0.0 - Devnet      - v2.0 Ready + Remove useless dependencies + Add multi wallet autobuy features
 - 20240105 - Mainnet    - v1.0.0 - Devnet      - v1.0 Ready !!! + Change [network] label to [protocol] into new config.toml + ADD RESCUE_MAS_AMOUNT setting into config.ini
 - 20240103 - Devnet     - v28.2.0 - Devnet     - v28.2 Ready
 - 20240103 - Devnet     - v28.1.0 - Devnet     - v28.1 Ready
@@ -38,7 +38,8 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
 ## [HOWTO] ##
 ### [SETUP] ###
 #### [PREPARE] ####
-Create an empty folder to mount into our container /massa_mount path or restore your wallet and/or nodekey and/or config.toml into this folder if you have it:
+Just create an empty folder to mount into our container /massa_mount path and run!
+Or restore your wallet(s) and/or nodekey and/or config.toml into this folder if you have it:
 - wallet_%%%.dat
 - config.toml
 - node_privkey.key

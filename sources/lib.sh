@@ -115,10 +115,9 @@ GetMASAmount() {
 #############################################################
 BuyOrSellRoll() {
 	# Check if RESCUE_MAS_AMOUNT is set into config.ini or set it to 0
-	if [ ! -v RESCUE_MAS_AMOUNT ];
-	then
-		RESCUE_MAS_AMOUNT=0
-	fi
+	if [ ! -v RESCUE_MAS_AMOUNT ]; then RESCUE_MAS_AMOUNT=0 ; fi
+	# Check if day log file already exist or create it
+	if [ ! -e $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt ] ; then touch $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt ; fi
 
 	# Check candidate roll > 0 and Mas amount >= 100 to buy first roll
 	if ([ $1 -eq 0 ] && [ $2 -ge 100 ])
@@ -271,8 +270,8 @@ BackupLogsNode() {
 		then
 			# Add node logs to backup logs of the current day
 			cat $PATH_LOGS_MASSANODE/current.txt >> $PATH_LOGS_MASSANODE/$(date +%Y%m%d)-logs.txt
-			rm $PATH_NODE/logs.txt
-			rm $PATH_LOGS_MASSANODE/current.txt
+			rm $PATH_NODE/logs.txt > /dev/null
+			rm $PATH_LOGS_MASSANODE/current.txt > /dev/null
 		fi
 	# If node backup log dont exist, create new node backup logs
 	else
