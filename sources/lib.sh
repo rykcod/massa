@@ -14,7 +14,7 @@ WaitBootstrap() {
 }
 
 #############################################################
-# FUNCTION = GetWalletAddress
+# FUNCTION = GetWalletAddresses
 # DESCRIPTION = Get wallets public addresses
 # RETURN = Wallets addresses
 #############################################################
@@ -59,7 +59,7 @@ CheckOrCreateWalletAndNodeKey() {
 	if ([ $(ls $PATH_NODE_CONF/staking_wallets/wallet_* 2> /dev/null | wc -l) -eq 0 ] || [ $checkStackingKey -lt 1 ])
 	then
 		# Get first wallet Address
-		walletAddress=$(GetWalletAddress)
+		walletAddress=$(GetWalletAddresses)
 		# Stacke wallet
 		$PATH_TARGET/massa-client -p $WALLET_PWD node_start_staking $walletAddress > /dev/null
 		echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Stake privKey" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
