@@ -119,3 +119,6 @@ For more informations and sources - https://github.com/rykcod/massa/
 
 #### [VIDEO TUTORIAL][FR] ####
 https://youtu.be/IzeRq43DBSQ
+
+#### [THANKS FOR YOUR SUPPORT] ####
+MASSA Address - AU1eNMGrjLTrUoQAhGNqr1ehwhdMCg5L9T3Bjcvfh3D9pswKsDAx
