@@ -85,6 +85,7 @@ __[OPTION] To enable or update features after container creation just edit /mass
   * Set your ''MASSAGUARD'' value to enable or disable massa-guard features 0=Disable 1=Enable (Enable by default)
   * Set your ''NODE_LOGS'' value to disable logs files (0=Disable 1=Enable). Default value 1.
   * Set your ''RESCUE_MAS_AMOUNT'' value to save capacity to buy a roll if your node going to disqualify. Default value 0.
+  * Set your ''DISCORD_WEBHOOK'' to push log events to Discord channel with webhook. Default value 0.
 
 ### [HELP] ###
 - Massa client is running over a "screen" named "massa-client"
