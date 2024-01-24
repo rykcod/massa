@@ -69,6 +69,13 @@ do
 
 		# Backup new wallet if new exist
 		BackupNewWallets
+
+		# Log events
+		if [ ! ${#Events[@]} -eq 0 ]
+		then
+			LogEvents "${Events[@]}"
+			unset Events
+		fi
 	fi
 	# Wait before next loop
 	sleep 2m
