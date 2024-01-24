@@ -19,11 +19,11 @@ fi
 if [ ! -e $PATH_CONF_MASSAGUARD/config.ini ]
 then
 	mkdir -p $PATH_LOGS_MASSAGUARD
-	Events+=('[INFO][INIT]CREATE $PATH_LOGS_MASSAGUARD folder')
+	Events+=("[INFO][INIT]CREATE $PATH_LOGS_MASSAGUARD folder")
 	mkdir -p $PATH_LOGS_MASSANODE
-	Events+=('[INFO][INIT]CREATE $PATH_LOGS_MASSANODE folder')
+	Events+=("[INFO][INIT]CREATE $PATH_LOGS_MASSANODE folder")
 	mkdir -p /massa_mount/config
-	Events+=('[INFO][INIT]CREATE /massa_mount/config folder')
+	Events+=("[INFO][INIT]CREATE /massa_mount/config folder")
 	cp /massa-guard/config/default_config_template.ini $PATH_CONF_MASSAGUARD/config.ini
 	if [ $DYNIP ]; then python3 $PATH_SOURCES/set_config.py "DYN_PUB_IP" "$DYNIP" $PATH_CONF_MASSAGUARD/config.ini ; fi
 	if [ $NODEPWD ]; then python3 $PATH_SOURCES/set_config.py "NODE_PWD" \"$NODEPWD\" $PATH_CONF_MASSAGUARD/config.ini ; fi
@@ -57,7 +57,7 @@ else
 	echo -e "\n[execution]\n    # path to the hard drive cache storage\n    hd_cache_path = \"/massa_mount/storage/cache/rocks_db\"\n\n[ledger]\n    # path to the disk ledger db directory\n    disk_ledger_path = \"/massa_mount/storage/ledger/rocks_db\"" >> $PATH_MOUNT/config.toml
 	cp $PATH_MOUNT/config.toml $PATH_NODE_CONF/config.toml
 
-	Events+=('[INFO][INIT]Create your default config.toml with $myIP as routable IP')
+	Events+=("[INFO][INIT]Create your default config.toml with $myIP as routable IP")
 fi
 # Wallet to use
 if [  $(ls $PATH_MOUNT/wallet_* 2>/dev/null | wc -l) -gt 0 ]
@@ -65,7 +65,7 @@ then
 	mkdir $PATH_CLIENT/wallets > /dev/null 2&>1
 	rm $PATH_CLIENT/wallets/wallet_* > /dev/null 2&>1
 	cp $PATH_MOUNT/wallet_* $PATH_CLIENT/wallets/
-	Events+=("[INFO][LOAD]Load mounted wallets as ref")
+	Events+=('[INFO][LOAD]Load mounted wallets as ref')
 fi
 # Node private key to use
 if [ -e $PATH_MOUNT/node_privkey.key ]

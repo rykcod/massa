@@ -39,7 +39,7 @@ CheckOrCreateWalletAndNodeKey() {
 		# Generate wallet
 		cd $PATH_CLIENT
 		$PATH_TARGET/massa-client -p $WALLET_PWD wallet_generate_secret_key > /dev/null
-                Events+=('[INFO][INIT]Generate wallet.dat')
+		Events+=('[INFO][INIT]Generate wallet')
 
 		# Backup wallet to the mount point as ref
 		cp $PATH_CLIENT/wallets/wallet_* $PATH_MOUNT/
@@ -51,7 +51,7 @@ CheckOrCreateWalletAndNodeKey() {
 		cd $PATH_CLIENT
 		screen -dmS massa-client bash -c './massa-client -p '$WALLET_PWD''
 
-                Events+=('[INFO][BACKUP]Backup wallet.dat')
+		Events+=('[INFO][BACKUP]Backup wallet')
 	fi
 
 	## Stacke if wallet not stacke
@@ -72,7 +72,7 @@ CheckOrCreateWalletAndNodeKey() {
 	then
 		# Copy node_privkey.key to mount point as ref
 		cp $PATH_NODE_CONF/node_privkey.key $PATH_MOUNT/node_privkey.key
-		Events+=('[INFO][BACKUP]Backup $PATH_NODE_CONF/node_privkey.key to $PATH_MOUNT')
+		Events+=("[INFO][BACKUP]Backup $PATH_NODE_CONF/node_privkey.key to $PATH_MOUNT")
 	fi
 	return 0
 }
