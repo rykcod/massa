@@ -271,8 +271,8 @@ BackupLogsNode() {
 		then
 			# Add node logs to backup logs of the current day
 			cat $PATH_LOGS_MASSANODE/current.txt >> $PATH_LOGS_MASSANODE/$(date +%Y%m%d)-logs.txt
-			rm $PATH_NODE/logs.txt > /dev/null
-			rm $PATH_LOGS_MASSANODE/current.txt > /dev/null
+			rm $PATH_NODE/logs.txt 2> /dev/null
+			rm $PATH_LOGS_MASSANODE/current.txt 2> /dev/null
 		fi
 	# If node backup log dont exist, create new node backup logs
 	else
