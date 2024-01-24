@@ -7,7 +7,7 @@ WaitBootstrap() {
 	tail -n +1 -f $PATH_NODE/logs.txt | grep -m 1 -E "Successful bootstrap"\|"seconds remaining to genesis" > /dev/null
 
 	# Log MASSA-GUARD Start
-	echo "[$(date +%Y%m%d-%HH%M)][INFO][START]MASSA-NODE is running" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+	Events+=('[INFO][START]Massa-node is running')
 
 	sleep 20s
 	return 0
@@ -39,7 +39,8 @@ CheckOrCreateWalletAndNodeKey() {
 		# Generate wallet
 		cd $PATH_CLIENT
 		$PATH_TARGET/massa-client -p $WALLET_PWD wallet_generate_secret_key > /dev/null
-		echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Generate wallet.dat" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+                Events+=('[INFO][INIT]Generate wallet.dat')
+
 		# Backup wallet to the mount point as ref
 		cp $PATH_CLIENT/wallets/wallet_* $PATH_MOUNT/
 
@@ -50,7 +51,7 @@ CheckOrCreateWalletAndNodeKey() {
 		cd $PATH_CLIENT
 		screen -dmS massa-client bash -c './massa-client -p '$WALLET_PWD''
 
-		echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Backup wallet.dat" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+                Events+=('[INFO][BACKUP]Backup wallet.dat')
 	fi
 
 	## Stacke if wallet not stacke
@@ -62,7 +63,7 @@ CheckOrCreateWalletAndNodeKey() {
 		walletAddress=$(GetWalletAddresses)
 		# Stacke wallet
 		$PATH_TARGET/massa-client -p $WALLET_PWD node_start_staking $walletAddress > /dev/null
-		echo "[$(date +%Y%m%d-%HH%M)][INFO][INIT]Stake privKey" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		Events+=('[INFO][INIT]Stake privKey')
 	fi
 
 	## Backup node_privkey if no ref in mount point
@@ -71,7 +72,7 @@ CheckOrCreateWalletAndNodeKey() {
 	then
 		# Copy node_privkey.key to mount point as ref
 		cp $PATH_NODE_CONF/node_privkey.key $PATH_MOUNT/node_privkey.key
-		echo "[$(date +%Y%m%d-%HH%M)][INFO][BACKUP]Backup $PATH_NODE_CONF/node_privkey.key to $PATH_MOUNT" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		Events+=('[INFO][BACKUP]Backup $PATH_NODE_CONF/node_privkey.key to $PATH_MOUNT')
 	fi
 	return 0
 }
@@ -122,8 +123,8 @@ BuyOrSellRoll() {
 	# Check candidate roll > 0 and Mas amount >= 100 to buy first roll
 	if ([ $1 -eq 0 ] && [ $2 -ge 100 ])
 	then
-		LogEvent="[$(date +%Y%m%d-%HH%M)][KO][ROLL]BUY 1 ROLL on stacked wallet $3"
-		if [ $(tail -n 5 $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | fgrep "${LogEvent:16}" | wc -l) -lt 2 ]
+		Event="[KO][ROLL]Buy 1 ROLL on stacked wallet $3"
+		if [ $(tail -n 5 $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | fgrep "$Event" | wc -l) -lt 2 ]
 		then
 			# Buy roll amount
 			cd $PATH_CLIENT
@@ -133,14 +134,14 @@ BuyOrSellRoll() {
 	# If MAS amount < 100 MAS and Candidate roll = 0
 	elif ([ $1 -eq 0 ] && [ $2 -lt 100 ])
 	then
-		LogEvent="[$(date +%Y%m%d-%HH%M)][KO][ROLL]Cannot buy first ROLL on $3 because MAS Amount less than 100. Please get 100 MAS"
+                Event="[KO][ROLL]Cannot buy first ROLL on wallet $3 because MAS Amount less than 100. Please get 100 MAS"
 
 	# If MAS amount > $RESCUE_MAS_AMOUNT MAS and no rolls limitation, buy ROLLs
 	elif ([ $2 -gt $(($RESCUE_MAS_AMOUNT+100)) ] && [ $TARGET_ROLL_AMOUNT == "NULL" ])
 	then
 		NbRollsToBuy=$((($2-$RESCUE_MAS_AMOUNT)/100))
-		LogEvent="[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOBUY $NbRollsToBuy ROLL because MAS amount equal to $2 for stacked wallet $3"
-		if [ $(tail -n 5 $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | fgrep "${LogEvent:16}" | wc -l) -lt 2 ]
+		Event="[INFO][ROLL]Autobuy $NbRollsToBuy ROLL because MAS amount equal to $2 for stacked wallet $3"
+		if [ $(tail -n 5 $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | fgrep "$Event" | wc -l) -lt 2 ]
 		then
 			# Buy roll amount
 			cd $PATH_CLIENT
@@ -166,8 +167,8 @@ BuyOrSellRoll() {
 				NbRollsToBuy=$NbRollsNeedToBuy
 			fi
 			# Buy roll amount
-			LogEvent="[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOBUY $NbRollsToBuy ROLL because $3 MAS amount equal to $2 and ROLL amount of $1 less than target amount of $TARGET_ROLL_AMOUNT"
-			if [ $(tail -n 5 $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | fgrep "${LogEvent:16}" | wc -l) -lt 2 ]
+			Event="[INFO][ROLL]Autobuy $NbRollsToBuy ROLL because $3 MAS amount equal to $2 and ROLL amount of $1 less than target amount of $TARGET_ROLL_AMOUNT"
+			if [ $(tail -n 5 $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | fgrep "$Event" | wc -l) -lt 2 ]
 			then
 				cd $PATH_CLIENT
 				$PATH_TARGET/massa-client -p $WALLET_PWD buy_rolls $3 $NbRollsToBuy 0 > /dev/null
@@ -176,8 +177,8 @@ BuyOrSellRoll() {
 		elif [ $TARGET_ROLL_AMOUNT -lt $1 ]
 		then
 			NbRollsToSell=$(($1-$TARGET_ROLL_AMOUNT))
-			LogEvent="[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOSELL $NbRollsToSell ROLL on $3 because ROLL amount of $1 greater than target amount of $TARGET_ROLL_AMOUNT"
-			if [ $(tail -n 5 $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | fgrep "${LogEvent:16}" | wc -l) -lt 2 ]
+			Event="[INFO][ROLL]Autosell $NbRollsToSell ROLL on $3 because ROLL amount of $1 greater than target amount of $TARGET_ROLL_AMOUNT"
+			if [ $(tail -n 5 $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | fgrep "$Event" | wc -l) -lt 2 ]
 			then
 				# Sell roll amount
 				cd $PATH_CLIENT
@@ -191,8 +192,8 @@ BuyOrSellRoll() {
 		if [ $TARGET_ROLL_AMOUNT -lt $1 ]
 		then
 			NbRollsToSell=$(($1-$TARGET_ROLL_AMOUNT))
-			LogEvent="[$(date +%Y%m%d-%HH%M)][INFO][ROLL]AUTOSELL $NbRollsToSell ROLL because $3 ROLL amount of $1 greater than target amount of $TARGET_ROLL_AMOUNT"
-			if [ $(tail -n 5 $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | fgrep "${LogEvent:16}" | wc -l) -lt 2 ]
+			Event="[INFO][ROLL]Autosell $NbRollsToSell ROLL because $3 ROLL amount of $1 greater than target amount of $TARGET_ROLL_AMOUNT"
+			if [ $(tail -n 5 $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt | fgrep "$Event" | wc -l) -lt 2 ]
 			then
 				# Sell roll amount
 				cd $PATH_CLIENT
@@ -206,11 +207,11 @@ BuyOrSellRoll() {
 	# Else, if MAS amount less to buy 1 roll or if max roll target is OK, do nothing
 	else
 		# Do nothing
-		LogEvent=0
+		Event=0
 		return 0
 	fi
 	# Log cycle event
-	if ([ ! -z "$LogEvent" ] && [ $(tail -n 5 /massa_mount/logs/massa-guard/$(date +%Y%m%d)-massa_guard.txt | fgrep "${LogEvent:16}" | wc -l) -eq 0 ]) ; then echo $LogEvent |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt ; fi
+	if ([ ! -z "$Event" ] && [ $(tail -n 5 /massa_mount/logs/massa-guard/$(date +%Y%m%d)-massa_guard.txt | fgrep "$Event" | wc -l) -eq 0 ]) ; then Events+=("$Event") ; fi
 }
 
 #############################################################
@@ -226,7 +227,7 @@ CheckNodeRam() {
 	# If ram consumption is too high
 	if ([ ! -z $checkRam ] && [ $checkRam -gt $NODE_MAX_RAM ])
 	then
-		echo "[$(date +%Y%m%d-%HH%M)][KO][NODE]RAM EXCEED - NODE WILL RESTART" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		Events+=('[KO][NODE]RAM consumption exceed limit - Node will restart')
 		return 1
 	# If ram consumption is ok
 	else
@@ -247,7 +248,7 @@ CheckNodeResponsive() {
 	# If get_status is responsive
 	if [ $checkGetStatus -lt 10 ]
 	then
-		echo "[$(date +%Y%m%d-%HH%M)][KO][NODE]TIMEOUT - NODE WILL RESTART" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		Events+=('[KO][NODE]Node hang - Node will restart')
 		return 1
 	# If get_status hang
 	else
@@ -270,8 +271,8 @@ BackupLogsNode() {
 		then
 			# Add node logs to backup logs of the current day
 			cat $PATH_LOGS_MASSANODE/current.txt >> $PATH_LOGS_MASSANODE/$(date +%Y%m%d)-logs.txt
-			rm $PATH_NODE/logs.txt > /dev/null
-			rm $PATH_LOGS_MASSANODE/current.txt > /dev/null
+			rm $PATH_NODE/logs.txt 2> /dev/null
+			rm $PATH_LOGS_MASSANODE/current.txt 2> /dev/null
 		fi
 	# If node backup log dont exist, create new node backup logs
 	else
@@ -394,7 +395,7 @@ BackupNewWallets () {
 	# Backup new wallets if new exist
 	if [ $(cp -nv $PATH_CLIENT/wallets/wallet_* $PATH_MOUNT/ | wc -l) -gt 0 ]
 	then
-		echo "[$(date +%Y%m%d-%HH%M)][INFO][SAVE]Save your new wallet file to massa_mount" |& tee -a $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		Events+=('[INFO][SAVE]Save your new wallet file to massa_mount')
 	fi
 
 	return 0
@@ -406,5 +407,31 @@ BackupNewWallets () {
 # RETURN = 0 NoUpdate 1 UpdateDone
 #############################################################
 CheckAndUpdateNode () {
+	return 0
+}
+
+#############################################################
+# FONCTION = LogEvents
+# DESCRIPTION = Log event
+# ARGUMENTS = Events[]
+# RETURN = 0 Log done 1 Log error
+#############################################################
+LogEvents () {
+	Date=$(date +%Y%m%d-%HH%M)
+	DayDate=$(date +%Y%m%d)
+	# For each Event
+	MyEvents=("$@")
+	for Event in "${MyEvents[@]}"
+	do
+		# Log into current log file
+		echo -e "[$Date]$Event" |& tee -a $PATH_LOGS_MASSAGUARD/$DayDate-massa_guard.txt
+
+		# If discord webhook defined
+		if [ $DISCORD_WEBHOOK != 0 ]
+		then
+			# Push event
+			curl -H "Content-Type: application/json" -d '{"username": "massa-node", "content": "'"[$Date]$Event"'"}' "$DISCORD_WEBHOOK" &> /dev/null
+		fi
+	done
 	return 0
 }
