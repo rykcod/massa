@@ -54,6 +54,7 @@ else
 	fi
 	echo "[protocol]" > $PATH_MOUNT/config.toml
 	echo "routable_ip = \"$myIP\"" >> $PATH_MOUNT/config.toml
+	echo -e "\n[execution]\n    # path to the hard drive cache storage\n    hd_cache_path = \"/massa_mount/storage/cache/rocks_db\"\n\n[ledger]\n    # path to the disk ledger db directory\n    disk_ledger_path = \"/massa_mount/storage/ledger/rocks_db\"" >> $PATH_MOUNT/config.toml
 	cp $PATH_MOUNT/config.toml $PATH_NODE_CONF/config.toml
 
 	Events+=('[INFO][INIT]Create your default config.toml with $myIP as routable IP')
