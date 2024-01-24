@@ -417,8 +417,10 @@ CheckAndUpdateNode () {
 # RETURN = 0 Log done 1 Log error
 #############################################################
 LogEvents () {
+	# Check if RESCUE_MAS_AMOUNT is set into config.ini or set it to 0
+	if [ ! -v DISCORD_WEBHOOK ]; then DISCORD_WEBHOOK=0 ; fi
+	# Set current date
 	Date=$(date +%Y%m%d-%HH%M)
-	DayDate=$(date +%Y%m%d)
 	# For each Event
 	MyEvents=("$@")
 	for Event in "${MyEvents[@]}"
