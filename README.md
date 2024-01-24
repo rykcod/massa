@@ -10,6 +10,7 @@ Build a massa-node container wich include some automation features from a commun
 This image include a script named "**/massa-guard/massa-guard.sh**" to:
 - [GENERAL]
   - Enable/Disable all massa-guard features (Except keys creations) with the "MASSAGUARD" setting in config.ini
+  - Link node storage files to massa_mount
 - [AUTOBUY/AUTOSELL]
   - Autobuy 1 roll when your node failed and lost his "Active rolls".
   - Autobuy X rolls when your MAS amount greater than 100 MAS and if "Active rolls" dont exceed "TARGET_ROLL_AMOUNT", if value set in /massa_mount/config/config.ini.
@@ -24,7 +25,7 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Massa-guard auto create your config.toml with your public IP.
 
 ### [RELEASE NOTES] ###
-- 20240124 - Mainnet    - v2.1.0 - Mainnet      - v2.1 Ready + Add multiwallets availability + Discord webhook Push logs feature
+- 20240124 - Mainnet    - v2.1.0 - Mainnet      - v2.1 Ready + Add multiwallets availability + Discord webhook Push logs feature + Deport node storage to massa_mount
 - 20240110 - Mainnet    - v2.0.0 - Mainnet      - v2.0 Ready + Remove useless dependencies + Add multi wallet autobuy features
 - 20240105 - Mainnet    - v1.0.0 - Mainnet      - v1.0 Ready !!! + Change [network] label to [protocol] into new config.toml + ADD RESCUE_MAS_AMOUNT setting into config.ini
 - 20240103 - Devnet     - v28.2.0 - Devnet     - v28.2 Ready
@@ -91,7 +92,6 @@ __[OPTION] To enable or update features after container creation just edit /mass
 ### [HELP] ###
 - Massa client is running over a "screen" named "massa-client"
 - Massa node is running over a "screen" named "massa-node"
-- To get your discord token, refer to https://shufflegazine.com/get-discord-token/
 
 #### [LOGS PATH] ####
 - Massa-guard actions and events are logs into %MountPoint%/logs/massa-guard/%DATE%-massa_guard.txt
