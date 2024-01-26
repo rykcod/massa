@@ -118,7 +118,7 @@ BuyOrSellRoll() {
 	# Check if RESCUE_MAS_AMOUNT is set into config.ini or set it to 0
 	if [ ! -v RESCUE_MAS_AMOUNT ]; then RESCUE_MAS_AMOUNT=0 ; fi
 	# Check if day log file already exist or create it
-	if [ ! -e $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt ] ;
+	if [ ! -e $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt ]
 	then
 		# Create log file of the day
 		touch $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
