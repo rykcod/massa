@@ -118,7 +118,13 @@ BuyOrSellRoll() {
 	# Check if RESCUE_MAS_AMOUNT is set into config.ini or set it to 0
 	if [ ! -v RESCUE_MAS_AMOUNT ]; then RESCUE_MAS_AMOUNT=0 ; fi
 	# Check if day log file already exist or create it
-	if [ ! -e $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt ] ; then touch $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt ; fi
+	if [ ! -e $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt ] ;
+	then
+		# Create log file of the day
+		touch $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+		# Log amounts of the day
+		Events+=("[INFO][$1][MAS=$2][ROLL=$3]")
+	fi
 
 	# Check candidate roll > 0 and Mas amount >= 100 to buy first roll
 	if ([ $1 -eq 0 ] && [ $2 -ge 100 ])
