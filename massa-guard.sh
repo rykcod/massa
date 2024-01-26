@@ -42,6 +42,8 @@ do
 				CandidateRolls=$(GetCandidateRoll "$WalletAddress")
 				# Get MAS amount
 				MasBalance=$(GetMASAmount "$WalletAddress")
+				# Log Wallet balance if not already log today
+				if [ ! -e $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt ]; LogWalletsBalance "$CandidateRolls" "$MasBalance" "$WalletAddress" then
 				# Buy max roll or 1 roll if possible when candidate roll amount = 0
 				BuyOrSellRoll "$CandidateRolls" "$MasBalance" "$WalletAddress"
 			done
