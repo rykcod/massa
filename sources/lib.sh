@@ -132,7 +132,7 @@ BuyOrSellRoll() {
 	# If MAS amount < 100 MAS and Candidate roll = 0
 	elif ([ $1 -eq 0 ] && [ $2 -lt 100 ])
 	then
-                Event="[KO][ROLL]Cannot buy first ROLL on wallet $3 because MAS Amount less than 100. Please get 100 MAS"
+		Event="[KO][ROLL]Cannot buy first ROLL on wallet $3 because MAS Amount less than 100. Please get 100 MAS"
 
 	# If MAS amount > $RESCUE_MAS_AMOUNT MAS and no rolls limitation, buy ROLLs
 	elif ([ $2 -gt $(($RESCUE_MAS_AMOUNT+100)) ] && [ $TARGET_ROLL_AMOUNT == "NULL" ])
