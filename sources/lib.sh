@@ -427,6 +427,7 @@ LogEvents () {
 	if [ ! -v DISCORD_WEBHOOK ]; then DISCORD_WEBHOOK=0 ; fi
 	# Set current date
 	Date=$(date +%Y%m%d-%HH%M)
+	DayDate=$(date +%Y%m%d)
 	# For each Event
 	MyEvents=("$@")
 	for Event in "${MyEvents[@]}"
