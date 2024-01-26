@@ -36,14 +36,27 @@ do
 		CheckAndReloadNode "$NodeRam" "$NodeResponsive"
 		if [ $? -eq 0 ]
 		then
+			# If new day log file get wallets balance
+			if [ ! -e $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt ]
+			then
+				# Create log file of the day
+				touch $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt
+				# For every wallets
+				for WalletAddress in "${WalletAddresses[@]}"; do
+					# Get candidate rolls
+					CandidateRolls=$(GetCandidateRoll "$WalletAddress")
+					# Get MAS amount
+					MasBalance=$(GetMASAmount "$WalletAddress")
+					# Log Wallet balance
+					LogWalletsBalance "$CandidateRolls" "$MasBalance" "$WalletAddress"
+				done
+			fi
 			# For each wallet addresses
 			for WalletAddress in "${WalletAddresses[@]}"; do
 				# Get candidate rolls
 				CandidateRolls=$(GetCandidateRoll "$WalletAddress")
 				# Get MAS amount
 				MasBalance=$(GetMASAmount "$WalletAddress")
-				# Log Wallet balance if not already log today
-				if [ ! -e $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt ]; then LogWalletsBalance "$CandidateRolls" "$MasBalance" "$WalletAddress"; fi
 				# Buy max roll or 1 roll if possible when candidate roll amount = 0
 				BuyOrSellRoll "$CandidateRolls" "$MasBalance" "$WalletAddress"
 			done

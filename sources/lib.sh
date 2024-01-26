@@ -417,8 +417,6 @@ CheckAndUpdateNode () {
 LogEvents () {
 	# Check if RESCUE_MAS_AMOUNT is set into config.ini or set it to 0
 	if [ ! -v DISCORD_WEBHOOK ]; then DISCORD_WEBHOOK=0 ; fi
-	# Check if day log file already exist or create it
-	if [ ! -e $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt ]; then touch $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt ; fi
 
 	# Set current date
 	Date=$(date +%Y%m%d-%HH%M)
