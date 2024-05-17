@@ -25,18 +25,11 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Massa-guard auto create your config.toml with your public IP.
 
 ### [RELEASE NOTES] ###
+- 20240517 - Mainnet    - v2.1.1 - Mainnet      - Add 0.01 MAS for buy and sell rolls action
 - 20240124 - Mainnet    - v2.1.0 - Mainnet      - v2.1 Ready + Add multiwallets availability + Discord webhook Push logs feature + Deport node storage to massa_mount
 - 20240110 - Mainnet    - v2.0.0 - Mainnet      - v2.0 Ready + Remove useless dependencies + Add multi wallet autobuy features
 - 20240105 - Mainnet    - v1.0.0 - Mainnet      - v1.0 Ready !!! + Change [network] label to [protocol] into new config.toml + ADD RESCUE_MAS_AMOUNT setting into config.ini
 - 20240103 - Devnet     - v28.2.0 - Devnet     - v28.2 Ready
-- 20240103 - Devnet     - v28.1.0 - Devnet     - v28.1 Ready
-- 20240102 - Securenet  - v27.6.0 - Securenet  - v27.6 + Cleanup deprecated features.
-- 20231202 - Testnet 27 - v27.4.0 - Testnet 27 - v27.6 Ready
-- 20230908 - Testnet 26 - v26.1.1 - Testnet 26 - Solve backup/Restore new wallet format
-- 20230616 - Testnet 23 - v23.2.0 - Testnet 23 - Add disable logs Feature with NODE_LOGS settings.
-- 20230309 - Testnet 20 - v20.2.0 - Testnet 20 - v20.2 Ready! Please note you will need to create a new wallet for this Testnet.
-- 20230210 - Testnet 19 - v19.3.0 - Testnet 19 - v19.3 Ready! Somes modications after massa testnet 19.0 cmd updates.
-- 20221123 - Testnet 16 - v16.1.0 - Testnet 16 - v16.1 Ready! Remove deprecated [BOOTSTRAPFINDER] features
 
 ## [HOWTO] ##
 ### [SETUP] ###
