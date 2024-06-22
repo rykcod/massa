@@ -25,6 +25,7 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Massa-guard auto create your config.toml with your public IP.
 
 ### [RELEASE NOTES] ###
+- 20240622 - Mainnet    - v2.2 - Mainnet      - Update to mainnet 2.2
 - 20240517 - Mainnet    - v2.1.1 - Mainnet      - Add 0.01 MAS for buy and sell rolls action
 - 20240124 - Mainnet    - v2.1.0 - Mainnet      - v2.1 Ready + Add multiwallets availability + Discord webhook Push logs feature + Deport node storage to massa_mount
 - 20240110 - Mainnet    - v2.0.0 - Mainnet      - v2.0 Ready + Remove useless dependencies + Add multi wallet autobuy features
