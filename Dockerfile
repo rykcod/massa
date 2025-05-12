@@ -1,5 +1,5 @@
 # Download custom base
-FROM ubuntu:22.04
+FROM ubuntu:22.10
 
 # Build Arguments
 ARG TARGETPLATFORM
