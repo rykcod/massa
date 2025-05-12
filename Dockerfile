@@ -1,5 +1,5 @@
 # Download custom base
-FROM ubuntu
+FROM ubuntu:20.4
 
 # Build Arguments
 ARG TARGETPLATFORM
