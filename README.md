@@ -1,5 +1,5 @@
 # Massa node + Massa-guard #
-**Last build for Massa Mainnet 2.5**
+**Last build for Massa Mainnet 2.5.1**
 
 ![alt text](https://d33wubrfki0l68.cloudfront.net/7df7d7a57a8dda3cc07aab16121b3e3990cf0893/16ccd/portfolio/massa.png)
 
@@ -25,6 +25,7 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Massa-guard auto create your config.toml with your public IP.
 
 ### [RELEASE NOTES] ###
+- 20250512 - Mainnet    - v2.5.1 - Mainnet      - Update to mainnet 2.5.1 - Add "--accept-community-charter"
 - 20250512 - Mainnet    - v2.5 - Mainnet        - Update to mainnet 2.5
 - 20241124 - Mainnet    - v2.4 - Mainnet        - Update to mainnet 2.4
 - 20240717 - Mainnet    - v2.3 - Mainnet        - Update to mainnet 2.3
@@ -33,7 +34,7 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
 - 20240124 - Mainnet    - v2.1.0 - Mainnet      - v2.1 Ready + Add multiwallets availability + Discord webhook Push logs feature + Deport node storage to massa_mount
 - 20240110 - Mainnet    - v2.0.0 - Mainnet      - v2.0 Ready + Remove useless dependencies + Add multi wallet autobuy features
 - 20240105 - Mainnet    - v1.0.0 - Mainnet      - v1.0 Ready !!! + Change [network] label to [protocol] into new config.toml + ADD RESCUE_MAS_AMOUNT setting into config.ini
-- 20240103 - Devnet     - v28.2.0 - Devnet     - v28.2 Ready
+- 20240103 - Devnet     - v28.2.0 - Devnet      - v28.2 Ready
 
 ## [HOWTO] ##
 ### [SETUP] ###
