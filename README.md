@@ -1,5 +1,5 @@
 # Massa node + Massa-guard #
-**Last build for Massa Mainnet 4.0**
+**Last build for Massa Mainnet 5.0**
 
 ![alt text](https://d33wubrfki0l68.cloudfront.net/7df7d7a57a8dda3cc07aab16121b3e3990cf0893/16ccd/portfolio/massa.png)
 
@@ -25,6 +25,7 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Massa-guard auto create your config.toml with your public IP.
 
 ### [RELEASE NOTES] ###
+- 20260520 - Mainnet    - v5.0 - Mainnet        - Update to mainnet 5.0
 - 20260324 - Mainnet    - v4.2 - Mainnet        - Update to mainnet 4.2
 - 20251010 - Mainnet    - v4.0 - Mainnet        - Update to mainnet 4.0
 - 20250512 - Mainnet    - v3.0 - Mainnet        - Update to mainnet 3.0
