@@ -34,7 +34,10 @@ CheckOrCreateWalletAndNodeKey() {
 	# If wallet don't exist
 	cd $PATH_CLIENT
 	checkWallet=`$PATH_TARGET/massa-client -p $WALLET_PWD wallet_info | grep -c "Address"`
-	if ([ $(ls $PATH_CLIENT/wallets/wallet_* 2> /dev/null | wc -l) -eq 0 ] || [ $checkWallet -lt 1 ])
+	# Only the file count decides. wallet_info needs the node API: while the node
+	# starts, its output loses the "Address" prefix and this counter reads 0 although
+	# the files are there. The former OR let that test veto the reliable one.
+	if [ $(ls $PATH_CLIENT/wallets/wallet_* 2> /dev/null | wc -l) -eq 0 ]
 	then
 		# Generate wallet
 		cd $PATH_CLIENT
@@ -52,6 +55,11 @@ CheckOrCreateWalletAndNodeKey() {
 		screen -dmS massa-client bash -c './massa-client -p '$WALLET_PWD''
 
 		Events+=('[INFO][BACKUP]Backup wallet')
+	elif [ $checkWallet -lt 1 ]
+	then
+		# Files present but unreadable: warn, never generate. Generating here would
+		# stake a new empty address and leave the real one behind.
+		Events+=('[KO][WALLET]Wallet files found but wallet_info returned no address - no wallet generated')
 	fi
 
 	## Stacke if wallet not stacke
