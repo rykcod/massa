@@ -36,6 +36,10 @@ do
 		CheckAndReloadNode "$NodeRam" "$NodeResponsive"
 		if [ $? -eq 0 ]
 		then
+			# Refreshed every pass. Read once before the loop, an API that was not ready
+			# yet left the array empty for the life of the process: no roll ever bought.
+			WalletAddresses=($(GetWalletAddresses))
+
 			# If new day log file get wallets balance
 			if [ ! -e $PATH_LOGS_MASSAGUARD/$(date +%Y%m%d)-massa_guard.txt ]
 			then
