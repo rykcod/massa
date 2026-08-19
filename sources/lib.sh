@@ -241,7 +241,16 @@ CheckNodeRam() {
 CheckNodeResponsive() {
 	# Check node status and logs events
 	cd $PATH_CLIENT
-	checkGetStatus=$(timeout 2 $PATH_TARGET/massa-client -p $WALLET_PWD get_status | wc -l)
+	# A busy node is not a hung node: right after a bootstrap the API answers, but
+	# slower than 2s. Restarting then starts another bootstrap, which reproduces the
+	# condition. Retry before the verdict; worst case stays under the 2 min loop.
+	checkGetStatus=0
+	for attempt in 1 2 3
+	do
+		checkGetStatus=$(timeout 15 $PATH_TARGET/massa-client -p $WALLET_PWD get_status | wc -l)
+		if [ $checkGetStatus -ge 10 ]; then break; fi
+		sleep 5
+	done
 
 	# If get_status is responsive
 	if [ $checkGetStatus -lt 10 ]
