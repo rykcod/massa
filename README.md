@@ -25,7 +25,7 @@ This image include a script named "**/massa-guard/massa-guard.sh**" to:
   - Massa-guard auto create your config.toml with your public IP.
 
 ### [RELEASE NOTES] ###
-- 20260520 - Mainnet    - v5.0 - Mainnet        - Update to mainnet 5.0
+- 20260821 - Mainnet    - v5.0 - Mainnet        - Update to mainnet 5.0 + Fix by Madawan
 - 20260324 - Mainnet    - v4.2 - Mainnet        - Update to mainnet 4.2
 - 20251010 - Mainnet    - v4.0 - Mainnet        - Update to mainnet 4.0
 - 20250512 - Mainnet    - v3.0 - Mainnet        - Update to mainnet 3.0
